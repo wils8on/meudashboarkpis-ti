@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de KPIs</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- MENU LATERAL -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fa-solid fa-chart-pie"></i> KPI Panel</h3>
+            </div>
+
+            <div class="theme-toggle-container">
+                <button onclick="window.alternarModoTema()" class="btn-theme-toggle">
+                    <i class="fa-solid fa-moon"></i> Alternar Tema
+                </button>
+            </div>
+
+            <div class="sidebar-filters">
+                <p class="filter-title">FILTRAR PERÍODO</p>
+                <div class="filter-group">
+                    <label>Data Inicial:</label>
+                    <input type="date" id="filtroDataInicio">
+                </div>
+                <div class="filter-group">
+                    <label>Data Final:</label>
+                    <input type="date" id="filtroDataFim">
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li>
+                    <a href="#" class="nav-item active" data-target="visao-geral">
+                        <i class="fa-solid fa-house"></i> <span>Visão Geral</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-item" data-target="kpis-performance">
+                        <i class="fa-solid fa-gauge-high"></i> <span>Performance e SLA</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-item" data-target="aba-backlog">
+                        <i class="fa-solid fa-boxes-stacked"></i> <span>Backlog Mensal</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-item" data-target="aba-usuarios">
+                        <i class="fa-solid fa-users-gear"></i> <span>Gerenciar Clientes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-item" data-target="kpis-suporte">
+                        <i class="fa-solid fa-headset"></i> <span>Suporte/Atendimento</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <button id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+            </div>
+        </nav>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h2>Plataforma de Indicadores</h2>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button onclick="window.exportarRelatorioPDF()" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-file-pdf"></i> Exportar Relatório PDF
+                    </button>
+                    <div class="user-profile">
+                        <span>Olá, <strong>Admin</strong></span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-body">
+                
+                <!-- 1. VISÃO GERAL -->
+                <section id="visao-geral" class="tab-content active">
+                    <div class="upload-section">
+                        <label for="excelFile" class="upload-box">
+                            <i class="fa-solid fa-file-excel"></i>
+                            <span>Clique ou arraste o arquivo Excel (.xlsx) aqui para atualizar os dados</span>
+                            <input type="file" id="excelFile" accept=".xlsx, .xls" style="display: none;">
+                        </label>
+                        <div id="uploadStatus" class="upload-status">Nenhum arquivo carregado (Aguardando base de dados)</div>
+                    </div>
+
+                    <h3>Métricas Consolidadas</h3>
+                    <div class="kpi-grid">
+                        <div class="kpi-card azul">
+                            <div class="kpi-info"><p>Chamados no Período</p><h3 id="kpiTotal">0</h3></div>
+                            <i class="fa-solid fa-ticket icon"></i>
+                        </div>
+                        <div class="kpi-card verde">
+                            <div class="kpi-info"><p>% Finalizados</p><h3 id="kpiFinalizados">0,00%</h3></div>
+                            <i class="fa-solid fa-circle-check icon"></i>
+                        </div>
+                        <div class="kpi-card laranja">
+                            <div class="kpi-info"><p>% Demandas Atuais</p><h3 id="kpiDemandasAtuais">0,00%</h3></div>
+                            <i class="fa-solid fa-folder-open icon"></i>
+                        </div>
+                        <div class="kpi-card comparativo">
+                            <div class="kpi-info"><p>vs Ano Anterior</p><h3 id="kpiCrescimento">0,00%</h3></div>
+                            <i class="fa-solid fa-scale-balanced icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="graficoGeral"></canvas>
+                    </div>
+                </section>
+
+                <!-- 2. PERFORMANCE E SLA -->
+                <section id="kpis-performance" class="tab-content">
+                    <h3>Análise de Performance Operacional e SLA</h3>
+                    <div class="kpi-grid" style="margin-bottom: 30px;">
+                        <div class="kpi-card verde">
+                            <div class="kpi-info"><p>Finalizados no Mês de Abertura</p><h3 id="perfCard1">0,00%</h3></div>
+                            <i class="fa-solid fa-calendar-check icon"></i>
+                        </div>
+                        <div class="kpi-card azul">
+                            <div class="kpi-info"><p>Cumprimento de SLA (Deadline)</p><h3 id="perfCard2">0,00%</h3></div>
+                            <i class="fa-solid fa-clock-check icon"></i>
+                        </div>
+                        <div class="kpi-card laranja">
+                            <div class="kpi-info"><p>Finalizados em Meses Posteriores</p><h3 id="perfCard3">0,00%</h3></div>
+                            <i class="fa-solid fa-calendar-minus icon"></i>
+                        </div>
+                        <div class="kpi-card roxo">
+                            <div class="kpi-info"><p>Mês de Maior Eficiência</p><h3 id="perfCard4">Nenhum</h3></div>
+                            <i class="fa-solid fa-award icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="charts-split-grid">
+                        <div class="chart-container">
+                            <h4><i class="fa-solid fa-chart-line"></i> Taxa de Resolução Mensal (%)</h4>
+                            <canvas id="graficoLinhaResolucao"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h4><i class="fa-solid fa-chart-bar"></i> Índice de Cumprimento de SLA por Mês</h4>
+                            <canvas id="graficoSlaMensal"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. BACKLOG MENSAL -->
+                <section id="aba-backlog" class="tab-content">
+                    <div class="info-alert-box">
+                        <h4><i class="fa-solid fa-circle-info"></i> O que é o Backlog?</h4>
+                        <p>Backlog representa a quantidade de chamados que ainda não foram finalizados, ou seja, demandas pendentes que estão em atendimento ou aguardando resolução. Esse indicador ajuda a medir o volume de trabalho acumulado e o nível de controle da operação.</p>
+                    </div>
+
+                    <div class="kpi-grid" style="margin-bottom: 20px;">
+                        <div class="kpi-card azul-header">
+                            <div class="kpi-info"><p>Total Acumulado (Período + Herdado)</p><div id="backlogCardTotal" class="kpi-val-grandes">0</div></div>
+                        </div>
+                        <div class="kpi-card verde-header">
+                            <div class="kpi-info"><p>Finalizados do Backlog</p><div id="backlogCardFechados" class="kpi-val-grandes">0 (0,00%)</div></div>
+                        </div>
+                        <div class="kpi-card laranja-header">
+                            <div class="kpi-info"><p>Demandas Atuais do Backlog</p><div id="backlogCardDemandasAtuais" class="kpi-val-grandes">0 (0,00%)</div></div>
+                        </div>
+                    </div>
+
+                    <div class="charts-split-grid">
+                        <div class="chart-container">
+                            <h4>Evolução de Conclusão do Backlog por Mês</h4>
+                            <canvas id="graficoBacklogEvolucao"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h4>Distribuição Volumétrica do Backlog Atual</h4>
+                            <canvas id="graficoBacklogDistribuicao"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. GERENCIAR CLIENTES / USUÁRIOS -->
+                <section id="aba-usuarios" class="tab-content">
+                    <h3>Cadastro e Gestão Organizacional de Clientes</h3>
+                    <p class="section-desc">Os nomes abaixo são importados automaticamente da coluna Cliente do Excel. Aqui você pode configurar e rastrear o histórico de alocações.</p>
+                    
+                    <div class="users-management-layout">
+                        <div class="editor-form-box">
+                            <h4><i class="fa-solid fa-user-pen"></i> Configurar Vínculo</h4>
+                            <form id="formEditarUsuario">
+                                <input type="hidden" id="editUserIndex">
+                                
+                                <div class="form-item">
+                                    <label>Nome do Cliente:</label>
+                                    <input type="text" id="editUserNome" readonly class="input-readonly">
+                                </div>
+                                
+                                <div class="form-item">
+                                    <label>Setor Atual:</label>
+                                    <input type="text" id="editUserSetor" placeholder="Ex: TI, Financeiro, Comercial">
+                                </div>
+                                
+                                <div class="form-item">
+                                    <label>Unidade / Localidade Atual:</label>
+                                    <input type="text" id="editUserUnidade" placeholder="Ex: Matriz, Filial Salvador, Filial SP">
+                                </div>
+
+                                <div class="date-picker-box">
+                                    <p class="date-picker-title"><i class="fa-solid fa-calendar-day"></i> Data da Efetivação da Mudança</p>
+                                    <input type="date" id="editUserDataMudanca">
+                                    <span class="date-picker-hint">Informe quando a transição de setor ou filial ocorreu de fato.</span>
+                                </div>
+
+                                <button type="submit" class="btn-submit-form">
+                                    <i class="fa-solid fa-floppy-disk"></i> Atualizar e Salvar Histórico
+                                </button>
+                            </form>
+
+                            <div class="history-timeline-box">
+                                <h5><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Alterações de Setor</h5>
+                                <ul id="listaHistoricoSetores">
+                                    <li class="history-empty">Selecione um cliente para auditar o histórico.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="table-wrapper-box">
+                            <div class="table-header-title">Clientes Cadastrados no Sistema</div>
+                            <div class="table-scroll-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Cliente</th>
+                                            <th>Setor Atual</th>
+                                            <th>Unidade</th>
+                                            <th style="text-align: center;">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelaUsuariosCorpo">
+                                        <tr>
+                                            <td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px;">Nenhum cliente carregado. Suba uma planilha na aba Visão Geral para popular a base.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. SUPORTE -->
+                <section id="kpis-suporte" class="tab-content">
+                    <h3>Métricas de Atendimento</h3>
+                    <p>Espaço reservado para detalhes analíticos de Helpdesk.</p>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

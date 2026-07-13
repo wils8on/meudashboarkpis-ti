@@ -311,6 +311,9 @@ if (excelInput) {
                 if (dadosPlanilhaGlobal.length > 0) {
                     verificarECadastrarClientesNovos(dadosPlanilhaGlobal);
                     processarIndicadoresEstrategicos();
+                    
+                    // CORREÇÃO: Força o preenchimento da tabela de clientes na hora da importação
+                    renderizarTabelaUsuarios(); 
                 } else {
                     if (uploadStatus) uploadStatus.textContent = "Nenhum dado legível encontrado na planilha.";
                 }
@@ -418,7 +421,6 @@ function processarIndicadoresEstrategicos() {
                 totalProtocolosPeriodo++;
                 const mesAnoLabel = `${String(dataCriacao.getMonth() + 1).padStart(2, '0')}/${dataCriacao.getFullYear()}`;
 
-                // Sincronização corrigida para minúsculas ("urgente") para casar perfeitamente
                 if (!mesesAgrupadosGeral[mesAnoLabel]) mesesAgrupadosGeral[mesAnoLabel] = { total: 0, urgente: 0 };
                 if (!performanceMensalAgrupada[mesAnoLabel]) {
                     performanceMensalAgrupada[mesAnoLabel] = { criados: 0, fechadosNoMesmoMes: 0, dentroSla: 0, totalValidosSla: 0 };
@@ -595,7 +597,7 @@ function verificarECadastrarClientesNovos(linhasPlanilha) {
             const existe = listaClientesSalva.some(c => c.nome.toLowerCase() === nomeCliente.toLowerCase());
             if (!existe) {
                 listaClientesSalva.push({
-                    name: nomeCliente,
+                    nome: nomeCliente,
                     setorAtual: "Não Definido",
                     unidade: "Não Definido",
                     historicoSetores: [
@@ -743,256 +745,3 @@ function obterDataFormatadaHoje() {
     const d = new Date();
     return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
-
-// ==========================================
-// 7. EXPORTAÇÃO DE RELATÓRIO EXECUTIVO EM PDF (ALINHADO À ESQUERDA)
-// ==========================================
-window.exportarRelatorioPDF = function() {
-    if (dadosPlanilhaGlobal.length === 0) {
-        alert("Não há dados carregados para exportar.");
-        return;
-    }
-
-    const botaoExportar = document.querySelector('button[onclick="window.exportarRelatorioPDF()"]');
-    const textoOriginal = botaoExportar.innerHTML;
-    botaoExportar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Estruturando PDF...`;
-    botaoExportar.disabled = true;
-
-    try {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        
-        const valInicio = document.getElementById('filtroDataInicio')?.value || "Não informada";
-        const valFim = document.getElementById('filtroDataFim')?.value || "Não informada";
-        
-        const formatarDataBR = (dataISO) => {
-            if(dataISO.includes('-')) {
-                const [ano, mes, dia] = dataISO.split('-');
-                return `${dia}/${mes}/${ano}`;
-            }
-            return dataISO;
-        };
-
-        const txtTotal = document.getElementById('kpiTotal')?.textContent || "0";
-        const txtFinalizados = document.getElementById('kpiFinalizados')?.textContent || "0,00%";
-        const txtDemandasAtuais = document.getElementById('kpiDemandasAtuais')?.textContent || "0,00%";
-        
-        const txtBkTotal = document.getElementById('backlogCardTotal')?.textContent || "0";
-        const txtBkFechados = document.getElementById('backlogCardFechados')?.textContent || "0 (0,00%)";
-        const txtBkDemandasAtuais = document.getElementById('backlogCardDemandasAtuais')?.textContent || "0 (0,00%)";
-        const txtMelhorMes = document.getElementById('perfCard4')?.textContent || "Nenhum";
-
-        // Detalhe estético lateral (Barra azul corporativa)
-        pdf.setFillColor(30, 58, 138); 
-        pdf.rect(0, 0, 8, 297, 'F');
-
-        // Título Principal
-        pdf.setFont("Helvetica", "bold");
-        pdf.setFontSize(22);
-        pdf.textColor = "#1e3a8a";
-        pdf.text("RELATÓRIO ESTRATÉGICO DE PERFORMANCE", 15, 25);
-        
-        // Subtítulo
-        pdf.setFont("Helvetica", "normal");
-        pdf.setFontSize(10);
-        pdf.textColor = "#64748b";
-        pdf.text("Análise de Indicadores Qualitativos, SLA e Gestão de Backlog", 15, 31);
-        
-        // Linha divisória fina
-        pdf.setDrawColor(226, 232, 240);
-        pdf.setLineWidth(0.5);
-        pdf.line(15, 36, 200, 36);
-
-        // Metadados do Relatório movidos inteiramente para o LADO ESQUERDO
-        pdf.setFontSize(9);
-        pdf.textColor = "#334155";
-        pdf.setFont("Helvetica", "bold");
-        pdf.text("Data de Emissão:", 15, 45);
-        pdf.text("Período Filtrado:", 15, 51);
-        pdf.text("Módulo Operacional:", 15, 57);
-        
-        pdf.setFont("Helvetica", "normal");
-        pdf.textColor = "#475569";
-        pdf.text(new Date().toLocaleDateString('pt-BR'), 45, 45);
-        pdf.text(`${formatarDataBR(valInicio)} até ${formatarDataBR(valFim)}`, 45, 51);
-        pdf.text("Central de Helpdesk / Suporte", 50, 57);
-
-        // Seção 1: Indicadores Consolidados do Período
-        pdf.setFont("Helvetica", "bold");
-        pdf.setFontSize(13);
-        pdf.textColor = "#1e3a8a";
-        pdf.text("1. Métricas Consolidadas do Período", 15, 75);
-
-        pdf.setDrawColor(203, 213, 225);
-        pdf.setLineWidth(0.3);
-        
-        // Cabeçalho da Tabela 1
-        pdf.setFillColor(241, 245, 249);
-        pdf.rect(15, 82, 185, 8, 'F');
-        pdf.setFont("Helvetica", "bold");
-        pdf.setFontSize(9);
-        pdf.textColor = "#1e293b";
-        pdf.text("Métrica Operacional", 18, 87);
-        pdf.text("Resultado Geral no Período", 140, 87);
-
-        // Linhas de dados da Tabela 1 com a nova estrutura unificada
-        const kpisGerais = [
-            { label: "Volume Total de Chamados Criados", val: txtTotal },
-            { label: "Percentual de Encerramento (% Finalizados)", val: txtFinalizados },
-            { label: "Volume Ativo em Tratativa (% Demandas Atuais)", val: txtDemandasAtuais },
-            { label: "Mês Histórico de Maior Eficiência Operacional", val: txtMelhorMes }
-        ];
-
-        let yTabela1 = 88;
-        pdf.setFont("Helvetica", "normal");
-        pdf.textColor = "#334155";
-        
-        kpisGerais.forEach((item, i) => {
-            yTabela1 += 8;
-            if (i % 2 === 0) {
-                pdf.setFillColor(248, 250, 252);
-                pdf.rect(15, yTabela1 - 5, 185, 8, 'F');
-            }
-            pdf.text(item.label, 18, yTabela1);
-            pdf.text(item.val, 140, yTabela1);
-            pdf.line(15, yTabela1 + 3, 200, yTabela1 + 3);
-        });
-
-        // Seção 2: Diagnóstico Detalhado do Backlog
-        pdf.setFont("Helvetica", "bold");
-        pdf.setFontSize(13);
-        pdf.textColor = "#1e3a8a";
-        pdf.text("2. Inventário e Volume de Trabalho Acumulado (Backlog)", 15, 145);
-
-        pdf.setFont("Helvetica", "normal");
-        pdf.setFontSize(9.5);
-        pdf.textColor = "#475569";
-        const explicacaoBacklog = "Nota de Governança: O backlog representa a quantidade de chamados acumulados que ainda não foram finalizados (demandas pendentes em atendimento ou aguardando resolução). Esse indicador metrifica o volume de trabalho represado e o nível de controle da operação frente à capacidade de vazão da equipe.";
-        const linhasExplicacao = pdf.splitTextToSize(explicacaoBacklog, 185);
-        pdf.text(linhasExplicacao, 15, 153);
-
-        // Cabeçalho da Tabela de Backlog
-        pdf.setFillColor(241, 245, 249);
-        pdf.rect(15, 172, 185, 8, 'F');
-        pdf.setFont("Helvetica", "bold");
-        pdf.setFontSize(9);
-        pdf.textColor = "#1e293b";
-        pdf.text("Classificação de Estoque", 18, 177);
-        pdf.text("Quantidade Absoluta (% Proporcional)", 140, 177);
-
-        // Linhas de dados da Tabela 2 com a nova estrutura unificada
-        const kpisBacklog = [
-            { label: "Volume de Backlog Absoluto (Período Filtrado + Herdado)", val: txtBkTotal },
-            { label: "Chamados Liquidados do Backlog no Período", val: txtBkFechados },
-            { label: "Volume Restante Pendente (Demandas Atuais do Backlog)", val: txtBkDemandasAtuais }
-        ];
-
-        let yTabela2 = 178;
-        pdf.setFont("Helvetica", "normal");
-        pdf.textColor = "#334155";
-
-        kpisBacklog.forEach((item, i) => {
-            yTabela2 += 8;
-            if (i % 2 === 0) {
-                pdf.setFillColor(248, 250, 252);
-                pdf.rect(15, yTabela2 - 5, 185, 8, 'F');
-            }
-            pdf.text(item.label, 18, yTabela2);
-            pdf.text(item.val, 140, yTabela2);
-            pdf.line(15, yTabela2 + 3, 200, yTabela2 + 3);
-        });
-
-        // Rodapé da Página 1
-        pdf.setFontSize(8);
-        pdf.textColor = "#94a3b8";
-        pdf.text("Documento oficial gerado digitalmente pela Plataforma de Indicadores. Confidencial.", 15, 285);
-        pdf.text("Página 1 de 2", 180, 285);
-
-        // ===================================================
-        // DESIGN DA PÁGINA 2: MAPEAMENTO DE HISTÓRICO DE CLIENTES
-        // ===================================================
-        pdf.addPage();
-        
-        pdf.setFillColor(30, 58, 138);
-        pdf.rect(0, 0, 8, 297, 'F');
-
-        pdf.setFont("Helvetica", "bold");
-        pdf.setFontSize(13);
-        pdf.textColor = "#1e3a8a";
-        pdf.text("3. Distribuição Organizacional e Rastreabilidade de Clientes", 15, 25);
-
-        pdf.setFont("Helvetica", "normal");
-        pdf.setFontSize(9.5);
-        pdf.textColor = "#475569";
-        pdf.text("Mapeamento dos clientes ativos cadastrados, identificando as respectivas alocações setoriais atuais.", 15, 32);
-
-        // Cabeçalho da Tabela de Clientes
-        pdf.setFillColor(30, 58, 138); 
-        pdf.rect(15, 42, 185, 9, 'F');
-        pdf.setFont("Helvetica", "bold");
-        pdf.setFontSize(9);
-        pdf.textColor = "#ffffff";
-        pdf.text("Cliente / Usuário", 18, 48);
-        pdf.text("Setor Alocado", 95, 48);
-        pdf.text("Unidade Organizacional", 150, 48);
-
-        const listaClientes = JSON.parse(localStorage.getItem('cadastroClientesDB')) || [];
-        
-        let yTabela3 = 49;
-        pdf.setDrawColor(226, 232, 240);
-        
-        if (listaClientes.length === 0) {
-            yTabela3 += 10;
-            pdf.setFont("Helvetica", "italic");
-            pdf.textColor = "#94a3b8";
-            pdf.text("Nenhum histórico de alocação de clientes registrado na base local.", 18, yTabela3);
-        } else {
-            pdf.setFont("Helvetica", "normal");
-            const clientesParaExibir = listaClientes.slice(0, 25);
-            
-            clientesParaExibir.forEach((cliente, i) => {
-                yTabela3 += 8;
-                if (i % 2 === 0) {
-                    pdf.setFillColor(248, 250, 252);
-                    pdf.rect(15, yTabela3 - 5, 185, 8, 'F');
-                }
-                
-                pdf.textColor = "#1e293b";
-                pdf.setFont("Helvetica", "bold");
-                pdf.text(cliente.nome.length > 35 ? cliente.nome.substring(0, 32) + "..." : cliente.nome, 18, yTabela3);
-                
-                pdf.textColor = "#475569";
-                pdf.setFont("Helvetica", "normal");
-                pdf.text(cliente.setorAtual, 95, yTabela3);
-                pdf.text(cliente.unidade, 150, yTabela3);
-                
-                pdf.line(15, yTabela3 + 3, 200, yTabela3 + 3);
-            });
-            
-            if (listaClientes.length > 25) {
-                yTabela3 += 10;
-                pdf.setFont("Helvetica", "italic");
-                pdf.textColor = "#64748b";
-                pdf.text(`* Nota: Mais ${listaClientes.length - 25} clientes cadastrados na base. Para auditoria completa, consulte o painel.`, 15, yTabela3);
-            }
-        }
-
-        // Rodapé da Página 2
-        pdf.setFontSize(8);
-        pdf.textColor = "#94a3b8";
-        pdf.text("Fim do relatório de performance operacional de atendimento.", 15, 285);
-        pdf.text("Página 2 de 2", 180, 285);
-
-        const fInicioStr = valInicio !== "Não informada" ? valInicio.replace(/-/g, '') : 'Abertura';
-        pdf.save(`Relatorio_Estrategico_Performance_${fInicioStr}.pdf`);
-
-        botaoExportar.innerHTML = textoOriginal;
-        botaoExportar.disabled = false;
-
-    } catch (erro) {
-        console.error("Erro na geração do PDF consolidado:", erro);
-        alert("Não foi possível gerar o PDF formatado.");
-        botaoExportar.innerHTML = textoOriginal;
-        botaoExportar.disabled = false;
-    }
-};

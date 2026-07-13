@@ -7,7 +7,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
     // Defina aqui um usuário e senha provisórios para teste
     const usuarioCorreto = "admin";
-    const senhaCorreta = "1234";
+    const senhaCorreta = "85951005";
 
     if (userIn === usuarioCorreto && passIn === senhaCorreta) {
         errorMsg.style.display = 'none';

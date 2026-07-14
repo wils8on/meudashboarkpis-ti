@@ -3,39 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Plataforma de Indicadores</title>
-    <link rel="stylesheet" href="css/style.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Login - KPI Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+        .login-card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .brand-title {
+            color: #1e3a8a;
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .brand-subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 35px;
+            line-height: 1.5;
+        }
+        .btn-google {
+            width: 100%;
+            padding: 14px;
+            background: #ffffff;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+        .btn-google:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+        .error-message {
+            color: #ef4444;
+            margin-top: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            background: #fef2f2;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #fca5a5;
+        }
+    </style>
 </head>
-<body style="background: #0f172a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Segoe UI', sans-serif;">
+<body>
 
-    <div class="login-box" style="text-align: center; padding: 40px; background: #1e293b; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); width: 100%; max-width: 400px;">
-        <h2 style="color: #ffffff; margin-bottom: 10px;">Acesso ao Painel</h2>
-        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 30px;">Utilize sua conta corporativa Google para entrar</p>
+    <div class="login-card">
+        <div class="brand-title">
+            <i class="fa-solid fa-chart-line"></i> KPI Analytics
+        </div>
+        <div class="brand-subtitle">
+            Conecte sua conta do Google para acessar o painel com segurança.
+        </div>
         
-        <button id="btnGoogleLogin" style="width: 100%; padding: 14px; background: #ffffff; color: #1e293b; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.2s;">
+        <button id="btnGoogleLogin" class="btn-google">
             <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/web-24dp/logo_googleg_color_24dp.png" alt="Google" style="width: 20px;">
-            Entrar com o Google
+            Acessar com o Google
         </button>
         
-        <div id="msgErroLogin" style="color: #ef4444; margin-top: 20px; font-size: 13px; font-weight: 500; display: none; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.2);"></div>
+        <div id="msgErroLogin" class="error-message"></div>
     </div>
 
+    <!-- SCRIPT DE AUTENTICAÇÃO DO FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ⚠️ SUBSTITUA COM AS SUAS CREDENCIAIS DO PASSO 2:
+        // ⚠️ COLE AQUI AS SUAS CREDENCIAIS DO FIREBASE (Configurações do Projeto):
         const firebaseConfig = {
-            apiKey: "AIzaSyCPuIhfgOQ3xbZTyqF8geD4f_7ewagWgH8",
-            authDomain: "dasboard-kpis.firebaseapp.com",
-            projectId: "dasboard-kpis",
-            storageBucket: "dasboard-kpis.firebasestorage.app",
-            messagingSenderId: "410198778836",
-            appId: "1:410198778836:web:4c27dfc67d5c61f283ec41"
+            apiKey: "SUA_API_KEY",
+            authDomain: "SEU_AUTH_DOMAIN",
+            projectId: "SEU_PROJECT_ID",
+            storageBucket: "SEU_STORAGE_BUCKET",
+            messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+            appId: "SEU_APP_ID"
         };
 
-        // Inicializa o ecossistema Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -49,25 +121,24 @@
                 .then(async (result) => {
                     const user = result.user;
                     
-                    // Valida de forma segura se o e-mail está na lista "permitido" do Firestore
+                    // Verifica na nuvem se esse e-mail específico está na coleção do Firestore
                     const userDoc = await getDoc(doc(db, "usuarios_autorizados", user.email.toLowerCase()));
                     
                     if (userDoc.exists() && userDoc.data().status === "permitido") {
-                        // Credenciais locais compatíveis com a trava de segurança do seu dashboard.js
+                        // Mantém a compatibilidade total com a trava atual do seu dashboard.js
                         localStorage.setItem('logado', 'true');
                         localStorage.setItem('user_email', user.email);
                         localStorage.setItem('user_nome', user.displayName);
                         
-                        // Direciona para o painel de forma transparente
                         window.location.href = 'dashboard.html';
                     } else {
                         errorDiv.textContent = "Acesso negado. Este e-mail não está autorizado no sistema.";
                         errorDiv.style.display = 'block';
-                        signOut(auth); // Desconecta imediatamente
+                        signOut(auth);
                     }
                 })
                 .catch((error) => {
-                    errorDiv.textContent = "Falha na autenticação com o Google ou timeout de rede.";
+                    errorDiv.textContent = "Erro na autenticação. Verifique sua conexão ou tente novamente.";
                     errorDiv.style.display = 'block';
                     console.error(error);
                 });

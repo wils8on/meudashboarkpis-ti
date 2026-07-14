@@ -6,48 +6,107 @@
     <title>Login - KPI Analytics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
+            --accent-neon: #38bdf8; /* Azul Cyberpunk */
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
         body {
-            background-color: #f1f5f9;
+            background: var(--bg-gradient);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            overflow: hidden;
+            position: relative;
         }
+
+        /* Fundo de Linhas Digitais / Grid de Dados */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image: 
+                linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: rotate(15deg);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Card de Login em Glassmorphism */
         .login-card {
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 50px 40px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             text-align: center;
             box-sizing: border-box;
+            z-index: 2;
+            position: relative;
+            transition: border-color 0.3s ease;
         }
+
+        .login-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 16px;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+            pointer-events: none;
+        }
+
+        /* Marca / Título */
         .brand-title {
-            color: #1e3a8a;
-            font-size: 24px;
-            font-weight: 700;
+            color: var(--text-main);
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 8px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
+
+        .brand-title i {
+            color: var(--accent-neon);
+            filter: drop-shadow(0 0 8px var(--accent-glow));
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+
         .brand-subtitle {
-            color: #64748b;
-            font-size: 14px;
-            margin-bottom: 35px;
-            line-height: 1.5;
+            color: var(--text-muted);
+            font-size: 13.5px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            font-weight: 400;
         }
+
+        /* Botão Google Futurista */
         .btn-google {
             width: 100%;
-            padding: 14px;
-            background: #ffffff;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -55,22 +114,62 @@
             justify-content: center;
             gap: 12px;
             font-size: 15px;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
+
+        .btn-google img {
+            width: 20px;
+            filter: grayscale(20%);
+            transition: filter 0.3s ease;
+        }
+
         .btn-google:hover {
-            background: #f8fafc;
-            border-color: #94a3b8;
+            background: rgba(56, 189, 248, 0.08);
+            border-color: var(--accent-neon);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+            color: #ffffff;
         }
+
+        .btn-google:hover img {
+            filter: grayscale(0%);
+        }
+
+        /* Efeito de carregamento / linha de escaneamento sutil */
+        .btn-google::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-google:hover::before {
+            left: 150%;
+            transition: 0.8s ease-in-out;
+        }
+
+        /* Caixa de Erro Minimalista */
         .error-message {
-            color: #ef4444;
-            margin-top: 20px;
+            color: #fda4af;
+            margin-top: 25px;
             font-size: 13px;
             font-weight: 500;
             display: none;
-            background: #fef2f2;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #fca5a5;
+            background: rgba(244, 63, 94, 0.1);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(244, 63, 94, 0.2);
+            line-height: 1.4;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Animações */
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.2)); }
+            50% { filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.6)); }
         }
     </style>
 </head>
@@ -78,15 +177,16 @@
 
     <div class="login-card">
         <div class="brand-title">
-            <i class="fa-solid fa-chart-line"></i> KPI Analytics
+            <i class="fa-solid fa-chart-network"></i> KPI ANALYTICS
         </div>
         <div class="brand-subtitle">
-            Conecte sua conta do Google para acessar o painel com segurança.
+            INITIALIZING SECURE PROTOCOL<br>
+            Autentique sua conta ID Google para descriptografar os dados.
         </div>
         
         <button id="btnGoogleLogin" class="btn-google">
-            <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/web-24dp/logo_googleg_color_24dp.png" alt="Google" style="width: 20px;">
-            Acessar com o Google
+            <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/web-24dp/logo_googleg_color_24dp.png" alt="Google">
+            Conectar ID Operacional
         </button>
         
         <div id="msgErroLogin" class="error-message"></div>
@@ -111,21 +211,18 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        // Gatilho do botão: inicia o fluxo de redirecionamento para o Google
         document.getElementById('btnGoogleLogin').addEventListener('click', () => {
             const errorDiv = document.getElementById('msgErroLogin');
             errorDiv.style.display = 'none';
             signInWithRedirect(auth, provider);
         });
 
-        // Executado automaticamente ao carregar a página para checar o retorno do Google
         getRedirectResult(auth)
             .then(async (result) => {
                 if (result && result.user) {
                     const user = result.user;
                     const errorDiv = document.getElementById('msgErroLogin');
                     
-                    // Valida autorização no banco Firestore
                     const userDoc = await getDoc(doc(db, "usuarios_autorizados", user.email.toLowerCase()));
                     
                     if (userDoc.exists() && userDoc.data().status === "permitido") {
@@ -135,7 +232,7 @@
                         
                         window.location.href = 'dashboard.html';
                     } else {
-                        errorDiv.textContent = "Acesso negado. Este e-mail não está autorizado no sistema.";
+                        errorDiv.textContent = "Acesso negado. ID operacional não catalogado no Firestore.";
                         errorDiv.style.display = 'block';
                         signOut(auth);
                     }
@@ -143,7 +240,7 @@
             })
             .catch((error) => {
                 const errorDiv = document.getElementById('msgErroLogin');
-                errorDiv.textContent = "Erro na conexão com o Google. Certifique-se de que o domínio está autorizado.";
+                errorDiv.textContent = "Falha no link de dados. Verifique a autorização de domínio no Firebase.";
                 errorDiv.style.display = 'block';
                 console.error(error);
             });

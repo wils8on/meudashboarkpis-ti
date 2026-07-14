@@ -3,33 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de KPIs</title>
+    <title>KPI Analytics - Painel Operacional</title>
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="cyber-grid">
 
     <div class="wrapper">
-        <!-- MENU LATERAL -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h3><i class="fa-solid fa-chart-pie"></i> KPI Panel</h3>
+                <h3><i class="fa-solid fa-chart-network glow-icon"></i> KPI Panel</h3>
+                <span class="system-badge">SECURE PROTOCOL</span>
             </div>
 
             <div class="theme-toggle-container">
                 <button onclick="window.alternarModoTema()" class="btn-theme-toggle">
-                    <i class="fa-solid fa-moon"></i> Alternar Tema
+                    <i class="fa-solid fa-circle-half-stroke"></i> Alternar Modo
                 </button>
             </div>
 
             <div class="sidebar-filters">
                 <p class="filter-title">FILTRAR PERÍODO</p>
                 <div class="filter-group">
-                    <label>Data Inicial:</label>
+                    <label><i class="fa-solid fa-calendar-plus"></i> Data Inicial:</label>
                     <input type="date" id="filtroDataInicio">
                 </div>
                 <div class="filter-group">
-                    <label>Data Final:</label>
+                    <label><i class="fa-solid fa-calendar-minus"></i> Data Final:</label>
                     <input type="date" id="filtroDataFim">
                 </div>
             </div>
@@ -37,22 +37,22 @@
             <ul class="nav-links">
                 <li>
                     <a href="#" class="nav-item active" data-target="visao-geral">
-                        <i class="fa-solid fa-house"></i> <span>Visão Geral</span>
+                        <i class="fa-solid fa-square-poll-vertical"></i> <span>Visão Geral</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" class="nav-item" data-target="kpis-performance">
-                        <i class="fa-solid fa-gauge-high"></i> <span>Performance e SLA</span>
+                        <i class="fa-solid fa-bolt"></i> <span>Performance e SLA</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" class="nav-item" data-target="aba-backlog">
-                        <i class="fa-solid fa-boxes-stacked"></i> <span>Backlog Mensal</span>
+                        <i class="fa-solid fa-layer-group"></i> <span>Backlog Mensal</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" class="nav-item" data-target="aba-usuarios">
-                        <i class="fa-solid fa-users-gear"></i> <span>Gerenciar Clientes</span>
+                        <i class="fa-solid fa-user-gear"></i> <span>Gerenciar Clientes</span>
                     </a>
                 </li>
                 <li>
@@ -63,174 +63,223 @@
             </ul>
 
             <div class="sidebar-footer">
-                <button id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+                <button id="btnLogout" class="btn-logout-cyber"><i class="fa-solid fa-power-off"></i> Desconectar</button>
             </div>
         </nav>
 
-        <!-- CONTEÚDO PRINCIPAL -->
         <main class="main-content">
             <header class="top-bar">
-                <h2>Plataforma de Indicadores</h2>
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <button onclick="window.exportarRelatorioPDF()" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-file-pdf"></i> Exportar Relatório PDF
+                <div class="page-title-box">
+                    <h2>Terminal de Operações</h2>
+                    <span class="live-indicator"><span class="dot"></span> SISTEMA SÍNCRONO</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <button onclick="window.exportarRelatorioPDF()" class="btn-export-pdf">
+                        <i class="fa-solid fa-file-invoice"></i> Exportar Relatório PDF
                     </button>
                     <div class="user-profile">
-                        <span>Olá, <strong>Admin</strong></span>
+                        <div class="user-avatar-container">
+                            <img id="userAvatar" src="https://lh3.googleusercontent.com/a/default-user=s80-p" alt="Avatar" class="avatar-glow">
+                        </div>
+                        <div class="user-info-text">
+                            <span class="user-welcome">Olá,</span>
+                            <span class="user-name" id="profileName">Operador</span>
+                        </div>
                     </div>
                 </div>
             </header>
 
             <div class="content-body">
                 
-                <!-- 1. VISÃO GERAL -->
                 <section id="visao-geral" class="tab-content active">
                     <div class="upload-section">
-                        <label for="excelFile" class="upload-box">
-                            <i class="fa-solid fa-file-excel"></i>
-                            <span>Clique ou arraste o arquivo Excel (.xlsx) aqui para atualizar os dados</span>
+                        <label for="excelFile" class="upload-box-cyber">
+                            <div class="upload-glow-border"></div>
+                            <i class="fa-solid fa-arrow-up-from-arc upload-icon"></i>
+                            <span class="upload-title">Clique ou arraste o arquivo Excel (.xlsx)</span>
+                            <span class="upload-subtitle">Para descriptografar e atualizar os indicadores</span>
                             <input type="file" id="excelFile" accept=".xlsx, .xls" style="display: none;">
                         </label>
-                        <div id="uploadStatus" class="upload-status">Nenhum arquivo carregado (Aguardando base de dados)</div>
+                        <div id="uploadStatus" class="upload-status-cyber"><i class="fa-solid fa-triangle-exclamation"></i> Aguardando conexão com banco de dados (.xlsx)</div>
                     </div>
 
-                    <h3>Métricas Consolidadas</h3>
+                    <h3 class="section-title"><i class="fa-solid fa-satellite-dish"></i> Métricas Consolidadas</h3>
                     <div class="kpi-grid">
-                        <div class="kpi-card azul">
-                            <div class="kpi-info"><p>Chamados no Período</p><h3 id="kpiTotal">0</h3></div>
-                            <i class="fa-solid fa-ticket icon"></i>
+                        <div class="kpi-card-cyber blue">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Chamados no Período</span>
+                                <i class="fa-solid fa-ticket-simple"></i>
+                            </div>
+                            <h3 id="kpiTotal" class="kpi-value">0</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
-                        <div class="kpi-card verde">
-                            <div class="kpi-info"><p>% Finalizados</p><h3 id="kpiFinalizados">0,00%</h3></div>
-                            <i class="fa-solid fa-circle-check icon"></i>
+                        <div class="kpi-card-cyber green">
+                            <div class="kpi-header">
+                                <span class="kpi-title">% Finalizados</span>
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <h3 id="kpiFinalizados" class="kpi-value">0,00%</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
-                        <div class="kpi-card laranja">
-                            <div class="kpi-info"><p>% Demandas Atuais</p><h3 id="kpiDemandasAtuais">0,00%</h3></div>
-                            <i class="fa-solid fa-folder-open icon"></i>
+                        <div class="kpi-card-cyber orange">
+                            <div class="kpi-header">
+                                <span class="kpi-title">% Demandas Atuais</span>
+                                <i class="fa-solid fa-chart-line-up"></i>
+                            </div>
+                            <h3 id="kpiDemandasAtuais" class="kpi-value">0,00%</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
-                        <div class="kpi-card comparativo">
-                            <div class="kpi-info"><p>vs Ano Anterior</p><h3 id="kpiCrescimento">0,00%</h3></div>
-                            <i class="fa-solid fa-scale-balanced icon"></i>
+                        <div class="kpi-card-cyber cyan">
+                            <div class="kpi-header">
+                                <span class="kpi-title">vs Ano Anterior</span>
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <h3 id="kpiCrescimento" class="kpi-value">0,00%</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
                     </div>
 
-                    <div class="chart-container">
+                    <div class="chart-container-cyber">
                         <canvas id="graficoGeral"></canvas>
                     </div>
                 </section>
 
-                <!-- 2. PERFORMANCE E SLA -->
                 <section id="kpis-performance" class="tab-content">
-                    <h3>Análise de Performance Operacional e SLA</h3>
+                    <h3 class="section-title"><i class="fa-solid fa-gauge-high"></i> Performance e Controle de SLA</h3>
                     <div class="kpi-grid" style="margin-bottom: 30px;">
-                        <div class="kpi-card verde">
-                            <div class="kpi-info"><p>Finalizados no Mês de Abertura</p><h3 id="perfCard1">0,00%</h3></div>
-                            <i class="fa-solid fa-calendar-check icon"></i>
+                        <div class="kpi-card-cyber green">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Finalizados no Mês de Abertura</span>
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                            <h3 id="perfCard1" class="kpi-value">0,00%</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
-                        <div class="kpi-card azul">
-                            <div class="kpi-info"><p>Cumprimento de SLA (Deadline)</p><h3 id="perfCard2">0,00%</h3></div>
-                            <i class="fa-solid fa-clock-check icon"></i>
+                        <div class="kpi-card-cyber blue">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Cumprimento de SLA</span>
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <h3 id="perfCard2" class="kpi-value">0,00%</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
-                        <div class="kpi-card laranja">
-                            <div class="kpi-info"><p>Finalizados em Meses Posteriores</p><h3 id="perfCard3">0,00%</h3></div>
-                            <i class="fa-solid fa-calendar-minus icon"></i>
+                        <div class="kpi-card-cyber orange">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Finalizados Posteriores</span>
+                                <i class="fa-solid fa-calendar-minus"></i>
+                            </div>
+                            <h3 id="perfCard3" class="kpi-value">0,00%</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
-                        <div class="kpi-card roxo">
-                            <div class="kpi-info"><p>Mês de Maior Eficiência</p><h3 id="perfCard4">Nenhum</h3></div>
-                            <i class="fa-solid fa-award icon"></i>
+                        <div class="kpi-card-cyber purple">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Mês de Maior Eficiência</span>
+                                <i class="fa-solid fa-award"></i>
+                            </div>
+                            <h3 id="perfCard4" class="kpi-value">Nenhum</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
                     </div>
 
                     <div class="charts-split-grid">
-                        <div class="chart-container">
+                        <div class="chart-container-cyber">
                             <h4><i class="fa-solid fa-chart-line"></i> Taxa de Resolução Mensal (%)</h4>
                             <canvas id="graficoLinhaResolucao"></canvas>
                         </div>
-                        <div class="chart-container">
-                            <h4><i class="fa-solid fa-chart-bar"></i> Índice de Cumprimento de SLA por Mês</h4>
+                        <div class="chart-container-cyber">
+                            <h4><i class="fa-solid fa-chart-bar"></i> Índice de Cumprimento de SLA</h4>
                             <canvas id="graficoSlaMensal"></canvas>
                         </div>
                     </div>
                 </section>
 
-                <!-- 3. BACKLOG MENSAL -->
                 <section id="aba-backlog" class="tab-content">
-                    <div class="info-alert-box">
-                        <h4><i class="fa-solid fa-circle-info"></i> O que é o Backlog?</h4>
-                        <p>Backlog representa a quantidade de chamados que ainda não foram finalizados, ou seja, demandas pendentes que estão em atendimento ou aguardando resolução. Esse indicador ajuda a medir o volume de trabalho acumulado e o nível de controle da operação.</p>
+                    <div class="info-alert-box-cyber">
+                        <h4><i class="fa-solid fa-shield-halved"></i> Monitoramento de Backlog</h4>
+                        <p>O backlog representa a quantidade de chamados acumulados pendentes de finalização. Esse indicador avalia o nível de retenção de tarefas e a capacidade operacional da equipe em regime síncrono.</p>
                     </div>
 
-                    <div class="kpi-grid" style="margin-bottom: 20px;">
-                        <div class="kpi-card azul-header">
-                            <div class="kpi-info"><p>Total Acumulado (Período + Herdado)</p><div id="backlogCardTotal" class="kpi-val-grandes">0</div></div>
+                    <div class="kpi-grid" style="margin-bottom: 25px;">
+                        <div class="kpi-card-cyber blue">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Total Acumulado (Herdado + Período)</span>
+                            </div>
+                            <h3 id="backlogCardTotal" class="kpi-value">0</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
-                        <div class="kpi-card verde-header">
-                            <div class="kpi-info"><p>Finalizados do Backlog</p><div id="backlogCardFechados" class="kpi-val-grandes">0 (0,00%)</div></div>
+                        <div class="kpi-card-cyber green">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Finalizados do Backlog</span>
+                            </div>
+                            <h3 id="backlogCardFechados" class="kpi-value">0 (0,00%)</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
-                        <div class="kpi-card laranja-header">
-                            <div class="kpi-info"><p>Demandas Atuais do Backlog</p><div id="backlogCardDemandasAtuais" class="kpi-val-grandes">0 (0,00%)</div></div>
+                        <div class="kpi-card-cyber orange">
+                            <div class="kpi-header">
+                                <span class="kpi-title">Demandas Atuais do Backlog</span>
+                            </div>
+                            <h3 id="backlogCardDemandasAtuais" class="kpi-value">0 (0,00%)</h3>
+                            <div class="kpi-status-bar"></div>
                         </div>
                     </div>
 
                     <div class="charts-split-grid">
-                        <div class="chart-container">
-                            <h4>Evolução de Conclusão do Backlog por Mês</h4>
+                        <div class="chart-container-cyber">
+                            <h4>Evolução de Conclusão do Backlog</h4>
                             <canvas id="graficoBacklogEvolucao"></canvas>
                         </div>
-                        <div class="chart-container">
-                            <h4>Distribuição Volumétrica do Backlog Atual</h4>
+                        <div class="chart-container-cyber">
+                            <h4>Distribuição Volumétrica do Backlog</h4>
                             <canvas id="graficoBacklogDistribuicao"></canvas>
                         </div>
                     </div>
                 </section>
 
-                <!-- 4. GERENCIAR CLIENTES / USUÁRIOS -->
                 <section id="aba-usuarios" class="tab-content">
-                    <h3>Cadastro e Gestão Organizacional de Clientes</h3>
-                    <p class="section-desc">Os nomes abaixo são importados automaticamente da coluna Cliente do Excel. Aqui você pode configurar e rastrear o histórico de alocações.</p>
+                    <h3 class="section-title"><i class="fa-solid fa-users-gear"></i> Alocação Organizacional de Clientes</h3>
+                    <p class="section-desc">Mapeamento dinâmico baseado nos registros descriptografados da planilha ativa.</p>
                     
                     <div class="users-management-layout">
-                        <div class="editor-form-box">
-                            <h4><i class="fa-solid fa-user-pen"></i> Configurar Vínculo</h4>
+                        <div class="editor-form-box-cyber">
+                            <h4><i class="fa-solid fa-user-pen"></i> Ajustar Parâmetros</h4>
                             <form id="formEditarUsuario">
                                 <input type="hidden" id="editUserIndex">
                                 
-                                <div class="form-item">
-                                    <label>Nome do Cliente:</label>
+                                <div class="form-item-cyber">
+                                    <label>Identificação do Cliente:</label>
                                     <input type="text" id="editUserNome" readonly class="input-readonly">
                                 </div>
                                 
-                                <div class="form-item">
+                                <div class="form-item-cyber">
                                     <label>Setor Atual:</label>
-                                    <input type="text" id="editUserSetor" placeholder="Ex: TI, Financeiro, Comercial">
+                                    <input type="text" id="editUserSetor" placeholder="Diretoria, RH, Vendas...">
                                 </div>
                                 
-                                <div class="form-item">
-                                    <label>Unidade / Localidade Atual:</label>
-                                    <input type="text" id="editUserUnidade" placeholder="Ex: Matriz, Filial Salvador, Filial SP">
+                                <div class="form-item-cyber">
+                                    <label>Unidade / Localidade:</label>
+                                    <input type="text" id="editUserUnidade" placeholder="Matriz, Regional Sul...">
                                 </div>
 
-                                <div class="date-picker-box">
-                                    <p class="date-picker-title"><i class="fa-solid fa-calendar-day"></i> Data da Efetivação da Mudança</p>
+                                <div class="date-picker-box-cyber">
+                                    <p class="date-picker-title"><i class="fa-solid fa-hourglass-half"></i> Data de Efetivação</p>
                                     <input type="date" id="editUserDataMudanca">
-                                    <span class="date-picker-hint">Informe quando a transição de setor ou filial ocorreu de fato.</span>
                                 </div>
 
-                                <button type="submit" class="btn-submit-form">
-                                    <i class="fa-solid fa-floppy-disk"></i> Atualizar e Salvar Histórico
+                                <button type="submit" class="btn-submit-form-cyber">
+                                    <i class="fa-solid fa-fingerprint"></i> Atualizar e Gravar Registro
                                 </button>
                             </form>
 
-                            <div class="history-timeline-box">
-                                <h5><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Alterações de Setor</h5>
+                            <div class="history-timeline-box-cyber">
+                                <h5><i class="fa-solid fa-clock-rotate-left"></i> Rastreabilidade Histórica</h5>
                                 <ul id="listaHistoricoSetores">
                                     <li class="history-empty">Selecione um cliente para auditar o histórico.</li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div class="table-wrapper-box">
-                            <div class="table-header-title">Clientes Cadastrados no Sistema</div>
+                        <div class="table-wrapper-box-cyber">
+                            <div class="table-header-title">Terminais Registrados no Sistema</div>
                             <div class="table-scroll-container">
                                 <table class="data-table">
                                     <thead>
@@ -243,7 +292,9 @@
                                     </thead>
                                     <tbody id="tabelaUsuariosCorpo">
                                         <tr>
-                                            <td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px;">Nenhum cliente carregado. Suba uma planilha na aba Visão Geral para popular a base.</td>
+                                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                                Nenhum cliente carregado. Importe a base de dados para iniciar o mapeamento.
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -252,10 +303,12 @@
                     </div>
                 </section>
 
-                <!-- 5. SUPORTE -->
                 <section id="kpis-suporte" class="tab-content">
-                    <h3>Métricas de Atendimento</h3>
-                    <p>Espaço reservado para detalhes analíticos de Helpdesk.</p>
+                    <h3 class="section-title"><i class="fa-solid fa-headset"></i> Métricas de Atendimento</h3>
+                    <div class="info-alert-box-cyber">
+                        <h4>Módulo em Desenvolvimento</h4>
+                        <p>Este terminal está reservado para futuras análises estatísticas de helpdesk, tempos de resposta médio (TMR) e índices de satisfação.</p>
+                    </div>
                 </section>
 
             </div>
@@ -263,13 +316,27 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-    
     <script src="js/dashboard.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userNome = localStorage.getItem('user_nome');
+            const userEmail = localStorage.getItem('user_email');
+            
+            // Tenta obter uma foto gerada pelo Google se disponível, caso contrário mantém o padrão
+            if (userNome) {
+                document.getElementById('profileName').textContent = userNome;
+            }
+            if (userEmail) {
+                // Opcional: Gerar uma inicial estilizada futurista caso a imagem não carregue
+                const googleAvatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(userNome || 'Op')}&background=0f172a&color=38bdf8&bold=true&size=128`;
+                document.getElementById('userAvatar').src = googleAvatarUrl;
+            }
+        });
+    </script>
 </body>
 </html>

@@ -8,7 +8,7 @@
     <style>
         :root {
             --bg-gradient: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
-            --accent-neon: #38bdf8; /* Azul Cyberpunk */
+            --accent-neon: #38bdf8;
             --accent-glow: rgba(56, 189, 248, 0.15);
             --glass-bg: rgba(15, 23, 42, 0.6);
             --glass-border: rgba(255, 255, 255, 0.05);
@@ -28,7 +28,6 @@
             position: relative;
         }
 
-        /* Fundo de Linhas Digitais / Grid de Dados */
         body::before {
             content: '';
             position: absolute;
@@ -45,7 +44,6 @@
             pointer-events: none;
         }
 
-        /* Card de Login em Glassmorphism */
         .login-card {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
@@ -60,19 +58,8 @@
             box-sizing: border-box;
             z-index: 2;
             position: relative;
-            transition: border-color 0.3s ease;
         }
 
-        .login-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 16px;
-            box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
-            pointer-events: none;
-        }
-
-        /* Marca / Título */
         .brand-title {
             color: var(--text-main);
             font-size: 26px;
@@ -88,7 +75,6 @@
         .brand-title i {
             color: var(--accent-neon);
             filter: drop-shadow(0 0 8px var(--accent-glow));
-            animation: pulseGlow 3s infinite ease-in-out;
         }
 
         .brand-subtitle {
@@ -96,10 +82,8 @@
             font-size: 13.5px;
             margin-bottom: 40px;
             line-height: 1.6;
-            font-weight: 400;
         }
 
-        /* Botão Google Futurista */
         .btn-google {
             width: 100%;
             padding: 15px;
@@ -114,44 +98,19 @@
             justify-content: center;
             gap: 12px;
             font-size: 15px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         .btn-google img {
             width: 20px;
-            filter: grayscale(20%);
-            transition: filter 0.3s ease;
         }
 
         .btn-google:hover {
             background: rgba(56, 189, 248, 0.08);
             border-color: var(--accent-neon);
             box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-            color: #ffffff;
         }
 
-        .btn-google:hover img {
-            filter: grayscale(0%);
-        }
-
-        /* Efeito de carregamento / linha de escaneamento sutil */
-        .btn-google::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
-            transition: 0.5s;
-        }
-
-        .btn-google:hover::before {
-            left: 150%;
-            transition: 0.8s ease-in-out;
-        }
-
-        /* Caixa de Erro Minimalista */
         .error-message {
             color: #fda4af;
             margin-top: 25px;
@@ -163,13 +122,6 @@
             border-radius: 6px;
             border: 1px solid rgba(244, 63, 94, 0.2);
             line-height: 1.4;
-            backdrop-filter: blur(4px);
-        }
-
-        /* Animações */
-        @keyframes pulseGlow {
-            0%, 100% { filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.2)); }
-            50% { filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.6)); }
         }
     </style>
 </head>
@@ -177,7 +129,7 @@
 
     <div class="login-card">
         <div class="brand-title">
-            <i class="fa-solid fa-chart-network"></i> KPI ANALYTICS
+            <i class="fa-solid fa-chart-simple"></i> KPI ANALYTICS
         </div>
         <div class="brand-subtitle">
             INITIALIZING SECURE PROTOCOL<br>
@@ -194,7 +146,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -214,15 +166,13 @@
         document.getElementById('btnGoogleLogin').addEventListener('click', () => {
             const errorDiv = document.getElementById('msgErroLogin');
             errorDiv.style.display = 'none';
-            signInWithRedirect(auth, provider);
-        });
 
-        getRedirectResult(auth)
-            .then(async (result) => {
-                if (result && result.user) {
+            // Usamos Janela Pop-up para evitar bloqueios de cookies do GitHub Pages
+            signInWithPopup(auth, provider)
+                .then(async (result) => {
                     const user = result.user;
-                    const errorDiv = document.getElementById('msgErroLogin');
                     
+                    // Consulta no banco Firestore se este e-mail está autorizado
                     const userDoc = await getDoc(doc(db, "usuarios_autorizados", user.email.toLowerCase()));
                     
                     if (userDoc.exists() && userDoc.data().status === "permitido") {
@@ -236,14 +186,21 @@
                         errorDiv.style.display = 'block';
                         signOut(auth);
                     }
-                }
-            })
-            .catch((error) => {
-                const errorDiv = document.getElementById('msgErroLogin');
-                errorDiv.textContent = "Falha no link de dados. Verifique a autorização de domínio no Firebase.";
-                errorDiv.style.display = 'block';
-                console.error(error);
-            });
+                })
+                .catch((error) => {
+                    errorDiv.style.display = 'block';
+                    console.error(error);
+                    
+                    // Autodiagnóstico inteligente de erros
+                    if (error.code === 'auth/unauthorized-domain') {
+                        errorDiv.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> <strong>Configuração pendente:</strong> Adicione o domínio <u>wils8on.github.io</u> na aba 'Authentication > Configurações > Domínios Autorizados' dentro do console do seu Firebase.`;
+                    } else if (error.code === 'auth/popup-blocked') {
+                        errorDiv.textContent = "O pop-up de login foi bloqueado pelo seu navegador. Por favor, permita pop-ups para este site.";
+                    } else {
+                        errorDiv.textContent = "Falha no link de dados: " + error.message;
+                    }
+                });
+        });
     </script>
 </body>
 </html>

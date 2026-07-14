@@ -92,13 +92,11 @@
         <div id="msgErroLogin" class="error-message"></div>
     </div>
 
-    <!-- SCRIPT DE AUTENTICAÇÃO DO FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ⚠️ COLE AQUI AS SUAS CREDENCIAIS DO FIREBASE (Configurações do Projeto):
         const firebaseConfig = {
             apiKey: "AIzaSyCPuIhfgOQ3xbZTyqF8geD4f_7ewagWgH8",
             authDomain: "dasboard-kpis.firebaseapp.com",
@@ -113,19 +111,24 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
+        // Gatilho do botão: inicia o fluxo de redirecionamento para o Google
         document.getElementById('btnGoogleLogin').addEventListener('click', () => {
             const errorDiv = document.getElementById('msgErroLogin');
             errorDiv.style.display = 'none';
+            signInWithRedirect(auth, provider);
+        });
 
-            signInWithPopup(auth, provider)
-                .then(async (result) => {
+        // Executado automaticamente ao carregar a página para checar o retorno do Google
+        getRedirectResult(auth)
+            .then(async (result) => {
+                if (result && result.user) {
                     const user = result.user;
+                    const errorDiv = document.getElementById('msgErroLogin');
                     
-                    // Verifica na nuvem se esse e-mail específico está na coleção do Firestore
+                    // Valida autorização no banco Firestore
                     const userDoc = await getDoc(doc(db, "usuarios_autorizados", user.email.toLowerCase()));
                     
                     if (userDoc.exists() && userDoc.data().status === "permitido") {
-                        // Mantém a compatibilidade total com a trava atual do seu dashboard.js
                         localStorage.setItem('logado', 'true');
                         localStorage.setItem('user_email', user.email);
                         localStorage.setItem('user_nome', user.displayName);
@@ -136,13 +139,14 @@
                         errorDiv.style.display = 'block';
                         signOut(auth);
                     }
-                })
-                .catch((error) => {
-                    errorDiv.textContent = "Erro na autenticação. Verifique sua conexão ou tente novamente.";
-                    errorDiv.style.display = 'block';
-                    console.error(error);
-                });
-        });
+                }
+            })
+            .catch((error) => {
+                const errorDiv = document.getElementById('msgErroLogin');
+                errorDiv.textContent = "Erro na conexão com o Google. Certifique-se de que o domínio está autorizado.";
+                errorDiv.style.display = 'block';
+                console.error(error);
+            });
     </script>
 </body>
 </html>

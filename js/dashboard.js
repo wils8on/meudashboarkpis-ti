@@ -33,9 +33,15 @@ window.alternarModoTema = function() {
     }
 };
 
+// Retorna cores baseadas no tema para manter o contraste
 function obterCorTextoPorTema() {
     const temaAtivo = document.documentElement.getAttribute('data-theme');
     return temaAtivo === 'dark' ? '#cbd5e1' : '#475569';
+}
+
+function obterCorGridPorTema() {
+    const temaAtivo = document.documentElement.getAttribute('data-theme');
+    return temaAtivo === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 }
 
 // ==========================================
@@ -74,7 +80,9 @@ let chartLinhaResolucao = null;
 let chartSlaMensal = null;
 let chartBacklogEvolucao = null;
 let chartBacklogDistribuicao = null;
-let chartAging = null; // Memória do novo gráfico de Aging
+let chartAging = null;
+let chartReabertosMes = null;
+let chartReabertosCliente = null;
 
 function inicializarGraficoGeral(labels = [], dadosTotal = [], dadosUrgentes = []) {
     const ctx = document.getElementById('graficoGeral');
@@ -266,7 +274,7 @@ function inicializarGraficosBacklog(labels = [], dadosEstoqueInicial = [], dados
     }
 }
 
-// NOVO GRÁFICO: DISTRIBUIÇÃO DE AGING POR FAIXA
+// DISTRIBUIÇÃO DE AGING POR FAIXA
 function inicializarGraficoAging(valoresBuckets = []) {
     const ctx = document.getElementById('graficoAging');
     if (!ctx) return;
@@ -282,7 +290,7 @@ function inicializarGraficoAging(valoresBuckets = []) {
             datasets: [{
                 label: 'Quantidade de Chamados',
                 data: valoresBuckets,
-                backgroundColor: '#7dd3fc', // Azul piscina suave como no print de referência
+                backgroundColor: '#7dd3fc',
                 borderRadius: 2,
                 barPercentage: 0.5
             }]
@@ -300,6 +308,483 @@ function inicializarGraficoAging(valoresBuckets = []) {
                     anchor: 'end',
                     align: 'top',
                     color: corTexto,
+                    font: { weight: 'bold', size: 11 },
+                    formatter: value => value > 0 ? value : '0'
+                }
+            }
+        }
+    });
+}
+
+// ALIMENTAÇÃO AJUSTADA: GRÁFICO DE REABERTURAS POR MÊS (LINHA)
+function inicializarGraficoReabertosMes(labels = [], dadosReabertos = []) {
+    const ctx = document.getElementById('graficoReabertosMes');
+    if (!ctx) return;
+    if (chartReabertosMes) chartReabertosMes.destroy();
+
+    const corTexto = obterCorTextoPorTema();
+    const corGrid = obterCorGridPorTema();
+
+    chartReabertosMes = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Chamados Reabertos',
+                data: dadosReabertos,
+                borderColor: '#f43f5e',
+                backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                pointBackgroundColor: '#f43f5e',
+                fill: true,
+                tension: 0.2,
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, grace: '15%', ticks: { color: corTexto }, grid: { color: corGrid } },
+                x: { ticks: { color: corTexto }, grid: { color: corGrid } }
+            },
+            plugins: {
+                legend: { labels: { color: corTexto } },
+                datalabels: {
+                    anchor: 'end', align: 'top', color: '#f43f5e',
+                    font: { weight: 'bold', size: 11 },
+                    formatter: value => value > 0 ? value : '0'
+                }
+            }
+        }
+    });
+}
+
+// ALIMENTAÇÃO AJUSTADA: GRÁFICO DE RANKING DE CLIENTES POR REABERTURA (BARRAS HORIZONTAIS)
+function inicializarGraficoReabertosCliente(labels = [], dadosClientes = []) {
+    const ctx = document.getElementById('graficoReabertosCliente');
+    if (!ctx) return;
+    if (chartReabertosCliente) chartReabertosCliente.destroy();
+
+    const corTexto = obterCorTextoPorTema();
+    const corGrid = obterCorGridPorTema();
+
+    chartReabertosCliente = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Reaberturas por Cliente**Sim, é exatamente no arquivo `js/dashboard.js`**.
+
+Entendido! Obrigado pelo esclarecimento. Ter uma coluna específica com dados normalizados ("Sim" / "Não") é excelente, pois torna o processamento de dados no JavaScript muito mais preciso, rápido e confiável do que procurar palavras-chave em colunas de texto livre.
+
+Eu fiz os ajustes necessários no seu **`js/dashboard.js`** para focar exclusivamente nessa coluna.
+
+### 🛠️ O que foi alterado:
+
+1.  **Lógica de Detecção:** O código agora procura exatamente pela coluna **`Reaberto`**. Ele converte o valor para texto e minúsculas, validando se o conteúdo é igual a **`sim`**.
+2.  **Motor Analítico:** Simplifiquei a parte do processamento estratégico. Ao ler cada linha da planilha, o sistema incrementa os contadores de reabertura (geral, mensal e por cliente) apenas se a condição da coluna `Reaberto` for verdadeira.
+
+Substitua todo o conteúdo do seu arquivo **`js/dashboard.js`** pelo código abaixo:
+
+```javascript
+// ==========================================
+// 1. GUARDA DE SEGURANÇA, LOGOUT & TEMA
+// ==========================================
+if (localStorage.getItem('logado') !== 'true') {
+    window.location.href = 'index.html';
+}
+
+const btnLogout = document.getElementById('btnLogout');
+if (btnLogout) {
+    btnLogout.addEventListener('click', function() {
+        localStorage.removeItem('logado');
+        window.location.href = 'index.html';
+    });
+}
+
+// Inicialização e gerenciamento do Tema (Claro/Escuro)
+document.addEventListener('DOMContentLoaded', () => {
+    const temaSalvo = localStorage.getItem('dashboard-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', temaSalvo);
+});
+
+// Função global para alternar o tema
+window.alternarModoTema = function() {
+    const temaAtual = document.documentElement.getAttribute('data-theme');
+    const novoTema = temaAtual === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', novoTema);
+    localStorage.setItem('dashboard-theme', novoTema);
+    
+    // Força o reprocessamento para redesenhar os eixos dos gráficos em tempo real
+    if (dadosPlanilhaGlobal.length > 0) {
+        processarIndicadoresEstrategicos();
+    }
+};
+
+// Retorna cores baseadas no tema para manter o contraste
+function obterCorTextoPorTema() {
+    const temaAtivo = document.documentElement.getAttribute('data-theme');
+    return temaAtivo === 'dark' ? '#cbd5e1' : '#475569';
+}
+
+function obterCorGridPorTema() {
+    const temaAtivo = document.documentElement.getAttribute('data-theme');
+    return temaAtivo === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+}
+
+// ==========================================
+// 2. SISTEMA DE NAVEGAÇÃO (MENU LATERAL)
+// ==========================================
+const menuItems = document.querySelectorAll('.nav-item');
+const tabs = document.querySelectorAll('.tab-content');
+
+menuItems.forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetSectionId = this.getAttribute('data-target');
+        const targetTarget = document.getElementById(targetSectionId);
+        
+        if (targetTarget) {
+            menuItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            targetTarget.classList.add('active');
+            
+            if (targetSectionId === 'aba-usuarios') {
+                renderizarTabelaUsuarios();
+            }
+        }
+    });
+});
+
+// ==========================================
+// 3. MEMÓRIA GLOBAL E INSTÂNCIAS DOS GRÁFICOS
+// ==========================================
+let dadosPlanilhaGlobal = [];
+let chartGeralReal = null;
+let chartLinhaResolucao = null;
+let chartSlaMensal = null;
+let chartBacklogEvolucao = null;
+let chartBacklogDistribuicao = null;
+let chartAging = null;
+let chartReabertosMes = null;
+let chartReabertosCliente = null;
+
+function inicializarGraficoGeral(labels = [], dadosTotal = [], dadosUrgentes = []) {
+    const ctx = document.getElementById('graficoGeral');
+    if (!ctx) return;
+    if (chartGeralReal) chartGeralReal.destroy();
+
+    const corTexto = obterCorTextoPorTema();
+
+    chartGeralReal = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: labels,
+            datasets: [
+                { label: 'Total de Chamados', data: dadosTotal, backgroundColor: '#3b82f6', borderRadius: 4 },
+                { label: 'Chamados Urgentes', data: dadosUrgentes, backgroundColor: '#ef4444', borderRadius: 4 }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { 
+                y: { beginAtZero: true, grace: '10%', ticks: { color: corTexto } },
+                x: { ticks: { color: corTexto } }
+            },
+            plugins: {
+                legend: { labels: { color: corTexto } },
+                datalabels: {
+                    anchor: 'end', align: 'top', color: corTexto,
+                    font: { weight: 'bold', size: 11 },
+                    formatter: value => value > 0 ? value : ''
+                }
+            }
+        }
+    });
+}
+
+function inicializarGraficosPerformance(labels = [], taxasResolucao = [], indicesSla = []) {
+    const ctxLinha = document.getElementById('graficoLinhaResolucao');
+    const ctxBarra = document.getElementById('graficoSlaMensal');
+    const corTexto = obterCorTextoPorTema();
+
+    if (ctxLinha) {
+        if (chartLinhaResolucao) chartLinhaResolucao.destroy();
+        chartLinhaResolucao = new Chart(ctxLinha.getContext('2d'), {
+            type: 'line',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Taxa de Eficiência Mensal (%)',
+                    data: taxasResolucao,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    fill: true,
+                    tension: 0.2,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { beginAtZero: true, max: 100, ticks: { color: corTexto } },
+                    x: { ticks: { color: corTexto } }
+                },
+                plugins: {
+                    legend: { labels: { color: corTexto } },
+                    datalabels: {
+                        anchor: 'end', align: 'top', color: '#10b981',
+                        font: { weight: 'bold', size: 11 },
+                        formatter: value => value > 0 ? `${value.toFixed(2).replace('.', ',')}%` : '0,00%'
+                    }
+                }
+            }
+        });
+    }
+
+    if (ctxBarra) {
+        if (chartSlaMensal) chartSlaMensal.destroy();
+        chartSlaMensal = new Chart(ctxBarra.getContext('2d'), {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '% SLA Cumprido no Mês',
+                    data: indicesSla,
+                    backgroundColor: '#8b5cf6',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { beginAtZero: true, max: 100, ticks: { color: corTexto } },
+                    x: { ticks: { color: corTexto } }
+                },
+                plugins: {
+                    legend: { labels: { color: corTexto } },
+                    datalabels: {
+                        anchor: 'end', align: 'top', color: '#8b5cf6',
+                        font: { weight: 'bold', size: 11 },
+                        formatter: value => value > 0 ? `${value.toFixed(2).replace('.', ',')}%` : '0,00%'
+                    }
+                }
+            }
+        });
+    }
+}
+
+function inicializarGraficosBacklog(labels = [], dadosEstoqueInicial = [], dadosFinalizadosNoMes = []) {
+    const ctxLinhaDist = document.getElementById('graficoBacklogDistribuicao');
+    const ctxBarraEvolucao = document.getElementById('graficoBacklogEvolucao');
+    const corTexto = obterCorTextoPorTema();
+
+    if (ctxLinhaDist) {
+        if (chartBacklogDistribuicao) chartBacklogDistribuicao.destroy();
+        chartBacklogDistribuicao = new Chart(ctxLinhaDist.getContext('2d'), {
+            type: 'line',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Distribuição de Backlog (Iniciado no Mês)',
+                    data: dadosEstoqueInicial,
+                    borderColor: '#7092be',
+                    backgroundColor: '#7092be',
+                    pointBackgroundColor: '#7092be',
+                    pointRadius: 6,
+                    fill: false,
+                    tension: 0.1,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { beginAtZero: true, grace: '15%', ticks: { color: corTexto } },
+                    x: { ticks: { color: corTexto } }
+                },
+                plugins: {
+                    legend: { labels: { color: corTexto } },
+                    datalabels: {
+                        anchor: 'center', align: 'center', color: 'white',
+                        font: { weight: 'bold', size: 10 },
+                        backgroundColor: '#7092be', borderRadius: 10, padding: 4,
+                        formatter: value => value
+                    }
+                }
+            }
+        });
+    }
+
+    if (ctxBarraEvolucao) {
+        if (chartBacklogEvolucao) chartBacklogEvolucao.destroy();
+        chartBacklogEvolucao = new Chart(ctxBarraEvolucao.getContext('2d'), {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Quantidade de Backlogs Finalizados',
+                    data: dadosFinalizadosNoMes,
+                    backgroundColor: '#e6b441',
+                    borderRadius: 2,
+                    barPercentage: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { 
+                    y: { beginAtZero: true, grace: '15%', ticks: { color: corTexto } },
+                    x: { ticks: { color: corTexto } }
+                },
+                plugins: {
+                    legend: { labels: { color: corTexto } },
+                    datalabels: {
+                        anchor: 'end', align: 'top', color: corTexto,
+                        font: { weight: 'bold', size: 11 },
+                        formatter: value => value > 0 ? value : '0'
+                    }
+                }
+            }
+        });
+    }
+}
+
+// DISTRIBUIÇÃO DE AGING POR FAIXA
+function inicializarGraficoAging(valoresBuckets = []) {
+    const ctx = document.getElementById('graficoAging');
+    if (!ctx) return;
+    if (chartAging) chartAging.destroy();
+
+    const corTexto = obterCorTextoPorTema();
+
+    chartAging = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: ['0-3 dias', '4-7 dias', '8-15 dias', '16-30 dias', '+30 dias'],
+            datasets: [{
+                label: 'Quantidade de Chamados',
+                data: valoresBuckets,
+                backgroundColor: '#7dd3fc',
+                borderRadius: 2,
+                barPercentage: 0.5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, grace: '15%', ticks: { color: corTexto } },
+                x: { ticks: { color: corTexto } }
+            },
+            plugins: {
+                legend: { display: false },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    color: corTexto,
+                    font: { weight: 'bold', size: 11 },
+                    formatter: value => value > 0 ? value : '0'
+                }
+            }
+        }
+    });
+}
+
+// ALIMENTAÇÃO AJUSTADA: GRÁFICO DE REABERTURAS POR MÊS (LINHA)
+function inicializarGraficoReabertosMes(labels = [], dadosReabertos = []) {
+    const ctx = document.getElementById('graficoReabertosMes');
+    if (!ctx) return;
+    if (chartReabertosMes) chartReabertosMes.destroy();
+
+    const corTexto = obterCorTextoPorTema();
+    const corGrid = obterCorGridPorTema();
+
+    chartReabertosMes = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Chamados Reabertos',
+                data: dadosReabertos,
+                borderColor: '#f43f5e',
+                backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                pointBackgroundColor: '#f43f5e',
+                fill: true,
+                tension: 0.2,
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, grace: '15%', ticks: { color: corTexto }, grid: { color: corGrid } },
+                x: { ticks: { color: corTexto }, grid: { color: corGrid } }
+            },
+            plugins: {
+                legend: { labels: { color: corTexto } },
+                datalabels: {
+                    anchor: 'end', align: 'top', color: '#f43f5e',
+                    font: { weight: 'bold', size: 11 },
+                    formatter: value => value > 0 ? value : '0'
+                }
+            }
+        }
+    });
+}
+
+// ALIMENTAÇÃO AJUSTADA: GRÁFICO DE RANKING DE CLIENTES POR REABERTURA (BARRAS HORIZONTAIS)
+function inicializarGraficoReabertosCliente(labels = [], dadosClientes = []) {
+    const ctx = document.getElementById('graficoReabertosCliente');
+    if (!ctx) return;
+    if (chartReabertosCliente) chartReabertosCliente.destroy();
+
+    const corTexto = obterCorTextoPorTema();
+    const corGrid = obterCorGridPorTema();
+
+    chartReabertosCliente = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Reaberturas por Cliente',
+                data: dadosClientes,
+                backgroundColor: '#fb923c', // Cor laranja informativa de ranking
+                borderRadius: 2,
+                barPercentage: 0.6
+            }]
+        },
+        options: {
+            indexAxis: 'y', // Inverte para exibição de ranking horizontal limpo
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { beginAtZero: true, grace: '15%', ticks: { color: corTexto }, grid: { color: corGrid } },
+                y: { ticks: { color: corTexto }, grid: { display: false } }
+            },
+            plugins: {
+                legend: { display: false },
+                datalabels: {
+                    anchor: 'end', align: 'right', color: corTexto,
                     font: { weight: 'bold', size: 11 },
                     formatter: value => value > 0 ? value : '0'
                 }
@@ -410,7 +895,7 @@ function processarIndicadoresEstrategicos() {
 
         const filtroInicioAnt = new Date(filtroInicio);
         filtroInicioAnt.setFullYear(filtroInicioAnt.getFullYear() - 1);
-        const filtroFimAnt = new Date(filtroFim);
+        const filtroFimAnt = new Date(valFim);
         filtroFimAnt.setFullYear(filtroFimAnt.getFullYear() - 1);
 
         let totalProtocolosPeriodo = 0;
@@ -433,7 +918,7 @@ function processarIndicadoresEstrategicos() {
         let bkAndamento = 0;
         let bkPausados = 0;
 
-        // Variaveis de monitoramento do Aging (Chamados Ativos/Abertos)
+        // Variáveis do monitoramento do Aging (Chamados Ativos/Abertos)
         let contSeteDias = 0;
         let contQuinzeDias = 0;
         let contTrintaDias = 0;
@@ -441,7 +926,11 @@ function processarIndicadoresEstrategicos() {
         let totalDiasAbertosAcumulados = 0;
         let totalChamadosAbertosCalculados = 0;
 
-        // Buckets para o grafico de barras de Aging (0-3, 4-7, 8-15, 16-30, +30)
+        // Monitoramento estruturado de Reaberturas focado na nova coluna
+        let totalReabertosPeriodo = 0;
+        let reabertosPorMesAgrupado = {};
+        let reabertosPorClienteAgrupado = {};
+
         let bucketsAging = [0, 0, 0, 0, 0];
         const hoje = new Date();
 
@@ -453,10 +942,15 @@ function processarIndicadoresEstrategicos() {
             if (!dataCriacao) return;
 
             const status = String(chamado['Status'] || chamado['Última Situação'] || chamado['Situação'] || '').toLowerCase();
+            const clienteNome = String(chamado['Cliente'] || 'Desconhecido').trim();
             const prioridade = String(chamado['Prioridade'] || '').toLowerCase().trim();
             const slaCumprido = String(chamado['SLA de Deadline Cumprido'] || chamado['SLA_de_Deadline_Cumprido'] || chamado['SLA'] || '').toLowerCase().trim();
             const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido');
             const isEmAndamento = status.includes('andamento') || status.includes('atendimento') || status.includes('aberto') || status.includes('vinculado');
+            
+            // LÓGICA AJUSTADA: Valida reabertura baseado exclusivamente na coluna 'Reaberto' contendo 'sim'
+            const valorReabertoRaw = chamado['Reaberto'];
+            const isReaberto = valorReabertoRaw && String(valorReabertoRaw).toLowerCase().trim() === 'sim';
 
             let dataOriginalFechamento = chamado['Data de Finalização'] || chamado['Data_de_Finalização'] || chamado['Encerramento'];
             let dataFinalizacao = tratarFormatoDataExcel(dataOriginalFechamento);
@@ -465,7 +959,6 @@ function processarIndicadoresEstrategicos() {
             if (!isFinalizado && dataCriacao <= filtroFim) {
                 totalChamadosAbertosCalculados++;
                 
-                // Calcula a idade do chamado em dias corridos
                 const diferencaTempo = Math.max(0, hoje - dataCriacao);
                 const idadeDias = Math.floor(diferencaTempo / (1000 * 60 * 60 * 24));
                 
@@ -475,12 +968,10 @@ function processarIndicadoresEstrategicos() {
                     maxDiasAberto = idadeDias;
                 }
 
-                // Incrementa os contadores dos Cards de Envelhecimento
                 if (idadeDias > 7) contSeteDias++;
                 if (idadeDias > 15) contQuinzeDias++;
                 if (idadeDias > 30) contTrintaDias++;
 
-                // Enquadra o chamado no respectivo bucket do grafico
                 if (idadeDias <= 3) bucketsAging[0]++;
                 else if (idadeDias <= 7) bucketsAging[1]++;
                 else if (idadeDias <= 15) bucketsAging[2]++;
@@ -513,6 +1004,19 @@ function processarIndicadoresEstrategicos() {
                 }
                 
                 performanceMensalAgrupada[mesAnoLabel].criados++;
+
+                // PROCESSAMENTO ANALÍTICO DE REABERTURAS NO PERÍODO (LÓGICA SIMPLIFICADA)
+                if (isReaberto) {
+                    totalReabertosPeriodo++;
+                    
+                    // Acumula contagem para gráfico de linha mensal
+                    if (!reabertosPorMesAgrupado[mesAnoLabel]) reabertosPorMesAgrupado[mesAnoLabel] = 0;
+                    reabertosPorMesAgrupado[mesAnoLabel]++;
+
+                    // Acumula contagem por cliente para o ranking
+                    if (!reabertosPorClienteAgrupado[clienteNome]) reabertosPorClienteAgrupado[clienteNome] = 0;
+                    reabertosPorClienteAgrupado[clienteNome]++;
+                }
 
                 if (isFinalizado) {
                     totalFinalizados++;
@@ -579,9 +1083,17 @@ function processarIndicadoresEstrategicos() {
         const pctDemandasAtuais = totalProtocolosPeriodo > 0 ? ((totalAtuaisNoPeriodo / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
         const pctFinalizados = totalProtocolosPeriodo > 0 ? ((totalFinalizados / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
 
+        // ATUALIZAÇÃO DOS CARDS DE MÉTRICAS DA VISÃO GERAL
         const cardT = document.getElementById('kpiTotal'); if (cardT) cardT.textContent = totalProtocolosPeriodo;
         const cardF = document.getElementById('kpiFinalizados'); if (cardF) cardF.textContent = `${pctFinalizados}%`;
         const cardAtuais = document.getElementById('kpiDemandasAtuais'); if (cardAtuais) cardAtuais.textContent = `${pctDemandasAtuais}%`;
+        
+        // Alimenta o Card de Percentual de Reaberturas baseado na nova lógica precisa
+        const cardReabertos = document.getElementById('kpiReabertos');
+        if (cardReabertos) {
+            const pctReabertos = totalProtocolosPeriodo > 0 ? ((totalReabertosPeriodo / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
+            cardReabertos.textContent = `${pctReabertos}%`;
+        }
 
         let labelCrescimento = "0,00%";
         if (totalProtocolosAnoAnterior > 0) {
@@ -661,8 +1173,21 @@ function processarIndicadoresEstrategicos() {
             elAgingMedia.textContent = `${mediaIdadeFinal} dias`;
         }
 
-        // Renderiza o gráfico de barras de Aging
         inicializarGraficoAging(bucketsAging);
+
+        // PROCESSAMENTO DE DADOS E ALIMENTAÇÃO DOS NOVOS GRÁFICOS DE REABERTURA (LÓGICA AJUSTADA E PRECISA)
+        // 1. Gráfico de Reaberturas por Mês (Evolução cronológica alinhada com as labels principais)
+        const dadosReabertosMes = labelsOrdenadas.map(lbl => reabertosPorMesAgrupado[lbl] || 0);
+        inicializarGraficoReabertosMes(labelsOrdenadas, dadosReabertosMes);
+
+        // 2. Gráfico de Ranking de Clientes (Ordenado do maior para o menor, exibindo o Top 8)
+        const clientesOrdenadosRanking = Object.keys(reabertosPorClienteAgrupado).sort((a, b) => {
+            return reabertosPorClienteAgrupado[b] - reabertosPorClienteAgrupado[a];
+        });
+        const topClientesLabels = clientesOrdenadosRanking.slice(0, 8);
+        const topClientesValores = topClientesLabels.map(cl => reabertosPorClienteAgrupado[cl]);
+        
+        inicializarGraficoReabertosCliente(topClientesLabels, topClientesValores);
         
         if (uploadStatus) {
             uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Base conectada com sucesso!</span>`;

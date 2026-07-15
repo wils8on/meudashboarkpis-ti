@@ -10,7 +10,6 @@
 <body>
 
     <div class="wrapper">
-        <!-- MENU LATERAL -->
         <nav class="sidebar">
             <div class="sidebar-header">
                 <h3><i class="fa-solid fa-chart-pie"></i> KPI Panel</h3>
@@ -50,7 +49,6 @@
                         <i class="fa-solid fa-boxes-stacked"></i> <span>Backlog Mensal</span>
                     </a>
                 </li>
-                <!-- NOVA OPÇÃO DO MENU LATERAL: AGING -->
                 <li>
                     <a href="#" class="nav-item" data-target="aba-aging">
                         <i class="fa-solid fa-hourglass-half"></i> <span>Análise de Aging</span>
@@ -73,7 +71,6 @@
             </div>
         </nav>
 
-        <!-- CONTEÚDO PRINCIPAL -->
         <main class="main-content">
             <header class="top-bar">
                 <h2>Plataforma de Indicadores</h2>
@@ -89,7 +86,6 @@
 
             <div class="content-body">
                 
-                <!-- 1. VISÃO GERAL -->
                 <section id="visao-geral" class="tab-content active">
                     <div class="upload-section">
                         <label for="excelFile" class="upload-box">
@@ -114,6 +110,10 @@
                             <div class="kpi-info"><p>% Demandas Atuais</p><h3 id="kpiDemandasAtuais">0,00%</h3></div>
                             <i class="fa-solid fa-folder-open icon"></i>
                         </div>
+                        <div class="kpi-card vermelho">
+                            <div class="kpi-info"><p>% Chamados Reabertos</p><h3 id="kpiReabertos">0,00%</h3></div>
+                            <i class="fa-solid fa-arrows-rotate icon"></i>
+                        </div>
                         <div class="kpi-card comparativo">
                             <div class="kpi-info"><p>vs Ano Anterior</p><h3 id="kpiCrescimento">0,00%</h3></div>
                             <i class="fa-solid fa-scale-balanced icon"></i>
@@ -123,9 +123,19 @@
                     <div class="chart-container">
                         <canvas id="graficoGeral"></canvas>
                     </div>
+
+                    <div class="charts-split-grid" style="margin-top: 25px;">
+                        <div class="chart-container">
+                            <h4><i class="fa-solid fa-chart-line"></i> Quantidade de Chamados Reabertos por Mês</h4>
+                            <canvas id="graficoReabertosMes"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h4><i class="fa-solid fa-ranking-star"></i> Ranking de Clientes por Reabertura</h4>
+                            <canvas id="graficoReabertosCliente"></canvas>
+                        </div>
+                    </div>
                 </section>
 
-                <!-- 2. PERFORMANCE E SLA -->
                 <section id="kpis-performance" class="tab-content">
                     <h3>Análise de Performance Operacional e SLA</h3>
                     <div class="kpi-grid" style="margin-bottom: 30px;">
@@ -159,7 +169,6 @@
                     </div>
                 </section>
 
-                <!-- 3. BACKLOG MENSAL -->
                 <section id="aba-backlog" class="tab-content">
                     <div class="info-alert-box">
                         <h4><i class="fa-solid fa-circle-info"></i> O que é o Backlog?</h4>
@@ -190,11 +199,8 @@
                     </div>
                 </section>
 
-                <!-- NOVA SEÇÃO: 4. ANÁLISE DE AGING -->
                 <section id="aba-aging" class="tab-content">
                     <h3>Análise de Aging dos Chamados em Aberto</h3>
-                    
-                    <!-- Grid de KPIs do Aging -->
                     <div class="kpi-grid" style="margin-bottom: 30px;">
                         <div class="kpi-card cinza">
                             <div class="kpi-info"><p>> 7 dias</p><h3 id="agingCardSete">0</h3></div>
@@ -218,14 +224,12 @@
                         </div>
                     </div>
 
-                    <!-- Gráfico de Distribuição por Faixas de Envelhecimento -->
                     <div class="chart-container" style="height: 450px;">
                         <h4>Distribuição dos chamados em aberto por faixa de aging</h4>
                         <canvas id="graficoAging"></canvas>
                     </div>
                 </section>
 
-                <!-- 5. GERENCIAR CLIENTES / USUÁRIOS -->
                 <section id="aba-usuarios" class="tab-content">
                     <h3>Cadastro e Gestão Organizacional de Clientes</h3>
                     <p class="section-desc">Os nomes abaixo são importados automaticamente da coluna Cliente do Excel. Aqui você pode configurar e rastrear o histórico de alocações.</p>
@@ -235,33 +239,27 @@
                             <h4><i class="fa-solid fa-user-pen"></i> Configurar Vínculo</h4>
                             <form id="formEditarUsuario">
                                 <input type="hidden" id="editUserIndex">
-                                
                                 <div class="form-item">
                                     <label>Nome do Cliente:</label>
                                     <input type="text" id="editUserNome" readonly class="input-readonly">
                                 </div>
-                                
                                 <div class="form-item">
                                     <label>Setor Atual:</label>
                                     <input type="text" id="editUserSetor" placeholder="Ex: TI, Financeiro, Comercial">
                                 </div>
-                                
                                 <div class="form-item">
                                     <label>Unidade / Localidade Atual:</label>
                                     <input type="text" id="editUserUnidade" placeholder="Ex: Matriz, Filial Salvador, Filial SP">
                                 </div>
-
                                 <div class="date-picker-box">
                                     <p class="date-picker-title"><i class="fa-solid fa-calendar-day"></i> Data da Efetivação da Mudança</p>
                                     <input type="date" id="editUserDataMudanca">
                                     <span class="date-picker-hint">Informe quando a transição de setor ou filial ocorreu de fato.</span>
                                 </div>
-
                                 <button type="submit" class="btn-submit-form">
                                     <i class="fa-solid fa-floppy-disk"></i> Atualizar e Salvar Histórico
                                 </button>
                             </form>
-
                             <div class="history-timeline-box">
                                 <h5><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Alterações de Setor</h5>
                                 <ul id="listaHistoricoSetores">
@@ -293,7 +291,6 @@
                     </div>
                 </section>
 
-                <!-- 6. SUPORTE -->
                 <section id="kpis-suporte" class="tab-content">
                     <h3>Métricas de Atendimento</h3>
                     <p>Espaço reservado para detalhes analíticos de Helpdesk.</p>

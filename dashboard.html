@@ -50,6 +50,12 @@
                         <i class="fa-solid fa-boxes-stacked"></i> <span>Backlog Mensal</span>
                     </a>
                 </li>
+                <!-- NOVA OPÇÃO DO MENU LATERAL: AGING -->
+                <li>
+                    <a href="#" class="nav-item" data-target="aba-aging">
+                        <i class="fa-solid fa-hourglass-half"></i> <span>Análise de Aging</span>
+                    </a>
+                </li>
                 <li>
                     <a href="#" class="nav-item" data-target="aba-usuarios">
                         <i class="fa-solid fa-users-gear"></i> <span>Gerenciar Clientes</span>
@@ -184,7 +190,42 @@
                     </div>
                 </section>
 
-                <!-- 4. GERENCIAR CLIENTES / USUÁRIOS -->
+                <!-- NOVA SEÇÃO: 4. ANÁLISE DE AGING -->
+                <section id="aba-aging" class="tab-content">
+                    <h3>Análise de Aging dos Chamados em Aberto</h3>
+                    
+                    <!-- Grid de KPIs do Aging -->
+                    <div class="kpi-grid" style="margin-bottom: 30px;">
+                        <div class="kpi-card cinza">
+                            <div class="kpi-info"><p>> 7 dias</p><h3 id="agingCardSete">0</h3></div>
+                            <i class="fa-solid fa-hourglass-start icon"></i>
+                        </div>
+                        <div class="kpi-card cinza">
+                            <div class="kpi-info"><p>> 15 dias</p><h3 id="agingCardQuinze">0</h3></div>
+                            <i class="fa-solid fa-hourglass-half icon"></i>
+                        </div>
+                        <div class="kpi-card cinza">
+                            <div class="kpi-info"><p>> 30 dias</p><h3 id="agingCardTrinta">0</h3></div>
+                            <i class="fa-solid fa-hourglass-end icon"></i>
+                        </div>
+                        <div class="kpi-card vermelho">
+                            <div class="kpi-info"><p>Mais antigo</p><h3 id="agingCardMaisAntigo">0 dias</h3></div>
+                            <i class="fa-solid fa-calendar-xmark icon"></i>
+                        </div>
+                        <div class="kpi-card azul">
+                            <div class="kpi-info"><p>Média de idade</p><h3 id="agingCardMedia">0 dias</h3></div>
+                            <i class="fa-solid fa-calculator icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de Distribuição por Faixas de Envelhecimento -->
+                    <div class="chart-container" style="height: 450px;">
+                        <h4>Distribuição dos chamados em aberto por faixa de aging</h4>
+                        <canvas id="graficoAging"></canvas>
+                    </div>
+                </section>
+
+                <!-- 5. GERENCIAR CLIENTES / USUÁRIOS -->
                 <section id="aba-usuarios" class="tab-content">
                     <h3>Cadastro e Gestão Organizacional de Clientes</h3>
                     <p class="section-desc">Os nomes abaixo são importados automaticamente da coluna Cliente do Excel. Aqui você pode configurar e rastrear o histórico de alocações.</p>
@@ -252,7 +293,7 @@
                     </div>
                 </section>
 
-                <!-- 5. SUPORTE -->
+                <!-- 6. SUPORTE -->
                 <section id="kpis-suporte" class="tab-content">
                     <h3>Métricas de Atendimento</h3>
                     <p>Espaço reservado para detalhes analíticos de Helpdesk.</p>
@@ -263,13 +304,10 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-    
     <script src="js/dashboard.js"></script>
 </body>
 </html>

@@ -74,6 +74,7 @@ let chartLinhaResolucao = null;
 let chartSlaMensal = null;
 let chartBacklogEvolucao = null;
 let chartBacklogDistribuicao = null;
+let chartAging = null; // Memória do novo gráfico de Aging
 
 function inicializarGraficoGeral(labels = [], dadosTotal = [], dadosUrgentes = []) {
     const ctx = document.getElementById('graficoGeral');
@@ -265,6 +266,48 @@ function inicializarGraficosBacklog(labels = [], dadosEstoqueInicial = [], dados
     }
 }
 
+// NOVO GRÁFICO: DISTRIBUIÇÃO DE AGING POR FAIXA
+function inicializarGraficoAging(valoresBuckets = []) {
+    const ctx = document.getElementById('graficoAging');
+    if (!ctx) return;
+    if (chartAging) chartAging.destroy();
+
+    const corTexto = obterCorTextoPorTema();
+
+    chartAging = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: ['0-3 dias', '4-7 dias', '8-15 dias', '16-30 dias', '+30 dias'],
+            datasets: [{
+                label: 'Quantidade de Chamados',
+                data: valoresBuckets,
+                backgroundColor: '#7dd3fc', // Azul piscina suave como no print de referência
+                borderRadius: 2,
+                barPercentage: 0.5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, grace: '15%', ticks: { color: corTexto } },
+                x: { ticks: { color: corTexto } }
+            },
+            plugins: {
+                legend: { display: false },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    color: corTexto,
+                    font: { weight: 'bold', size: 11 },
+                    formatter: value => value > 0 ? value : '0'
+                }
+            }
+        }
+    });
+}
+
 // Inicialização de Filtros Padrão
 document.addEventListener('DOMContentLoaded', () => {
     const fInicio = document.getElementById('filtroDataInicio');
@@ -311,8 +354,6 @@ if (excelInput) {
                 if (dadosPlanilhaGlobal.length > 0) {
                     verificarECadastrarClientesNovos(dadosPlanilhaGlobal);
                     processarIndicadoresEstrategicos();
-                    
-                    // CORREÇÃO: Força o preenchimento da tabela de clientes na hora da importação
                     renderizarTabelaUsuarios(); 
                 } else {
                     if (uploadStatus) uploadStatus.textContent = "Nenhum dado legível encontrado na planilha.";
@@ -392,6 +433,18 @@ function processarIndicadoresEstrategicos() {
         let bkAndamento = 0;
         let bkPausados = 0;
 
+        // Variaveis de monitoramento do Aging (Chamados Ativos/Abertos)
+        let contSeteDias = 0;
+        let contQuinzeDias = 0;
+        let contTrintaDias = 0;
+        let maxDiasAberto = 0;
+        let totalDiasAbertosAcumulados = 0;
+        let totalChamadosAbertosCalculados = 0;
+
+        // Buckets para o grafico de barras de Aging (0-3, 4-7, 8-15, 16-30, +30)
+        let bucketsAging = [0, 0, 0, 0, 0];
+        const hoje = new Date();
+
         dadosPlanilhaGlobal.forEach(chamado => {
             if (!chamado || Object.keys(chamado).length === 0) return;
 
@@ -407,6 +460,33 @@ function processarIndicadoresEstrategicos() {
 
             let dataOriginalFechamento = chamado['Data de Finalização'] || chamado['Data_de_Finalização'] || chamado['Encerramento'];
             let dataFinalizacao = tratarFormatoDataExcel(dataOriginalFechamento);
+
+            // PROCESSAMENTO DE AGING (Apenas para chamados ativos/em aberto)
+            if (!isFinalizado && dataCriacao <= filtroFim) {
+                totalChamadosAbertosCalculados++;
+                
+                // Calcula a idade do chamado em dias corridos
+                const diferencaTempo = Math.max(0, hoje - dataCriacao);
+                const idadeDias = Math.floor(diferencaTempo / (1000 * 60 * 60 * 24));
+                
+                totalDiasAbertosAcumulados += idadeDias;
+
+                if (idadeDias > maxDiasAberto) {
+                    maxDiasAberto = idadeDias;
+                }
+
+                // Incrementa os contadores dos Cards de Envelhecimento
+                if (idadeDias > 7) contSeteDias++;
+                if (idadeDias > 15) contQuinzeDias++;
+                if (idadeDias > 30) contTrintaDias++;
+
+                // Enquadra o chamado no respectivo bucket do grafico
+                if (idadeDias <= 3) bucketsAging[0]++;
+                else if (idadeDias <= 7) bucketsAging[1]++;
+                else if (idadeDias <= 15) bucketsAging[2]++;
+                else if (idadeDias <= 30) bucketsAging[3]++;
+                else bucketsAging[4]++;
+            }
 
             if (dataCriacao <= filtroFim) {
                 if (!dataFinalizacao || dataFinalizacao >= filtroInicio) {
@@ -568,6 +648,21 @@ function processarIndicadoresEstrategicos() {
         });
 
         inicializarGraficosBacklog(labelsOrdenadas, dadosEstoqueInicialLinha, dadosFinalizadosNoMesBarras);
+
+        // ATUALIZAÇÃO DOS CARDS E GRÁFICO DO AGING NO DOM
+        const elAgingSete = document.getElementById('agingCardSete'); if (elAgingSete) elAgingSete.textContent = contSeteDias;
+        const elAgingQuinze = document.getElementById('agingCardQuinze'); if (elAgingQuinze) elAgingQuinze.textContent = contQuinzeDias;
+        const elAgingTrinta = document.getElementById('agingCardTrinta'); if (elAgingTrinta) elAgingTrinta.textContent = contTrintaDias;
+        const elAgingMaisAntigo = document.getElementById('agingCardMaisAntigo'); if (elAgingMaisAntigo) elAgingMaisAntigo.textContent = `${maxDiasAberto} dias`;
+        
+        const elAgingMedia = document.getElementById('agingCardMedia');
+        if (elAgingMedia) {
+            const mediaIdadeFinal = totalChamadosAbertosCalculados > 0 ? (totalDiasAbertosAcumulados / totalChamadosAbertosCalculados).toFixed(1) : "0.0";
+            elAgingMedia.textContent = `${mediaIdadeFinal} dias`;
+        }
+
+        // Renderiza o gráfico de barras de Aging
+        inicializarGraficoAging(bucketsAging);
         
         if (uploadStatus) {
             uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Base conectada com sucesso!</span>`;

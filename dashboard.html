@@ -6,6 +6,137 @@
     <title>Dashboard de KPIs</title>
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================================================
+           ESTILOS EXCLUSIVOS PARA IMPRESSÃO EXECUTIVA CORPORATIVA (PAISAGEM)
+           ========================================================================= */
+        @media print {
+            /* Força o navegador a configurar a folha em formato Paisagem (Horizontal) */
+            @page {
+                size: landscape;
+                margin: 8mm 10mm 8mm 10mm;
+            }
+
+            html, body {
+                background: #ffffff !important;
+                color: #0f172a !important;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Oculta barras laterais, botões de upload e elementos operacionais */
+            .sidebar, 
+            .top-bar, 
+            .upload-section, 
+            .info-alert-box, 
+            .btn-submit-form,
+            .editor-form-box button,
+            td button {
+                display: none !important;
+            }
+
+            .wrapper {
+                display: block !important;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+
+            /* Separa cada aba analítica em uma folha exclusiva de PDF */
+            .tab-content {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                page-break-after: always !important;
+                padding-top: 5px !important;
+                width: 100% !important;
+            }
+
+            /* Garante o encaixe linear perfeito dos cards de indicadores */
+            .kpi-grid {
+                display: grid !important;
+                grid-template-columns: repeat(5, 1fr) !important;
+                gap: 10px !important;
+                margin-bottom: 15px !important;
+                width: 100% !important;
+                page-break-inside: avoid !important;
+            }
+
+            .kpi-card {
+                background: #f8fafc !important;
+                border: 1px solid #cbd5e1 !important;
+                color: #0f172a !important;
+                box-shadow: none !important;
+                padding: 10px !important;
+                border-radius: 6px !important;
+            }
+
+            .kpi-card h3, .kpi-card .kpi-val-grandes {
+                color: #1e3a8a !important;
+            }
+
+            /* Enquadra os contêineres de gráficos dentro do limite de largura da página */
+            .chart-container, .charts-split-grid {
+                background: #ffffff !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 8px !important;
+                padding: 12px !important;
+                box-shadow: none !important;
+                page-break-inside: avoid !important;
+                margin-top: 10px !important;
+                margin-bottom: 15px !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            .charts-split-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 15px !important;
+            }
+
+            canvas {
+                max-width: 100% !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            /* Ajustes estéticos das planilhas de dados em formato de impressão */
+            .table-wrapper-box {
+                box-shadow: none !important;
+                border: 1px solid #e2e8f0 !important;
+                page-break-inside: avoid !important;
+                width: 100% !important;
+            }
+
+            table.data-table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+
+            table.data-table th {
+                background: #f1f5f9 !important;
+                color: #0f172a !important;
+                border-bottom: 2px solid #cbd5e1 !important;
+                padding: 6px !important;
+            }
+
+            table.data-table td {
+                border-bottom: 1px solid #e2e8f0 !important;
+                color: #334155 !important;
+                padding: 6px !important;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -75,7 +206,7 @@
             <header class="top-bar">
                 <h2>Plataforma de Indicadores</h2>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <button onclick="window.exportarRelatorioPDF()" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                    <button id="btnExportarPDF" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-file-pdf"></i> Exportar Relatório PDF
                     </button>
                     <div class="user-profile">
@@ -106,7 +237,7 @@
                             <div class="kpi-info"><p>% Finalizados</p><h3 id="kpiFinalizados">0,00%</h3></div>
                             <i class="fa-solid fa-circle-check icon"></i>
                         </div>
-                        <div class="kpi-card laranja">
+                        <div class="kpi-card orange">
                             <div class="kpi-info"><p>% Demandas Atuais</p><h3 id="kpiDemandasAtuais">0,00%</h3></div>
                             <i class="fa-solid fa-folder-open icon"></i>
                         </div>
@@ -232,7 +363,7 @@
 
                 <section id="aba-usuarios" class="tab-content">
                     <h3>Cadastro e Gestão Organizacional de Clientes</h3>
-                    <p class="section-desc">Os nomes abaixo são importados automaticamente da coluna Cliente do Excel. Aqui você pode configurar e rastrear o histórico de alocações.</p>
+                    <p class="section-desc">Os nomes abaixo são importados automaticamente da coluna Cliente do Excel. Aqui você pode configure e rastrear o histórico de alocações.</p>
                     
                     <div class="users-management-layout">
                         <div class="editor-form-box">

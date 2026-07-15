@@ -1,5 +1,5 @@
 // ==========================================
-// 1. GUARDA DE SEGURANÇA, LOGOUT & TEMA
+// 1. GUARDA DE SEGURANÇA, LOGOUT, TEMA & EXPORTAÇÃO EXECUTIVA PDF
 // ==========================================
 if (localStorage.getItem('logado') !== 'true') {
     window.location.href = 'index.html';
@@ -13,13 +13,22 @@ if (btnLogout) {
     });
 }
 
-// Inicialização e gerenciamento do Tema (Claro/Escuro)
+// Aciona o motor de impressão nativo configurado via CSS corporativo (@media print)
+document.addEventListener('DOMContentLoaded', () => {
+    const btnPDF = document.getElementById('btnExportarPDF');
+    if (btnPDF) {
+        btnPDF.addEventListener('click', function() {
+            window.print();
+        });
+    }
+});
+
+// Inicialização do Tema
 document.addEventListener('DOMContentLoaded', () => {
     const temaSalvo = localStorage.getItem('dashboard-theme') || 'light';
     document.documentElement.setAttribute('data-theme', temaSalvo);
 });
 
-// Função global para alternar o tema
 window.alternarModoTema = function() {
     const temaAtual = document.documentElement.getAttribute('data-theme');
     const novoTema = temaAtual === 'dark' ? 'light' : 'dark';
@@ -27,13 +36,11 @@ window.alternarModoTema = function() {
     document.documentElement.setAttribute('data-theme', novoTema);
     localStorage.setItem('dashboard-theme', novoTema);
     
-    // Força o reprocessamento para redesenhar os eixos dos gráficos em tempo real
     if (dadosPlanilhaGlobal.length > 0) {
         processarIndicadoresEstrategicos();
     }
 };
 
-// Retorna cores baseadas no tema para manter o contraste
 function obterCorTextoPorTema() {
     const temaAtivo = document.documentElement.getAttribute('data-theme');
     return temaAtivo === 'dark' ? '#cbd5e1' : '#475569';
@@ -72,7 +79,36 @@ menuItems.forEach(item => {
 });
 
 // ==========================================
-// 3. MEMÓRIA GLOBAL E INSTÂNCIAS DOS GRÁFICOS
+// 3. AUXILIARES E CONVERSORES DE DATA
+// ==========================================
+function tratarFormatoDataExcel(dataInput) {
+    if (!dataInput) return null;
+    if (dataInput instanceof Date && !isNaN(dataInput.getTime())) return dataInput;
+    
+    if (typeof dataInput === 'number' || !isNaN(Number(dataInput))) {
+        const numeroSerial = Number(dataInput);
+        return new Date((numeroSerial - 25569) * 86400 * 1000);
+    }
+    
+    const dataStr = String(dataInput).trim();
+    const dataTentativa = new Date(dataStr);
+    if (!isNaN(dataTentativa.getTime())) return dataTentativa;
+    
+    if (dataStr.includes('/')) {
+        const partesEspaco = dataStr.split(' ');
+        const [dia, mes, ano] = partesEspaco[0].split('/');
+        let hora = 0, minuto = 0;
+        if (partesEspaco[1] && partesEspaco[1].includes(':')) {
+            [hora, minuto] = partesEspaco[1].split(':').map(Number);
+        }
+        return new Date(Number(ano), Number(mes) - 1, Number(dia), hora, minuto);
+    }
+    
+    return null;
+}
+
+// ==========================================
+// 4. MEMÓRIA GLOBAL E INSTÂNCIAS DOS GRÁFICOS
 // ==========================================
 let dadosPlanilhaGlobal = [];
 let chartGeralReal = null;
@@ -274,7 +310,6 @@ function inicializarGraficosBacklog(labels = [], dadosEstoqueInicial = [], dados
     }
 }
 
-// DISTRIBUIÇÃO DE AGING POR FAIXA
 function inicializarGraficoAging(valoresBuckets = []) {
     const ctx = document.getElementById('graficoAging');
     if (!ctx) return;
@@ -316,7 +351,6 @@ function inicializarGraficoAging(valoresBuckets = []) {
     });
 }
 
-// ALIMENTAÇÃO AJUSTADA: GRÁFICO DE REABERTURAS POR MÊS (LINHA)
 function inicializarGraficoReabertosMes(labels = [], dadosReabertos = []) {
     const ctx = document.getElementById('graficoReabertosMes');
     if (!ctx) return;
@@ -360,7 +394,6 @@ function inicializarGraficoReabertosMes(labels = [], dadosReabertos = []) {
     });
 }
 
-// ALIMENTAÇÃO AJUSTADA: GRÁFICO DE RANKING DE CLIENTES POR REABERTURA (BARRAS HORIZONTAIS)
 function inicializarGraficoReabertosCliente(labels = [], dadosClientes = []) {
     const ctx = document.getElementById('graficoReabertosCliente');
     if (!ctx) return;
@@ -402,24 +435,8 @@ function inicializarGraficoReabertosCliente(labels = [], dadosClientes = []) {
     });
 }
 
-// Inicialização de Filtros Padrão
-document.addEventListener('DOMContentLoaded', () => {
-    const fInicio = document.getElementById('filtroDataInicio');
-    const fFim = document.getElementById('filtroDataFim');
-    
-    if (fInicio && fFim) {
-        fInicio.value = "2023-01-01";
-        fFim.value = "2026-12-31";
-        
-        fInicio.addEventListener('change', processarIndicadoresEstrategicos);
-        fFim.addEventListener('change', processarIndicadoresEstrategicos);
-    }
-    inicializarGraficoGeral();
-    renderizarTabelaUsuarios();
-});
-
 // ==========================================
-// 4. LEITURA DO EXCEL (SHEETJS)
+// 5. LEITURA DO EXCEL (SHEETJS) - PROCESSAMENTO DE ENTRADA
 // ==========================================
 const excelInput = document.getElementById('excelFile');
 if (excelInput) {
@@ -428,76 +445,121 @@ if (excelInput) {
         if (!file) return;
 
         const uploadStatus = document.getElementById('uploadStatus');
-        if (uploadStatus) uploadStatus.textContent = `Processando chamados: ${file.name}...`;
+        if (uploadStatus) {
+            uploadStatus.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processando chamados: ${file.name}...`;
+        }
         
         const reader = new FileReader();
         reader.onload = function(e) {
             try {
                 const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array', cellDates: true, dateNF: 'yyyy-mm-dd' });
-                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                const workbook = XLSX.read(data, { 
+                    type: 'array', 
+                    cellDates: true, 
+                    cellNF: false, 
+                    cellText: false 
+                });
                 
-                const linhasBrutas = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+                if (!workbook || !workbook.SheetNames || workbook.SheetNames.length === 0) {
+                    throw new Error("O arquivo Excel parece estar vazio ou num formato corrompido.");
+                }
+
+                let nomeAbaValida = workbook.SheetNames[0];
+                for (let i = 0; i < workbook.SheetNames.length; i++) {
+                    const wsName = workbook.SheetNames[i];
+                    const ws = workbook.Sheets[wsName];
+                    if (ws && ws['!ref']) {
+                        nomeAbaValida = wsName;
+                        break;
+                    }
+                }
+
+                const worksheet = workbook.Sheets[nomeAbaValida];
+                const linhasBrutas = XLSX.utils.sheet_to_json(worksheet, { 
+                    defval: "", 
+                    raw: false, 
+                    blankrows: false 
+                });
+
+                if (!linhasBrutas || linhasBrutas.length === 0) {
+                    throw new Error("Nenhum registo de dados detetado na aba principal do arquivo.");
+                }
 
                 dadosPlanilhaGlobal = linhasBrutas.filter(chamado => {
                     if (!chamado) return false;
-                    const conteudoLinha = Object.values(chamado).join('').trim();
-                    return conteudoLinha.length > 0;
+                    const conteudoLinha = Object.values(chamado).join(' ').toLowerCase();
+                    if (conteudoLinha.includes('diálise comércio') || 
+                        conteudoLinha.includes('quantidade de registros') || 
+                        conteudoLinha.trim() === "") {
+                        return false;
+                    }
+
+                    const temProtocolo = chamado['Protocolo'] !== undefined && chamado['Protocolo'] !== "";
+                    const temAssunto = chamado['Assunto'] !== undefined && chamado['Assunto'] !== "";
+                    return temProtocolo || temAssunto;
                 });
 
                 if (dadosPlanilhaGlobal.length > 0) {
                     verificarECadastrarClientesNovos(dadosPlanilhaGlobal);
+                    
+                    const inputInicio = document.getElementById('filtroDataInicio');
+                    const inputFim = document.getElementById('filtroDataFim');
+                    if (inputInicio) inputInicio.value = "";
+                    if (inputFim) inputFim.value = "";
+
                     processarIndicadoresEstrategicos();
                     renderizarTabelaUsuarios(); 
                 } else {
-                    if (uploadStatus) uploadStatus.textContent = "Nenhum dado legível encontrado na planilha.";
+                    if (uploadStatus) {
+                        uploadStatus.innerHTML = `<span style="color:#fb923c;"><i class="fa-solid fa-circle-check"></i> Nenhuma linha de chamados válida identificada.</span>`;
+                    }
                 }
             } catch (err) {
-                console.error("Erro crítico na leitura estrutural do Excel:", err);
-                if (uploadStatus) uploadStatus.innerHTML = `<span style="color:#ef4444;">Erro na leitura: ${err.message}</span>`;
+                console.error("Falha no parseador do Excel:", err);
+                if (uploadStatus) {
+                    uploadStatus.innerHTML = `<span style="color:#ef4444; font-weight:bold;"><i class="fa-solid fa-triangle-exclamation"></i> Diagnóstico: ${err.message}</span>`;
+                }
             }
         };
         reader.readAsArrayBuffer(file);
     });
 }
 
-function tratarFormatoDataExcel(dataInput) {
-    if (!dataInput) return null;
-    if (dataInput instanceof Date && !isNaN(dataInput.getTime())) return dataInput;
-    
-    if (typeof dataInput === 'number' || !isNaN(Number(dataInput))) {
-        const numeroSerial = Number(dataInput);
-        return new Date((numeroSerial - 25569) * 86400 * 1000);
-    }
-    
-    const dataStr = String(dataInput).trim();
-    const dataTentativa = new Date(dataStr);
-    if (!isNaN(dataTentativa.getTime())) return dataTentativa;
-    
-    if (dataStr.includes('/')) {
-        const partesEspaco = dataStr.split(' ');
-        const [dia, mes, ano] = partesEspaco[0].split('/');
-        let hora = 0, minuto = 0;
-        if (partesEspaco[1] && partesEspaco[1].includes(':')) {
-            [hora, minuto] = partesEspaco[1].split(':').map(Number);
-        }
-        return new Date(Number(ano), Number(mes) - 1, Number(dia), hora, minuto);
-    }
-    
-    return null;
-}
-
 // ==========================================
-// 5. ENGENHARIA DOS INDICADORES E PERFORMANCE
+// 6. ENGENHARIA DOS INDICADORES E MOTOR ANALÍTICO
 // ==========================================
 function processarIndicadoresEstrategicos() {
     const uploadStatus = document.getElementById('uploadStatus');
     if (dadosPlanilhaGlobal.length === 0) return;
 
     try {
-        const valInicio = document.getElementById('filtroDataInicio')?.value;
-        const valFim = document.getElementById('filtroDataFim')?.value;
-        if (!valInicio || !valFim) return;
+        let valInicio = document.getElementById('filtroDataInicio')?.value;
+        let valFim = document.getElementById('filtroDataFim')?.value;
+
+        if (!valInicio || !valFim) {
+            let datasExistentes = [];
+            dadosPlanilhaGlobal.forEach(chamado => {
+                let dataOriginalCria = chamado['Data de Criação'] || chamado['Data_de_Criação'] || chamado['Abertura'];
+                let d = tratarFormatoDataExcel(dataOriginalCria);
+                if (d) datasExistentes.push(d);
+            });
+
+            if (datasExistentes.length > 0) {
+                const menorData = new Date(Math.min(...datasExistentes));
+                const maiorData = new Date(Math.max(...datasExistentes));
+
+                valInicio = menorData.toISOString().split('T')[0];
+                valFim = maiorData.toISOString().split('T')[0];
+
+                const inputInicio = document.getElementById('filtroDataInicio');
+                const inputFim = document.getElementById('filtroDataFim');
+                if (inputInicio) inputInicio.value = valInicio;
+                if (inputFim) inputFim.value = valFim;
+            } else {
+                valInicio = "2026-01-01";
+                valFim = "2026-12-31";
+            }
+        }
 
         const filtroInicio = new Date(valInicio + "T00:00:00");
         const filtroFim = new Date(valFim + "T23:59:59");
@@ -527,7 +589,6 @@ function processarIndicadoresEstrategicos() {
         let bkAndamento = 0;
         let bkPausados = 0;
 
-        // Variáveis do monitoramento do Aging (Chamados Ativos/Abertos)
         let contSeteDias = 0;
         let contQuinzeDias = 0;
         let contTrintaDias = 0;
@@ -535,7 +596,6 @@ function processarIndicadoresEstrategicos() {
         let totalDiasAbertosAcumulados = 0;
         let totalChamadosAbertosCalculados = 0;
 
-        // Monitoramento estruturado de Reaberturas focado na nova coluna
         let totalReabertosPeriodo = 0;
         let reabertosPorMesAgrupado = {};
         let reabertosPorClienteAgrupado = {};
@@ -554,23 +614,20 @@ function processarIndicadoresEstrategicos() {
             const clienteNome = String(chamado['Cliente'] || 'Desconhecido').trim();
             const prioridade = String(chamado['Prioridade'] || '').toLowerCase().trim();
             const slaCumprido = String(chamado['SLA de Deadline Cumprido'] || chamado['SLA_de_Deadline_Cumprido'] || chamado['SLA'] || '').toLowerCase().trim();
-            const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido');
-            const isEmAndamento = status.includes('andamento') || status.includes('atendimento') || status.includes('aberto') || status.includes('vinculado');
             
-            // LÓGICA AJUSTADA: Valida reabertura baseado exclusivamente na coluna 'Reaberto' contendo 'sim'
+            const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido');
+            const isEmAndamento = status.includes('andamento') || status.includes('atendimento') || status.includes('aberto') || status.includes('vinculado') || status === '';
+            
             const valorReabertoRaw = chamado['Reaberto'];
             const isReaberto = valorReabertoRaw && String(valorReabertoRaw).toLowerCase().trim() === 'sim';
 
             let dataOriginalFechamento = chamado['Data de Finalização'] || chamado['Data_de_Finalização'] || chamado['Encerramento'];
             let dataFinalizacao = tratarFormatoDataExcel(dataOriginalFechamento);
 
-            // PROCESSAMENTO DE AGING (Apenas para chamados ativos/em aberto)
             if (!isFinalizado && dataCriacao <= filtroFim) {
                 totalChamadosAbertosCalculados++;
-                
                 const diferencaTempo = Math.max(0, hoje - dataCriacao);
                 const idadeDias = Math.floor(diferencaTempo / (1000 * 60 * 60 * 24));
-                
                 totalDiasAbertosAcumulados += idadeDias;
 
                 if (idadeDias > maxDiasAberto) {
@@ -607,22 +664,14 @@ function processarIndicadoresEstrategicos() {
                 }
 
                 mesesAgrupadosGeral[mesAnoLabel].total++;
-                
-                if (prioridade.includes('urgente')) {
-                    mesesAgrupadosGeral[mesAnoLabel].urgente++;
-                }
-                
+                if (prioridade.includes('urgente')) mesesAgrupadosGeral[mesAnoLabel].urgente++;
                 performanceMensalAgrupada[mesAnoLabel].criados++;
 
-                // PROCESSAMENTO ANALÍTICO DE REABERTURAS NO PERÍODO
                 if (isReaberto) {
                     totalReabertosPeriodo++;
-                    
-                    // Acumula contagem para gráfico de linha mensal
                     if (!reabertosPorMesAgrupado[mesAnoLabel]) reabertosPorMesAgrupado[mesAnoLabel] = 0;
                     reabertosPorMesAgrupado[mesAnoLabel]++;
 
-                    // Acumula contagem por cliente para o ranking
                     if (!reabertosPorClienteAgrupado[clienteNome]) reabertosPorClienteAgrupado[clienteNome] = 0;
                     reabertosPorClienteAgrupado[clienteNome]++;
                 }
@@ -692,12 +741,10 @@ function processarIndicadoresEstrategicos() {
         const pctDemandasAtuais = totalProtocolosPeriodo > 0 ? ((totalAtuaisNoPeriodo / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
         const pctFinalizados = totalProtocolosPeriodo > 0 ? ((totalFinalizados / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
 
-        // ATUALIZAÇÃO DOS CARDS DE MÉTRICAS DA VISÃO GERAL
         const cardT = document.getElementById('kpiTotal'); if (cardT) cardT.textContent = totalProtocolosPeriodo;
         const cardF = document.getElementById('kpiFinalizados'); if (cardF) cardF.textContent = `${pctFinalizados}%`;
         const cardAtuais = document.getElementById('kpiDemandasAtuais'); if (cardAtuais) cardAtuais.textContent = `${pctDemandasAtuais}%`;
         
-        // Alimenta o Card de Percentual de Reaberturas baseado na nova lógica precisa
         const cardReabertos = document.getElementById('kpiReabertos');
         if (cardReabertos) {
             const pctReabertos = totalProtocolosPeriodo > 0 ? ((totalReabertosPeriodo / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
@@ -770,7 +817,6 @@ function processarIndicadoresEstrategicos() {
 
         inicializarGraficosBacklog(labelsOrdenadas, dadosEstoqueInicialLinha, dadosFinalizadosNoMesBarras);
 
-        // ATUALIZAÇÃO DOS CARDS E GRÁFICO DO AGING NO DOM
         const elAgingSete = document.getElementById('agingCardSete'); if (elAgingSete) elAgingSete.textContent = contSeteDias;
         const elAgingQuinze = document.getElementById('agingCardQuinze'); if (elAgingQuinze) elAgingQuinze.textContent = contQuinzeDias;
         const elAgingTrinta = document.getElementById('agingCardTrinta'); if (elAgingTrinta) elAgingTrinta.textContent = contTrintaDias;
@@ -784,7 +830,6 @@ function processarIndicadoresEstrategicos() {
 
         inicializarGraficoAging(bucketsAging);
 
-        // PROCESSAMENTO DE DADOS E ALIMENTAÇÃO DOS NOVOS GRÁFICOS DE REABERTURA
         const dadosReabertosMes = labelsOrdenadas.map(lbl => reabertosPorMesAgrupado[lbl] || 0);
         inicializarGraficoReabertosMes(labelsOrdenadas, dadosReabertosMes);
 
@@ -797,19 +842,91 @@ function processarIndicadoresEstrategicos() {
         inicializarGraficoReabertosCliente(topClientesLabels, topClientesValores);
         
         if (uploadStatus) {
-            uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Base conectada com sucesso!</span>`;
+            uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Base conectada com sucesso! (${dadosPlanilhaGlobal.length} chamados)</span>`;
         }
 
-    } catch (erroCrítico) {
-        console.error("Erro interno detectado no motor analítico:", erroCrítico);
+    } catch (erroCritico) {
+        console.error("Erro interno detectado no motor analítico:", erroCritico);
         if (uploadStatus) {
-            uploadStatus.innerHTML = `<span style="color:#ef4444; font-weight:bold;"><i class="fa-solid fa-triangle-exclamation"></i> Diagnóstico: ${erroCrítico.message}</span>`;
+            uploadStatus.innerHTML = `<span style="color:#ef4444; font-weight:bold;"><i class="fa-solid fa-triangle-exclamation"></i> Diagnóstico: ${erroCritico.message}</span>`;
         }
     }
 }
 
 // ==========================================
-// 6. ENGENHARIA DE GESTÃO DE USUÁRIOS/CLIENTES (HISTÓRICO MANUAL)
+// 6.1 ATIVAÇÃO DOS FILTROS DE DATA COM SUPORTE A DIGITAÇÃO NUMÉRICA DIRETA (31072026)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const inputInicio = document.getElementById('filtroDataInicio');
+    const inputFim = document.getElementById('filtroDataFim');
+
+    const configurarCampoDataLivre = (input) => {
+        if (!input) return;
+
+        // Quando foca, transforma em texto e mostra no formato DD/MM/AAAA para edição
+        input.addEventListener('focus', () => {
+            let valorAtual = input.value; // Formato nativo: YYYY-MM-DD
+            input.type = 'text';
+            input.placeholder = 'DDMMAAAA';
+            
+            if (valorAtual && valorAtual.includes('-')) {
+                const partes = valorAtual.split('-');
+                if (partes.length === 3) {
+                    input.value = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                }
+            }
+        });
+
+        // Quando perde o foco, processa a entrada (com ou sem barras)
+        input.addEventListener('blur', () => {
+            let valorDigitado = input.value.trim();
+            
+            // Remove qualquer caractere que não seja número para avaliar o que foi digitado
+            let apenasNumeros = valorDigitado.replace(/\D/g, '');
+
+            // Se você digitou exatamente 8 números (ex: 31072026)
+            if (apenasNumeros.length === 8) {
+                const dia = apenasNumeros.substring(0, 2);
+                const mes = apenasNumeros.substring(2, 4);
+                const ano = apenasNumeros.substring(4, 8);
+                
+                // Força o formato ISO que o navegador precisa interna e visualmente
+                input.value = `${ano}-${mes}-${dia}`;
+            } 
+            // Caso você tenha digitado usando barras normalmente (ex: 31/07/2026)
+            else if (valorDigitado.includes('/')) {
+                const partes = valorDigitado.split('/');
+                if (partes.length === 3) {
+                    const dia = partes[0].padStart(2, '0');
+                    const mes = partes[1].padStart(2, '0');
+                    const ano = partes[2];
+                    input.value = `${ano}-${mes}-${dia}`;
+                }
+            }
+            
+            // Retorna para o tipo 'date' para manter o calendário visual funcionando
+            input.type = 'date';
+
+            // Atualiza o dashboard e os gráficos na hora
+            if (typeof dadosPlanilhaGlobal !== 'undefined' && dadosPlanilhaGlobal.length > 0) {
+                processarIndicadoresEstrategicos();
+            }
+        });
+
+        // Garante a atualização caso escolha pelo clique no calendário
+        input.addEventListener('change', () => {
+            if (input.type === 'date' && typeof dadosPlanilhaGlobal !== 'undefined' && dadosPlanilhaGlobal.length > 0) {
+                processarIndicadoresEstrategicos();
+            }
+        });
+    };
+
+    configurarCampoDataLivre(inputInicio);
+    configurarCampoDataLivre(inputFim);
+});
+
+// ==========================================
+// 7. GESTÃO ORG. DE CLIENTES E HISTÓRICO
 // ==========================================
 function verificarECadastrarClientesNovos(linhasPlanilha) {
     try {
@@ -955,7 +1072,7 @@ if (formEditar) {
 
             listaClientes[index] = cliente;
             localStorage.setItem('cadastroClientesDB', JSON.stringify(listaClientes));
-            alert("Vínculo organizacional atualizado e gravado na linha do tempo histórica!");
+            alert("Vínculo organizacional updated e gravado na linha do tempo histórica!");
         } else {
             alert("Nenhuma alteração detectada nos campos de Setor ou Unidade.");
         }

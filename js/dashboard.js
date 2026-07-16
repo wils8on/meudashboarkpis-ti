@@ -436,93 +436,57 @@ function inicializarGraficoReabertosCliente(labels = [], dadosClientes = []) {
 }
 
 // ==========================================
-// 5. LEITURA DO EXCEL (SHEETJS) - PROCESSAMENTO DE ENTRADA
+// 5. CONEXÃO SEGURA AUTOMÁTICA VIA JSON ATUALIZADO
 // ==========================================
-const excelInput = document.getElementById('excelFile');
-if (excelInput) {
-    excelInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
+document.addEventListener('DOMContentLoaded', () => {
+    // Carrega os dados automaticamente quando o usuário entra no painel
+    carregarDadosAutomatizados();
+});
 
-        const uploadStatus = document.getElementById('uploadStatus');
-        if (uploadStatus) {
-            uploadStatus.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processando chamados: ${file.name}...`;
+async function carregarDadosAutomatizados() {
+    const uploadStatus = document.getElementById('uploadStatus');
+    if (uploadStatus) {
+        uploadStatus.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Carregando dados operacionais em tempo real...`;
+    }
+
+    try {
+        // Busca o arquivo JSON gerado com total segurança pelo GitHub Action
+        const response = await fetch('dados.json');
+        if (!response.ok) {
+            throw new Error("O arquivo de dados integrados ainda não está disponível no servidor.");
         }
         
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { 
-                    type: 'array', 
-                    cellDates: true, 
-                    cellNF: false, 
-                    cellText: false 
-                });
-                
-                if (!workbook || !workbook.SheetNames || workbook.SheetNames.length === 0) {
-                    throw new Error("O arquivo Excel parece estar vazio ou num formato corrompido.");
-                }
+        const jsonResponse = await response.json();
+        
+        // Mapeie os dados vindos do TomTicket para a estrutura que seu dashboard já consome
+        // Nota: Altere as propriedades (ex: c.protocolo, c.titulo) para baterem exatamente com o retorno JSON da API do TomTicket
+        dadosPlanilhaGlobal = jsonResponse.data.map(chamado => ({
+            'Protocolo': chamado.id || chamado.protocolo || "",
+            'Assunto': chamado.titulo || chamado.assunto || "",
+            'Status': chamado.situacao || chamado.status || "Aberto",
+            'Cliente': chamado.cliente_nome || chamado.cliente || "Desconhecido",
+            'Prioridade': chamado.prioridade || "Normal",
+            'Data de Criação': chamado.data_abertura || chamado.data_criacao || "",
+            'Data de Finalização': chamado.data_fechamento || chamado.data_finalizacao || "",
+            'SLA de Deadline Cumprido': chamado.sla_cumprido || "sim",
+            'Reaberto': chamado.reaberto || "Não"
+        }));
 
-                let nomeAbaValida = workbook.SheetNames[0];
-                for (let i = 0; i < workbook.SheetNames.length; i++) {
-                    const wsName = workbook.SheetNames[i];
-                    const ws = workbook.Sheets[wsName];
-                    if (ws && ws['!ref']) {
-                        nomeAbaValida = wsName;
-                        break;
-                    }
-                }
-
-                const worksheet = workbook.Sheets[nomeAbaValida];
-                const linhasBrutas = XLSX.utils.sheet_to_json(worksheet, { 
-                    defval: "", 
-                    raw: false, 
-                    blankrows: false 
-                });
-
-                if (!linhasBrutas || linhasBrutas.length === 0) {
-                    throw new Error("Nenhum registo de dados detetado na aba principal do arquivo.");
-                }
-
-                dadosPlanilhaGlobal = linhasBrutas.filter(chamado => {
-                    if (!chamado) return false;
-                    const conteudoLinha = Object.values(chamado).join(' ').toLowerCase();
-                    if (conteudoLinha.includes('diálise comércio') || 
-                        conteudoLinha.includes('quantidade de registros') || 
-                        conteudoLinha.trim() === "") {
-                        return false;
-                    }
-
-                    const temProtocolo = chamado['Protocolo'] !== undefined && chamado['Protocolo'] !== "";
-                    const temAssunto = chamado['Assunto'] !== undefined && chamado['Assunto'] !== "";
-                    return temProtocolo || temAssunto;
-                });
-
-                if (dadosPlanilhaGlobal.length > 0) {
-                    verificarECadastrarClientesNovos(dadosPlanilhaGlobal);
-                    
-                    const inputInicio = document.getElementById('filtroDataInicio');
-                    const inputFim = document.getElementById('filtroDataFim');
-                    if (inputInicio) inputInicio.value = "";
-                    if (inputFim) inputFim.value = "";
-
-                    processarIndicadoresEstrategicos();
-                    renderizarTabelaUsuarios(); 
-                } else {
-                    if (uploadStatus) {
-                        uploadStatus.innerHTML = `<span style="color:#fb923c;"><i class="fa-solid fa-circle-check"></i> Nenhuma linha de chamados válida identificada.</span>`;
-                    }
-                }
-            } catch (err) {
-                console.error("Falha no parseador do Excel:", err);
-                if (uploadStatus) {
-                    uploadStatus.innerHTML = `<span style="color:#ef4444; font-weight:bold;"><i class="fa-solid fa-triangle-exclamation"></i> Diagnóstico: ${err.message}</span>`;
-                }
+        if (dadosPlanilhaGlobal.length > 0) {
+            verificarECadastrarClientesNovos(dadosPlanilhaGlobal);
+            processarIndicadoresEstrategicos();
+            renderizarTabelaUsuarios();
+            
+            if (uploadStatus) {
+                uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Conectado à API! Atualizado automaticamente em segundo plano.</span>`;
             }
-        };
-        reader.readAsArrayBuffer(file);
-    });
+        }
+    } catch (erro) {
+        console.error("Erro na leitura automática de dados:", erro);
+        if (uploadStatus) {
+            uploadStatus.innerHTML = `<span style="color: #fb923c;"><i class="fa-solid fa-triangle-exclamation"></i> Aguardando primeira sincronização automática do servidor...</span>`;
+        }
+    }
 }
 
 // ==========================================

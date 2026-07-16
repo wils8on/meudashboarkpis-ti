@@ -1,0 +1,35 @@
+name: Atualizar Dados do TomTicket
+
+on:
+  schedule:
+    # Agenda para rodar de 20 em 20 minutos automaticamente
+    - cron: "*/20 * * * *"
+  workflow_dispatch: # Permite que você force a atualização clicando em um botão no GitHub se quiser
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Consultar API do TomTicket e gerar JSON
+        run: |
+          # Faz a chamada segura usando a chave que você salvou nas configurações do repositório
+          # Importante: Ajuste a URL abaixo se o seu ID de cliente ou endpoint for diferente no TomTicket
+          curl -X GET "https://api.tomticket.com/v1/chamados/1/1000/${{ secrets.TOMTICKET_TOKEN }}" \
+          -H "accept: application/json" \
+          -o dados.json
+
+      - name: Salvar e publicar os dados atualizados
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add dados.json
+          # Só faz o commit se houver alguma diferença nos dados para evitar commits vazios
+          git diff-index --quiet HEAD || git commit -m "data: Atualização automatizada dos chamados"
+          git push

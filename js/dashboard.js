@@ -90,8 +90,15 @@ function tratarFormatoDataExcel(dataInput) {
         return new Date((numeroSerial - 25569) * 86400 * 1000);
     }
     
-    const dataStr = String(dataInput).trim();
-    const dataTentativa = new Date(dataStr);
+    // Remove fuso horário da string (ex: 2026-07-16 16:53:08-03:00 -> 2026-07-16 16:53:08)
+    let dataStr = String(dataInput).trim();
+    if (dataStr.includes('-') && dataStr.includes(':') && dataStr.lastIndexOf('-') > 10) {
+        dataStr = dataStr.substring(0, dataStr.lastIndexOf('-'));
+    } else if (dataStr.includes('+') && dataStr.includes(':')) {
+        dataStr = dataStr.substring(0, dataStr.lastIndexOf('+'));
+    }
+    
+    const dataTentativa = new Date(dataStr.replace(/-/g, '/'));
     if (!isNaN(dataTentativa.getTime())) return dataTentativa;
     
     if (dataStr.includes('/')) {
@@ -480,18 +487,31 @@ async function carregarDadosAutomatizados() {
         // Armazena uma cópia bruta para o painel flutuante de diagnóstico antes do mapeamento
         dadosBrutosAPI = listaChamados;
 
-        // Mapeia as colunas do TomTicket para os nomes esperados pelas lógicas dos gráficos
-        dadosPlanilhaGlobal = listaChamados.map(chamado => ({
-            'Protocolo': chamado.id || chamado.protocolo || chamado.numero || chamado.id_chamado || "",
-            'Assunto': chamado.titulo || chamado.assunto || chamado.titulo_chamado || "",
-            'Status': chamado.situacao || chamado.status || chamado.nome_situacao || "Aberto",
-            'Cliente': chamado.cliente_nome || chamado.cliente || chamado.nome_cliente || "Desconhecido",
-            'Prioridade': chamado.prioridade || chamado.nome_prioridade || "Normal",
-            'Data de Criação': chamado.data_abertura || chamado.data_criacao || chamado.data_aberto || chamado.criado_em || "",
-            'Data de Finalização': chamado.data_fechamento || chamado.data_finalizacao || chamado.data_conclusao || chamado.fechado_em || "",
-            'SLA de Deadline Cumprido': chamado.sla_cumprido || chamado.sla || "sim",
-            'Reaberto': chamado.reaberto || "Não"
-        }));
+        // Mapeia as colunas do TomTicket v2.0 para os nomes esperados pelas lógicas dos gráficos
+        dadosPlanilhaGlobal = listaChamados.map(chamado => {
+            const nomeCliente = chamado.customer && chamado.customer.name ? chamado.customer.name : "Desconhecido";
+            const statusReaberto = chamado.reopened === true ? "sim" : "Não";
+
+            // Traduz a prioridade numérica para os termos textuais esperados pelos filtros
+            let termoPrioridade = "Normal";
+            if (chamado.priority === 3) termoPrioridade = "Alta";
+            if (chamado.priority > 3) termoPrioridade = "Urgente";
+
+            // Avalia se o SLA foi cumprido acessando o sub-objeto de deadline
+            const slaCumprido = chamado.sla && chamado.sla.deadline && chamado.sla.deadline.accomplished === false ? "não" : "sim";
+
+            return {
+                'Protocolo': chamado.protocol || chamado.id || "",
+                'Assunto': chamado.subject || "",
+                'Status': chamado.situation && chamado.situation.description ? chamado.situation.description : "Aberto",
+                'Cliente': nomeCliente,
+                'Prioridade': termoPrioridade,
+                'Data de Criação': chamado.creation_date || "",
+                'Data de Finalização': chamado.end_date || "",
+                'SLA de Deadline Cumprido': slaCumprido,
+                'Reaberto': statusReaberto
+            };
+        });
 
         if (dadosPlanilhaGlobal.length > 0) {
             verificarECadastrarClientesNovos(dadosPlanilhaGlobal);
@@ -499,7 +519,7 @@ async function carregarDadosAutomatizados() {
             renderizarTabelaUsuarios();
             
             if (uploadStatus) {
-                uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Base conectada com sucesso! (${dadosPlanilhaGlobal.length} chamados)</span>`;
+                uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Conectado à API! Atualizado automaticamente em segundo plano.</span>`;
             }
         } else {
             throw new Error("A lista de chamados retornou vazia.");
@@ -639,8 +659,8 @@ function processarIndicadoresEstrategicos() {
             const prioridade = String(chamado['Prioridade'] || '').toLowerCase().trim();
             const slaCumprido = String(chamado['SLA de Deadline Cumprido'] || chamado['SLA_de_Deadline_Cumprido'] || chamado['SLA'] || '').toLowerCase().trim();
             
-            const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido');
-            const isEmAndamento = status.includes('andamento') || status.includes('atendimento') || status.includes('aberto') || status.includes('vinculado') || status === '';
+            const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido') || status.includes('encerrado');
+            const isEmAndamento = status.includes('andamento') || status.includes('atendimento') || status.includes('aberto') || status.includes('vinculado') || status.includes('sem atendente') || status === '';
             
             const valorReabertoRaw = chamado['Reaberto'];
             const isReaberto = valorReabertoRaw && String(valorReabertoRaw).toLowerCase().trim() === 'sim';
@@ -682,13 +702,13 @@ function processarIndicadoresEstrategicos() {
                 totalProtocolosPeriodo++;
                 const mesAnoLabel = `${String(dataCriacao.getMonth() + 1).padStart(2, '0')}/${dataCriacao.getFullYear()}`;
 
-                if (!mesesAgrupadosGeral[mesAnoLabel]) mesesAgrupadosGeral[mesAnoLabel] = { total: 0, urgente: 0 };
+                if (!mesesAgrupadosGeral[mesAnoLabel]) mesesAgrupadosGeral[mesAnoLabel] = { total: 0, urgent: 0 };
                 if (!performanceMensalAgrupada[mesAnoLabel]) {
                     performanceMensalAgrupada[mesAnoLabel] = { criados: 0, fechadosNoMesmoMes: 0, dentroSla: 0, totalValidosSla: 0 };
                 }
 
                 mesesAgrupadosGeral[mesAnoLabel].total++;
-                if (prioridade.includes('urgente')) mesesAgrupadosGeral[mesAnoLabel].urgente++;
+                if (prioridade.includes('urgente')) mesesAgrupadosGeral[mesAnoLabel].urgent++;
                 performanceMensalAgrupada[mesAnoLabel].criados++;
 
                 if (isReaberto) {
@@ -739,7 +759,7 @@ function processarIndicadoresEstrategicos() {
         });
 
         const dataTotalBarras = labelsOrdenadas.map(lbl => mesesAgrupadosGeral[lbl].total);
-        const dataUrgenteBarras = labelsOrdenadas.map(lbl => mesesAgrupadosGeral[lbl].urgente);
+        const dataUrgenteBarras = labelsOrdenadas.map(lbl => mesesAgrupadosGeral[lbl].urgent || 0);
         inicializarGraficoGeral(labelsOrdenadas, dataTotalBarras, dataUrgenteBarras);
 
         let arrayTaxasResolucao = [];
@@ -824,8 +844,8 @@ function processarIndicadoresEstrategicos() {
                 let dataOriginalFechamento = chamado['Data de Finalização'] || chamado['Data_de_Finalização'] || chamado['Encerramento'];
                 let dataFechamento = tratarFormatoDataExcel(dataOriginalFechamento);
 
-                const status = String(chamado['Status'] || chamado['Última Situação'] || chamado['Situação'] || '').toLowerCase();
-                const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido');
+                const status = String(chamado['Status'] ||').toLowerCase();
+                const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido') || status.includes('encerrado');
 
                 if (dataCria < primeiroDiaDoMes) {
                     if (!dataFechamento || dataFechamento >= primeiroDiaDoMes) estoqueInicialContador++;

@@ -314,7 +314,7 @@ function inicializarGraficosBacklog(labels = [], dadosEstoqueInicial = [], dados
                 plugins: {
                     legend: { labels: { color: corTexto } },
                     datalabels: {
-                        anchor: 'end', align: 'top', color: corTexto,
+                        anchor: 'end', align: 'top', color: font,
                         font: { weight: 'bold', size: 11 },
                         formatter: value => value > 0 ? value : '0'
                     }
@@ -357,6 +357,90 @@ function inicializarGraficoAging(valoresBuckets = []) {
                     anchor: 'end',
                     align: 'top',
                     color: corTexto,
+                    font: { weight: 'bold', size: 11 },
+                    formatter: value => value > 0 ? value : '0'
+                }
+            }
+        }
+    });
+}
+
+function inicializarGraficoReabertosMes(labels = [], dadosReabertos = []) {
+    const ctx = document.getElementById('graficoReabertosMes');
+    if (!ctx) return;
+    if (chartReabertosMes) chartReabertosMes.destroy();
+
+    const corTexto = obterCorTextoPorTema();
+    const corGrid = obterCorGridPorTema();
+
+    chartReabertosMes = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Chamados Reabertos',
+                data: dadosReabertos,
+                borderColor: '#f43f5e',
+                backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                pointBackgroundColor: '#f43f5e',
+                fill: true,
+                tension: 0.2,
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, grace: '15%', ticks: { color: corTexto }, grid: { color: corGrid } },
+                x: { ticks: { color: corTexto }, grid: { color: corGrid } }
+            },
+            plugins: {
+                legend: { labels: { color: corTexto } },
+                datalabels: {
+                    anchor: 'end', align: 'top', color: '#f43f5e',
+                    font: { weight: 'bold', size: 11 },
+                    formatter: value => value > 0 ? value : '0'
+                }
+            }
+        }
+    });
+}
+
+function inicializarGraficoReabertosCliente(labels = [], dadosClientes = []) {
+    const ctx = document.getElementById('graficoReabertosCliente');
+    if (!ctx) return;
+    if (chartReabertosCliente) chartReabertosCliente.destroy();
+
+    const corTexto = obterCorTextoPorTema();
+    const corGrid = obterCorGridPorTema();
+
+    chartReabertosCliente = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Reaberturas por Cliente',
+                data: dadosClientes,
+                backgroundColor: '#fb923c',
+                borderRadius: 2,
+                barPercentage: 0.6
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { beginAtZero: true, grace: '15%', ticks: { color: corTexto }, grid: { color: corGrid } },
+                y: { ticks: { color: corTexto }, grid: { display: false } }
+            },
+            plugins: {
+                legend: { display: false },
+                datalabels: {
+                    anchor: 'end', align: 'right', color: corTexto,
                     font: { weight: 'bold', size: 11 },
                     formatter: value => value > 0 ? value : '0'
                 }
@@ -409,14 +493,12 @@ async function carregarDadosAutomatizados() {
             const nomeCliente = chamado.customer && chamado.customer.name ? chamado.customer.name : "Desconhecido";
             const statusReaberto = chamado.reopened === true ? "sim" : "Não";
 
-            // Se priority for texto (ex: "urgente") ou número, padroniza
             let termoPrioridade = "Normal";
             if (chamado.priority === 3 || String(chamado.priority).toLowerCase().includes('alta')) termoPrioridade = "Alta";
             if (chamado.priority > 3 || String(chamado.priority).toLowerCase().includes('urgente')) termoPrioridade = "Urgente";
 
             const slaCumprido = chamado.sla && chamado.sla.deadline && chamado.sla.deadline.accomplished === false ? "não" : "sim";
 
-            // Determina a descrição textual do estado atual do chamado
             let descStatus = "Aberto";
             if (chamado.status && chamado.status.description) {
                 descStatus = chamado.status.description;
@@ -424,7 +506,6 @@ async function carregarDadosAutomatizados() {
                 descStatus = chamado.situation.description;
             }
 
-            // Força a marcação de Concluído se possuir data de encerramento preenchida
             if (chamado.end_date && chamado.end_date !== null) {
                 descStatus = "Concluído";
             }
@@ -586,7 +667,6 @@ function processarIndicadoresEstrategicos() {
             const prioridade = String(chamado['Prioridade'] || '').toLowerCase().trim();
             const slaCumprido = String(chamado['SLA de Deadline Cumprido'] || '').toLowerCase().trim();
             
-            // Validação calibrada para API v2.0: Verifica se o campo de encerramento possui valor válido
             const isFinalizado = chamado['Data de Finalização'] !== null && chamado['Data de Finalização'] !== "" || 
                                  status.includes('finalizada') || status.includes('fechado') || status.includes('concluido') || status.includes('encerrado');
             
@@ -738,7 +818,8 @@ function processarIndicadoresEstrategicos() {
         const perf1 = document.getElementById('perfCard1'); if (perf1) perf1.textContent = `${totalFechadosNoFiltro > 0 ? ((fechadosNoMesAbertura / totalFechadosNoFiltro) * 100).toFixed(2).replace('.', ',') : '0,00'}%`;
         const perf2 = document.getElementById('perfCard2'); if (perf2) perf2.textContent = `${totalValidosParaSla > 0 ? ((totalDentroSlaSoma / totalValidosParaSla) * 100).toFixed(2).replace('.', ',') : '0,00'}%`;
         const perf3 = document.getElementById('perfCard3'); if (perf3) perf3.textContent = `${totalFechadosNoFiltro > 0 ? ((fechadosMesDiferente / totalFechadosNoFiltro) * 100).toFixed(2).replace('.', ',') : '0,00'}%`;
-        const perf4 = document.getElementById('perfCard4'); if (perf4) perf4.textContent = melhorMesNome;
+        const perf4 = document.getElementById('perfCard4'); if (perf4) perf4.textContent = gamblers;
+        if (perf4) perf4.textContent = melhorMesNome;
 
         inicializarGraficosPerformance(labelsOrdenadas, arrayTaxasResolucao, arrayIndicesSla);
 

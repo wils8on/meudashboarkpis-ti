@@ -1,12 +1,85 @@
 {
   "data": [
     {
+      "id": "45b69df939c3bd3abe9bac876c6df823",
+      "protocol": 1376,
+      "subject": "Tela de Não Conformidade",
+      "message": "Boa tarde, pessoal.\r\n\r\nUma sugestão para incluirmos na tela de cadastro de não conformidades.\r\n\r\nÉ possível anexar documentos, fotos no  final da tela de cadastro da NC?\r\n\r\nAssim deixamos registrada e evidenciada a reclamação do produto (fotos, vídeos, ficha de reclamação) que o cliente nos envia, e garantimos a rastreabilidade também deste fornecedor.\r\n\r\nSeguem os documentos recebidos do cliente, que seriam registrados nesta não conformidade, como modelo.\r\n\r\nColoco em cópia a Chris para acompanhamento.\r\n\r\nMuito obrigado.\r\n\r\nAbraços,\r\n\r\nGabriela ",
+      "message_truncated": false,
+      "mimetype": "text/plain",
+      "customer": {
+        "name": "Gabriela Callegaro",
+        "email": "gabriela.callegaro@dialise.com.br",
+        "internal_id": null,
+        "organization": {
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "ticket_type": "Externo",
+      "work_time": 0,
+      "elapsed_time": 817,
+      "creation_date": "2026-07-17 16:20:19-03:00",
+      "sla": {
+        "startup": {
+          "date": "2026-07-23 08:50:20-03:00",
+          "accomplished": true
+        },
+        "deadline": {
+          "date": null,
+          "accomplished": null
+        }
+      },
+      "cost": {
+        "hourly": 0,
+        "overtime": 0,
+        "total_final": 0,
+        "total_overtime": 0,
+        "total_gross": 0
+      },
+      "evaluation": {
+        "problem_solved": null,
+        "grade": null,
+        "comment": null
+      },
+      "first_reply_date": null,
+      "end_date": null,
+      "situation": {
+        "id": 0,
+        "apply_date": "2026-07-17 16:20:19-03:00",
+        "description": "Sem atendente vinculado"
+      },
+      "category": {
+        "id": "af4c2651ad6e9a96e5096b72913e17a4",
+        "name": "Solicitações e Sugestões"
+      },
+      "department": {
+        "id": "7e83cf7e4cca751863fbb6f174c27b36",
+        "name": "Sistemas "
+      },
+      "operator": {
+        "id": null,
+        "name": null
+      },
+      "status": {
+        "id": null,
+        "description": null,
+        "apply_date": null
+      },
+      "parent_ticket_id": null,
+      "schedule_date": null,
+      "active_whatsapp": false,
+      "closed_by_inactivity": false,
+      "reopened": false
+    },
+    {
       "id": "4d82d3b543b13aa6f47ea497e1226745",
       "protocol": 1375,
       "subject": "liberação indevida de pedidos para cliente com limite de crédito zerado",
-      "message": "Em maio/2026, o limite de crédito do cliente 1234 foi retirado em razão da recorrência de inadimplências apresentadas. Na ocasião, tanto o Limite de Crédito quanto o Limite de Crédito Mensal foram alterados para R$ 0,00, sendo registrada a seguinte observação no cadastro do parceiro: \"Limite de crédito zerado pois o cliente teve recorrentes atrasos de longo prazo conosco, e a recomendação no Serasa extremamente negativa.\"\r\nAlém disso, foi solicitado que a mercadoria referente à NF 4153, da filial SCS, fosse faturada exclusivamente mediante pagamento à vista, conforme registros em sistema.\r\nContudo, identificamos posteriormente a emissão de três notas fiscais faturadas a prazo para o mesmo cliente: NF 4269, 4274 e 4523.\r\nAo consultar a tela de registro de liberações, verificamos que não há qualquer informação de bloqueio ou de liberação financeira, o que indica que o sistema permitiu o faturamento dos pedidos mesmo com o limite de crédito zerado. \r\nEssa situação expôs a empresa a um risco de crédito de R$ 5.610,00, sendo que duas dessas notas já se encontram em inadimplência. Considerando o potencial impacto financeiro e o risco de novas liberações indevidas, esta demanda possui caráter de urgência.\r\nSolicitamos, por gentileza, que seja analisado o ocorrido, identificando em que etapa houve a falha do processo e por qual motivo o sistema permitiu o faturamento a prazo, sem evidência de bloqueio, mesmo com as restrições de crédito configuradas para o cliente.",
+      "message": "Em maio/2026, o limite de crédito do cliente 1234 foi retirado em razão da recorrência de inadimplências apresentadas. Na ocasião, tanto o Limite de Crédito quanto o Limite de Crédito Mensal foram alterados para R$ 0,00, sendo registrada a seguinte observação no cadastro do parceiro: &quot;Limite de crédito zerado pois o cliente teve recorrentes atrasos de longo prazo conosco, e a recomendação no Serasa extremamente negativa.&quot;<br />\r\nAlém disso, foi solicitado que a mercadoria referente à NF 4153, da filial SCS, fosse faturada exclusivamente mediante pagamento à vista, conforme registros em sistema.<br />\r\nContudo, identificamos posteriormente a emissão de três notas fiscais faturadas a prazo para o mesmo cliente: NF 4269, 4274 e 4523.<br />\r\nAo consultar a tela de registro de liberações, verificamos que não há qualquer informação de bloqueio ou de liberação financeira, o que indica que o sistema permitiu o faturamento dos pedidos mesmo com o limite de crédito zerado. <br />\r\nEssa situação expôs a empresa a um risco de crédito de R$ 5.610,00, sendo que duas dessas notas já se encontram em inadimplência. Considerando o potencial impacto financeiro e o risco de novas liberações indevidas, esta demanda possui caráter de urgência.<br />\r\nSolicitamos, por gentileza, que seja analisado o ocorrido, identificando em que etapa houve a falha do processo e por qual motivo o sistema permitiu o faturamento a prazo, sem evidência de bloqueio, mesmo com as restrições de crédito configuradas para o cliente.",
       "message_truncated": false,
-      "mimetype": "text/plain",
+      "mimetype": "text/html",
       "customer": {
         "name": "Tassiane Almeida",
         "email": "tassiane.almeida@dialise.com.br",
@@ -19,15 +92,15 @@
       "priority": 4,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1022,
+      "elapsed_time": 6310,
       "creation_date": "2026-07-17 14:48:46-03:00",
       "sla": {
         "startup": {
-          "date": "2026-07-17 15:18:46-03:00",
+          "date": "2026-07-17 16:11:01-03:00",
           "accomplished": true
         },
         "deadline": {
-          "date": null,
+          "date": "2026-07-20 14:11:01-03:00",
           "accomplished": true
         }
       },
@@ -92,7 +165,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8382,
+      "elapsed_time": 13670,
       "creation_date": "2026-07-17 12:46:06-03:00",
       "sla": {
         "startup": {
@@ -238,7 +311,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 79960,
+      "elapsed_time": 85248,
       "creation_date": "2026-07-16 16:53:08-03:00",
       "sla": {
         "startup": {
@@ -311,7 +384,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 1200,
-      "elapsed_time": 80723,
+      "elapsed_time": 86011,
       "creation_date": "2026-07-16 16:40:25-03:00",
       "sla": {
         "startup": {
@@ -384,7 +457,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 420,
-      "elapsed_time": 86098,
+      "elapsed_time": 91386,
       "creation_date": "2026-07-16 15:10:50-03:00",
       "sla": {
         "startup": {
@@ -530,7 +603,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 99799,
+      "elapsed_time": 105087,
       "creation_date": "2026-07-16 11:22:29-03:00",
       "sla": {
         "startup": {
@@ -1406,7 +1479,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 623944,
+      "elapsed_time": 629232,
       "creation_date": "2026-07-10 09:46:44-03:00",
       "sla": {
         "startup": {
@@ -1698,7 +1771,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 707593,
+      "elapsed_time": 712881,
       "creation_date": "2026-07-09 10:32:35-03:00",
       "sla": {
         "startup": {
@@ -2574,7 +2647,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 944565,
+      "elapsed_time": 949853,
       "creation_date": "2026-07-06 16:43:03-03:00",
       "sla": {
         "startup": {
@@ -2720,7 +2793,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 962301,
+      "elapsed_time": 967589,
       "creation_date": "2026-07-06 11:47:27-03:00",
       "sla": {
         "startup": {
@@ -3450,7 +3523,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 2431588,
+      "elapsed_time": 2436876,
       "creation_date": "2026-06-19 11:39:20-03:00",
       "sla": {
         "startup": {
@@ -4034,7 +4107,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3025176,
+      "elapsed_time": 3030464,
       "creation_date": "2026-06-12 14:46:14-03:00",
       "sla": {
         "startup": {
@@ -4107,7 +4180,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3025322,
+      "elapsed_time": 3030610,
       "creation_date": "2026-06-12 14:43:48-03:00",
       "sla": {
         "startup": {
@@ -4399,7 +4472,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3043493,
+      "elapsed_time": 3048781,
       "creation_date": "2026-06-12 09:40:57-03:00",
       "sla": {
         "startup": {
@@ -4837,7 +4910,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3296754,
+      "elapsed_time": 3302042,
       "creation_date": "2026-06-09 11:19:56-03:00",
       "sla": {
         "startup": {
@@ -6224,7 +6297,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3989746,
+      "elapsed_time": 3995034,
       "creation_date": "2026-06-01 10:50:04-03:00",
       "sla": {
         "startup": {
@@ -6589,7 +6662,7 @@
       "priority": 2,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 4334682,
+      "elapsed_time": 4339970,
       "creation_date": "2026-05-28 11:01:08-03:00",
       "sla": {
         "startup": {
@@ -6662,7 +6735,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4403467,
+      "elapsed_time": 4408755,
       "creation_date": "2026-05-27 15:54:43-03:00",
       "sla": {
         "startup": {
@@ -8633,7 +8706,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 6052557,
+      "elapsed_time": 6057845,
       "creation_date": "2026-05-08 13:49:54-03:00",
       "sla": {
         "startup": {
@@ -8706,7 +8779,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 6059654,
+      "elapsed_time": 6064942,
       "creation_date": "2026-05-08 11:51:37-03:00",
       "sla": {
         "startup": {
@@ -9801,7 +9874,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 6833830,
+      "elapsed_time": 6839118,
       "creation_date": "2026-04-29 12:48:41-03:00",
       "sla": {
         "startup": {
@@ -10823,7 +10896,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 3420,
-      "elapsed_time": 7357529,
+      "elapsed_time": 7362817,
       "creation_date": "2026-04-23 11:20:22-03:00",
       "sla": {
         "startup": {
@@ -11553,7 +11626,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 7943180,
+      "elapsed_time": 7948468,
       "creation_date": "2026-04-16 16:39:33-03:00",
       "sla": {
         "startup": {
@@ -11845,7 +11918,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8036209,
+      "elapsed_time": 8041497,
       "creation_date": "2026-04-15 14:49:04-03:00",
       "sla": {
         "startup": {
@@ -12210,7 +12283,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8113279,
+      "elapsed_time": 8118567,
       "creation_date": "2026-04-14 17:24:34-03:00",
       "sla": {
         "startup": {
@@ -12867,7 +12940,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8265174,
+      "elapsed_time": 8270462,
       "creation_date": "2026-04-12 23:12:59-03:00",
       "sla": {
         "startup": {
@@ -22649,7 +22722,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 14011953,
+      "elapsed_time": 14017241,
       "creation_date": "2026-02-05 10:53:26-03:00",
       "sla": {
         "startup": {
@@ -24766,7 +24839,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 15897842,
+      "elapsed_time": 15903130,
       "creation_date": "2026-01-14 15:01:57-03:00",
       "sla": {
         "startup": {
@@ -29949,7 +30022,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 2100,
-      "elapsed_time": 20235672,
+      "elapsed_time": 20240960,
       "creation_date": "2025-11-25 10:04:51-03:00",
       "sla": {
         "startup": {

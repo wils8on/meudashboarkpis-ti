@@ -36,7 +36,9 @@
             .info-alert-box, 
             .btn-submit-form,
             .editor-form-box button,
-            td button {
+            td button,
+            #btnInspecionarAPI,
+            #modalInspeção {
                 display: none !important;
             }
 
@@ -205,7 +207,11 @@
         <main class="main-content">
             <header class="top-bar">
                 <h2>Plataforma de Indicadores</h2>
-                <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <!-- Botão Inspecionar API adicionado lado a lado ao de exportação -->
+                    <button id="btnInspecionarAPI" style="padding: 8px 16px; background: #475569; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-bug"></i> Inspecionar Dados API
+                    </button>
                     <button id="btnExportarPDF" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-file-pdf"></i> Exportar Relatório PDF
                     </button>
@@ -382,7 +388,7 @@
                                     <label>Unidade / Localidade Atual:</label>
                                     <input type="text" id="editUserUnidade" placeholder="Ex: Matriz, Filial Salvador, Filial SP">
                                 </div>
-                                <div class="date-picker-box">
+                                <div class="form-item">
                                     <p class="date-picker-title"><i class="fa-solid fa-calendar-day"></i> Data da Efetivação da Mudança</p>
                                     <input type="date" id="editUserDataMudanca">
                                     <span class="date-picker-hint">Informe quando a transição de setor ou filial ocorreu de fato.</span>
@@ -400,7 +406,7 @@
                         </div>
 
                         <div class="table-wrapper-box">
-                            <div class="table-header-title">Clientes Cadastrados no Sistema</div>
+                            <div class="table-header-title">Clientes Cadastrados no System</div>
                             <div class="table-scroll-container">
                                 <table class="data-table">
                                     <thead>
@@ -429,6 +435,30 @@
 
             </div>
         </main>
+    </div>
+
+    <!-- MODAL DE INSPEÇÃO DE DADOS DA API -->
+    <div id="modalInspeção" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: #1e293b; width: 100%; max-width: 800px; border-radius: 8px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; max-height: 90vh; border: 1px solid #334155;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #334155; padding-bottom: 12px;">
+                <h3 style="margin: 0; color: #f8fafc; display: flex; align-items: center; gap: 8px; font-family: sans-serif;">
+                    <i class="fa-solid fa-bug" style="color: #3b82f6;"></i> Diagnóstico: Estrutura da API TomTicket
+                </h3>
+                <button id="fecharModalInspeção" style="background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; line-height: 1;">&times;</button>
+            </div>
+            <p style="color: #94a3b8; font-size: 14px; margin-top: 0; margin-bottom: 16px; font-family: sans-serif; line-height: 1.5;">
+                Abaixo estão listados os dois primeiros chamados retornados pelo servidor. Use as chaves desse JSON para sabermos o mapeamento correto dos campos de data, status e clientes.
+            </p>
+            <div style="flex: 1; overflow-y: auto; background: #0f172a; padding: 16px; border-radius: 6px; border: 1px solid #334155;">
+                <pre id="codigoBrutoJSON" style="margin: 0; font-family: 'Courier New', Courier, monospace; color: #38bdf8; font-size: 13px; white-space: pre-wrap; word-break: break-all;"></pre>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 16px; gap: 12px;">
+                <button id="btnCopiarJSON" style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-copy"></i> Copiar JSON
+                </button>
+                <button id="btnFecharModalInspeção" style="padding: 8px 16px; background: #475569; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px;">Fechar</button>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>

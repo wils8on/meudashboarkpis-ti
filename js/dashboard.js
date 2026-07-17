@@ -111,6 +111,7 @@ function tratarFormatoDataExcel(dataInput) {
 // 4. MEMÓRIA GLOBAL E INSTÂNCIAS DOS GRÁFICOS
 // ==========================================
 let dadosPlanilhaGlobal = [];
+let dadosBrutosAPI = null; // Guardará o JSON bruto para inspeção no Modal
 let chartGeralReal = null;
 let chartLinhaResolucao = null;
 let chartSlaMensal = null;
@@ -476,16 +477,19 @@ async function carregarDadosAutomatizados() {
             throw new Error("Formato de dados desconhecido. Abra o console do navegador para inspecionar.");
         }
 
+        // Armazena uma cópia bruta para o painel flutuante de diagnóstico antes do mapeamento
+        dadosBrutosAPI = listaChamados;
+
         // Mapeia as colunas do TomTicket para os nomes esperados pelas lógicas dos gráficos
         dadosPlanilhaGlobal = listaChamados.map(chamado => ({
-            'Protocolo': chamado.id || chamado.protocolo || chamado.numero || "",
-            'Assunto': chamado.titulo || chamado.assunto || "",
-            'Status': chamado.situacao || chamado.status || "Aberto",
-            'Cliente': chamado.cliente_nome || chamado.cliente || "Desconhecido",
-            'Prioridade': chamado.prioridade || "Normal",
-            'Data de Criação': chamado.data_abertura || chamado.data_criacao || chamado.data_aberto || "",
-            'Data de Finalização': chamado.data_fechamento || chamado.data_finalizacao || chamado.data_conclusao || "",
-            'SLA de Deadline Cumprido': chamado.sla_cumprido || "sim",
+            'Protocolo': chamado.id || chamado.protocolo || chamado.numero || chamado.id_chamado || "",
+            'Assunto': chamado.titulo || chamado.assunto || chamado.titulo_chamado || "",
+            'Status': chamado.situacao || chamado.status || chamado.nome_situacao || "Aberto",
+            'Cliente': chamado.cliente_nome || chamado.cliente || chamado.nome_cliente || "Desconhecido",
+            'Prioridade': chamado.prioridade || chamado.nome_prioridade || "Normal",
+            'Data de Criação': chamado.data_abertura || chamado.data_criacao || chamado.data_aberto || chamado.criado_em || "",
+            'Data de Finalização': chamado.data_fechamento || chamado.data_finalizacao || chamado.data_conclusao || chamado.fechado_em || "",
+            'SLA de Deadline Cumprido': chamado.sla_cumprido || chamado.sla || "sim",
             'Reaberto': chamado.reaberto || "Não"
         }));
 
@@ -495,7 +499,7 @@ async function carregarDadosAutomatizados() {
             renderizarTabelaUsuarios();
             
             if (uploadStatus) {
-                uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Conectado à API! Atualizado automaticamente em segundo plano.</span>`;
+                uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Base conectada com sucesso! (${dadosPlanilhaGlobal.length} chamados)</span>`;
             }
         } else {
             throw new Error("A lista de chamados retornou vazia.");
@@ -507,6 +511,43 @@ async function carregarDadosAutomatizados() {
         }
     }
 }
+
+// ==========================================
+// CONTROLE DO MODAL DE INSPEÇÃO DE DADOS DA API
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const btnInspecionar = document.getElementById('btnInspecionarAPI');
+    const modal = document.getElementById('modalInspeção');
+    const btnFecharX = document.getElementById('fecharModalInspeção');
+    const btnFecharBtn = document.getElementById('btnFecharModalInspeção');
+    const btnCopiar = document.getElementById('btnCopiarJSON');
+    const codigoBruto = document.getElementById('codigoBrutoJSON');
+
+    if (btnInspecionar && modal) {
+        btnInspecionar.addEventListener('click', () => {
+            modal.style.display = 'flex';
+            
+            if (dadosBrutosAPI && dadosBrutosAPI.length > 0) {
+                // Exibe os 2 primeiros chamados formatados de maneira amigável
+                codigoBruto.textContent = JSON.stringify(dadosBrutosAPI.slice(0, 2), null, 2);
+            } else {
+                codigoBruto.textContent = "Aguardando sincronização: Nenhum dado bruto foi carregado da API do TomTicket no momento.";
+            }
+        });
+
+        const fecharModal = () => { modal.style.display = 'none'; };
+        btnFecharX.addEventListener('click', fecharModal);
+        btnFecharBtn.addEventListener('click', fecharModal);
+
+        btnCopiar.addEventListener('click', () => {
+            if (codigoBruto.textContent) {
+                navigator.clipboard.writeText(codigoBruto.textContent)
+                    .then(() => alert("Estrutura JSON copiada com sucesso!"))
+                    .catch(err => console.error("Erro ao copiar o JSON:", err));
+            }
+        });
+    }
+});
 
 // ==========================================
 // 6. ENGENHARIA DOS INDICADORES E MOTOR ANALÍTICO
@@ -1055,7 +1096,7 @@ if (formEditar) {
 
             listaClientes[index] = cliente;
             localStorage.setItem('cadastroClientesDB', JSON.stringify(listaClientes));
-            alert("Vínculo organizacional updated e gravado na linha do tempo histórica!");
+            alert("Vínculo organizacional atualizado e gravado na linha do tempo histórica!");
         } else {
             alert("Nenhuma alteração detectada nos campos de Setor ou Unidade.");
         }

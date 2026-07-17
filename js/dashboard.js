@@ -94,13 +94,11 @@ function tratarFormatoDataExcel(dataInput) {
     
     // Trata o formato da API do TomTicket: "2026-07-16 16:40:25-03:00"
     if (dataStr.includes('-') && dataStr.includes(':')) {
-        // Se houver fuso horário no final (ex: -03:00), remove para não causar distorção na conversão local
         if (dataStr.lastIndexOf('-') > 10) {
             dataStr = dataStr.substring(0, dataStr.lastIndexOf('-'));
         } else if (dataStr.includes('+')) {
             dataStr = dataStr.substring(0, dataStr.lastIndexOf('+'));
         }
-        // Substitui o espaço por 'T' para virar uma string ISO válida padrão
         dataStr = dataStr.replace(' ', 'T');
         const dTentativaISO = new Date(dataStr);
         if (!isNaN(dTentativaISO.getTime())) return dTentativaISO;
@@ -367,90 +365,6 @@ function inicializarGraficoAging(valoresBuckets = []) {
     });
 }
 
-function inicializarGraficoReabertosMes(labels = [], dadosReabertos = []) {
-    const ctx = document.getElementById('graficoReabertosMes');
-    if (!ctx) return;
-    if (chartReabertosMes) chartReabertosMes.destroy();
-
-    const corTexto = obterCorTextoPorTema();
-    const corGrid = obterCorGridPorTema();
-
-    chartReabertosMes = new Chart(ctx.getContext('2d'), {
-        type: 'line',
-        plugins: [ChartDataLabels],
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Chamados Reabertos',
-                data: dadosReabertos,
-                borderColor: '#f43f5e',
-                backgroundColor: 'rgba(244, 63, 94, 0.1)',
-                pointBackgroundColor: '#f43f5e',
-                fill: true,
-                tension: 0.2,
-                borderWidth: 3
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true, grace: '15%', ticks: { color: corTexto }, grid: { color: corGrid } },
-                x: { ticks: { color: corTexto }, grid: { color: corGrid } }
-            },
-            plugins: {
-                legend: { labels: { color: corTexto } },
-                datalabels: {
-                    anchor: 'end', align: 'top', color: '#f43f5e',
-                    font: { weight: 'bold', size: 11 },
-                    formatter: value => value > 0 ? value : '0'
-                }
-            }
-        }
-    });
-}
-
-function inicializarGraficoReabertosCliente(labels = [], dadosClientes = []) {
-    const ctx = document.getElementById('graficoReabertosCliente');
-    if (!ctx) return;
-    if (chartReabertosCliente) chartReabertosCliente.destroy();
-
-    const corTexto = obterCorTextoPorTema();
-    const corGrid = obterCorGridPorTema();
-
-    chartReabertosCliente = new Chart(ctx.getContext('2d'), {
-        type: 'bar',
-        plugins: [ChartDataLabels],
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Reaberturas por Cliente',
-                data: dadosClientes,
-                backgroundColor: '#fb923c',
-                borderRadius: 2,
-                barPercentage: 0.6
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: { beginAtZero: true, grace: '15%', ticks: { color: corTexto }, grid: { color: corGrid } },
-                y: { ticks: { color: corTexto }, grid: { display: false } }
-            },
-            plugins: {
-                legend: { display: false },
-                datalabels: {
-                    anchor: 'end', align: 'right', color: corTexto,
-                    font: { weight: 'bold', size: 11 },
-                    formatter: value => value > 0 ? value : '0'
-                }
-            }
-        }
-    });
-}
-
 // ==========================================
 // 5. CONEXÃO SEGURA AUTOMÁTICA VIA JSON ATUALIZADO
 // ==========================================
@@ -495,16 +409,30 @@ async function carregarDadosAutomatizados() {
             const nomeCliente = chamado.customer && chamado.customer.name ? chamado.customer.name : "Desconhecido";
             const statusReaberto = chamado.reopened === true ? "sim" : "Não";
 
+            // Se priority for texto (ex: "urgente") ou número, padroniza
             let termoPrioridade = "Normal";
-            if (chamado.priority === 3) termoPrioridade = "Alta";
-            if (chamado.priority > 3) termoPrioridade = "Urgente";
+            if (chamado.priority === 3 || String(chamado.priority).toLowerCase().includes('alta')) termoPrioridade = "Alta";
+            if (chamado.priority > 3 || String(chamado.priority).toLowerCase().includes('urgente')) termoPrioridade = "Urgente";
 
             const slaCumprido = chamado.sla && chamado.sla.deadline && chamado.sla.deadline.accomplished === false ? "não" : "sim";
+
+            // Determina a descrição textual do estado atual do chamado
+            let descStatus = "Aberto";
+            if (chamado.status && chamado.status.description) {
+                descStatus = chamado.status.description;
+            } else if (chamado.situation && chamado.situation.description) {
+                descStatus = chamado.situation.description;
+            }
+
+            // Força a marcação de Concluído se possuir data de encerramento preenchida
+            if (chamado.end_date && chamado.end_date !== null) {
+                descStatus = "Concluído";
+            }
 
             return {
                 'Protocolo': chamado.protocol || chamado.id || "",
                 'Assunto': chamado.subject || "",
-                'Status': chamado.situation && chamado.situation.description ? chamado.situation.description : "Aberto",
+                'Status': descStatus,
                 'Cliente': nomeCliente,
                 'Prioridade': termoPrioridade,
                 'Data de Criação': chamado.creation_date || "",
@@ -520,7 +448,7 @@ async function carregarDadosAutomatizados() {
             renderizarTabelaUsuarios();
             
             if (uploadStatus) {
-                uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Conectado à API! Atualizado automaticamente em segundo plano.</span>`;
+                uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Conectado à API! Base sincronizada com sucesso.</span>`;
             }
         } else {
             throw new Error("A lista de chamados retornou vazia.");
@@ -658,8 +586,11 @@ function processarIndicadoresEstrategicos() {
             const prioridade = String(chamado['Prioridade'] || '').toLowerCase().trim();
             const slaCumprido = String(chamado['SLA de Deadline Cumprido'] || '').toLowerCase().trim();
             
-            const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido') || status.includes('encerrado');
-            const isEmAndamento = status.includes('andamento') || status.includes('atendimento') || status.includes('aberto') || status.includes('vinculado') || status.includes('sem atendente') || status === '';
+            // Validação calibrada para API v2.0: Verifica se o campo de encerramento possui valor válido
+            const isFinalizado = chamado['Data de Finalização'] !== null && chamado['Data de Finalização'] !== "" || 
+                                 status.includes('finalizada') || status.includes('fechado') || status.includes('concluido') || status.includes('encerrado');
+            
+            const isEmAndamento = !isFinalizado;
             
             const valorReabertoRaw = chamado['Reaberto'];
             const isReaberto = valorReabertoRaw && String(valorReabertoRaw).toLowerCase().trim() === 'sim';
@@ -692,8 +623,7 @@ function processarIndicadoresEstrategicos() {
                 if (!dataFinalizacao || dataFinalizacao >= filtroInicio) {
                     totalBacklogAbsoluto++;
                     if (isFinalizado) bkFinalizados++;
-                    else if (isEmAndamento) bkAndamento++;
-                    else bkPausados++;
+                    else bkAndamento++;
                 }
             }
 
@@ -730,10 +660,8 @@ function processarIndicadoresEstrategicos() {
                             fechadosMesDiferente++;
                         }
                     }
-                } else if (isEmAndamento) {
-                    totalAndamento++;
                 } else {
-                    totalPausadosOuOutros++;
+                    totalAndamento++;
                 }
 
                 if (slaCumprido === 'sim') {
@@ -780,8 +708,7 @@ function processarIndicadoresEstrategicos() {
             }
         });
 
-        const totalAtuaisNoPeriodo = totalAndamento + totalPausadosOuOutros;
-        const pctDemandasAtuais = totalProtocolosPeriodo > 0 ? ((totalAtuaisNoPeriodo / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
+        const pctDemandasAtuais = totalProtocolosPeriodo > 0 ? ((totalAndamento / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
         const pctFinalizados = totalProtocolosPeriodo > 0 ? ((totalFinalizados / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
 
         const cardT = document.getElementById('kpiTotal'); if (cardT) cardT.textContent = totalProtocolosPeriodo;
@@ -815,7 +742,7 @@ function processarIndicadoresEstrategicos() {
 
         inicializarGraficosPerformance(labelsOrdenadas, arrayTaxasResolucao, arrayIndicesSla);
 
-        const bkTotalPendentesAtuais = bkAndamento + bkPausados;
+        const bkTotalPendentesAtuais = totalAndamento;
         const bkPctFechados = totalBacklogAbsoluto > 0 ? ((bkFinalizados / totalBacklogAbsoluto) * 100).toFixed(2).replace('.', ',') : '0,00';
         const bkPctAtuais = totalBacklogAbsoluto > 0 ? ((bkTotalPendentesAtuais / totalBacklogAbsoluto) * 100).toFixed(2).replace('.', ',') : '0,00';
 
@@ -844,7 +771,8 @@ function processarIndicadoresEstrategicos() {
                 let dataFechamento = tratarFormatoDataExcel(dataOriginalFechamento);
 
                 const status = String(chamado['Status'] || '').toLowerCase();
-                const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido') || status.includes('encerrado');
+                const isFinalizado = chamado['Data de Finalização'] !== null && chamado['Data de Finalização'] !== "" || 
+                                     status.includes('finalizada') || status.includes('fechado') || status.includes('concluido') || status.includes('encerrado');
 
                 if (dataCria < primeiroDiaDoMes) {
                     if (!dataFechamento || dataFechamento >= primeiroDiaDoMes) estoqueInicialContador++;
@@ -883,10 +811,6 @@ function processarIndicadoresEstrategicos() {
         const topClientesValores = topClientesLabels.map(cl => reabertosPorClienteAgrupado[cl]);
         
         inicializarGraficoReabertosCliente(topClientesLabels, topClientesValores);
-        
-        if (uploadStatus) {
-            uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Base conectada com sucesso! (${dadosPlanilhaGlobal.length} chamados)</span>`;
-        }
 
     } catch (erroCritico) {
         console.error("Erro interno detectado no motor analítico:", erroCritico);
@@ -999,7 +923,7 @@ function renderizarTabelaUsuarios() {
     const listaClientes = JSON.parse(localStorage.getItem('cadastroClientesDB')) || [];
 
     if (listaClientes.length === 0) {
-        corpoTabela.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px;">Nenhum cliente carregado. Suba uma planilha na aba Visão Geral para popular a base.</td></tr>`;
+        corpoTabela.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px;">Nenhum cliente carregado. Base organizacional vazia.</td></tr>`;
         return;
     }
 

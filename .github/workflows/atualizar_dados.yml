@@ -31,17 +31,17 @@ jobs:
           async function coletarDados() {
             const token = process.env.TOMTICKET_TOKEN;
             if (!token) {
-              console.error("Token do TomTicket não encontrado!");
+              console.error("❌ ERRO: O segredo TOMTICKET_TOKEN não está cadastrado no GitHub!");
               process.exit(1);
             }
 
             let pagina = 1;
             let todosChamados = [];
 
-            console.log("Iniciando coleta automatizada...");
+            console.log("🚀 Iniciando coleta automatizada v2.0...");
 
             while (true) {
-              console.log(`\x1b[33mBuscando página ${pagina}...\x1b[0m`);
+              console.log(`📡 Buscando página ${pagina}...`);
               
               try {
                 const url = `https://api.tomticket.com/v2.0/ticket/list/${pagina}`;
@@ -53,13 +53,16 @@ jobs:
                   }
                 });
 
+                // Se a API recusar a requisição (ex: Token inválido ou URL errada)
                 if (!response.ok) {
-                  throw new Error(`Resposta HTTP inválida: ${response.status}`);
+                  const textoErro = await response.text();
+                  console.error(`❌ Erro na requisição (Página ${pagina}): Status HTTP ${response.status}`);
+                  console.error(`📝 Resposta do servidor do TomTicket:`, textoErro);
+                  process.exit(1);
                 }
 
                 const json = await response.json();
                 
-                // Localiza a lista de chamados independentemente do formato da API
                 let chamadosPagina = [];
                 if (Array.isArray(json)) {
                   chamadosPagina = json;
@@ -70,37 +73,34 @@ jobs:
                 }
 
                 if (chamadosPagina.length === 0) {
-                  console.log("Nenhum registro retornado nesta página. Coleta concluída.");
+                  console.log("✅ Nenhum registro retornado nesta página. Coleta concluída.");
                   break;
                 }
 
                 todosChamados.push(...chamadosPagina);
-                console.log(`Página ${pagina} processada. Total acumulado: ${todosChamados.length}`);
+                console.log(`🔹 Página ${pagina} processada. Total acumulado: ${todosChamados.length}`);
 
-                // Se retornou menos de 50 registros, é a última página
                 if (chamadosPagina.length < 50) {
-                  console.log("Última página alcançada.");
+                  console.log("🏁 Última página alcançada.");
                   break;
                 }
 
                 pagina++;
                 
-                // Limite de segurança de 150 páginas (~7500 chamados)
                 if (pagina > 150) {
-                  console.log("Atingido limite de segurança de páginas.");
+                  console.log("⚠️ Limite máximo de segurança de páginas atingido.");
                   break;
                 }
 
               } catch (error) {
-                console.error(`Erro ao buscar página ${pagina}:`, error.message);
+                console.error(`💥 Falha crítica de conexão/conversão na página ${pagina}:`, error);
                 process.exit(1);
               }
             }
 
-            // Grava o arquivo final estruturado
             const resultadoFinal = { data: todosChamados };
             fs.writeFileSync("dados.json", JSON.stringify(resultadoFinal, null, 2));
-            console.log(`\x1b[32mSucesso total! Arquivo dados.json gerado com ${todosChamados.length} chamados.\x1b[0m`);
+            console.log(`🎉 Sucesso total! dados.json gerado com ${todosChamados.length} chamados.`);
           }
 
           coletarDados();

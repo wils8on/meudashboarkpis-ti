@@ -314,7 +314,7 @@ function inicializarGraficosBacklog(labels = [], dadosEstoqueInicial = [], dados
                 plugins: {
                     legend: { labels: { color: corTexto } },
                     datalabels: {
-                        anchor: 'end', align: 'top', color: font,
+                        anchor: 'end', align: 'top', color: corTexto,
                         font: { weight: 'bold', size: 11 },
                         formatter: value => value > 0 ? value : '0'
                     }
@@ -818,8 +818,7 @@ function processarIndicadoresEstrategicos() {
         const perf1 = document.getElementById('perfCard1'); if (perf1) perf1.textContent = `${totalFechadosNoFiltro > 0 ? ((fechadosNoMesAbertura / totalFechadosNoFiltro) * 100).toFixed(2).replace('.', ',') : '0,00'}%`;
         const perf2 = document.getElementById('perfCard2'); if (perf2) perf2.textContent = `${totalValidosParaSla > 0 ? ((totalDentroSlaSoma / totalValidosParaSla) * 100).toFixed(2).replace('.', ',') : '0,00'}%`;
         const perf3 = document.getElementById('perfCard3'); if (perf3) perf3.textContent = `${totalFechadosNoFiltro > 0 ? ((fechadosMesDiferente / totalFechadosNoFiltro) * 100).toFixed(2).replace('.', ',') : '0,00'}%`;
-        const perf4 = document.getElementById('perfCard4'); if (perf4) perf4.textContent = gamblers;
-        if (perf4) perf4.textContent = melhorMesNome;
+        const perf4 = document.getElementById('perfCard4'); if (perf4) perf4.textContent = melhorMesNome !== "Nenhum" ? melhorMesNome : "Nenhum";
 
         inicializarGraficosPerformance(labelsOrdenadas, arrayTaxasResolucao, arrayIndicesSla);
 
@@ -1109,7 +1108,7 @@ if (formEditar) {
 
             listaClientes[index] = cliente;
             localStorage.setItem('cadastroClientesDB', JSON.stringify(listaClientes));
-            alert("Vínculo organizacional atualizado e gravado na linha do tempo histórica!");
+            alert("Vínculo organizacional updated e gravado na linha do tempo histórica!");
         } else {
             alert("Nenhuma alteração detectada nos campos de Setor ou Unidade.");
         }

@@ -90,15 +90,23 @@ function tratarFormatoDataExcel(dataInput) {
         return new Date((numeroSerial - 25569) * 86400 * 1000);
     }
     
-    // Remove fuso horário da string (ex: 2026-07-16 16:53:08-03:00 -> 2026-07-16 16:53:08)
     let dataStr = String(dataInput).trim();
-    if (dataStr.includes('-') && dataStr.includes(':') && dataStr.lastIndexOf('-') > 10) {
-        dataStr = dataStr.substring(0, dataStr.lastIndexOf('-'));
-    } else if (dataStr.includes('+') && dataStr.includes(':')) {
-        dataStr = dataStr.substring(0, dataStr.lastIndexOf('+'));
+    
+    // Trata o formato da API do TomTicket: "2026-07-16 16:40:25-03:00"
+    if (dataStr.includes('-') && dataStr.includes(':')) {
+        // Se houver fuso horário no final (ex: -03:00), remove para não causar distorção na conversão local
+        if (dataStr.lastIndexOf('-') > 10) {
+            dataStr = dataStr.substring(0, dataStr.lastIndexOf('-'));
+        } else if (dataStr.includes('+')) {
+            dataStr = dataStr.substring(0, dataStr.lastIndexOf('+'));
+        }
+        // Substitui o espaço por 'T' para virar uma string ISO válida padrão
+        dataStr = dataStr.replace(' ', 'T');
+        const dTentativaISO = new Date(dataStr);
+        if (!isNaN(dTentativaISO.getTime())) return dTentativaISO;
     }
     
-    const dataTentativa = new Date(dataStr.replace(/-/g, '/'));
+    const dataTentativa = new Date(dataStr);
     if (!isNaN(dataTentativa.getTime())) return dataTentativa;
     
     if (dataStr.includes('/')) {
@@ -118,7 +126,7 @@ function tratarFormatoDataExcel(dataInput) {
 // 4. MEMÓRIA GLOBAL E INSTÂNCIAS DOS GRÁFICOS
 // ==========================================
 let dadosPlanilhaGlobal = [];
-let dadosBrutosAPI = null; // Guardará o JSON bruto para inspeção no Modal
+let dadosBrutosAPI = null; 
 let chartGeralReal = null;
 let chartLinhaResolucao = null;
 let chartSlaMensal = null;
@@ -447,7 +455,6 @@ function inicializarGraficoReabertosCliente(labels = [], dadosClientes = []) {
 // 5. CONEXÃO SEGURA AUTOMÁTICA VIA JSON ATUALIZADO
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Carrega os dados automaticamente quando o usuário entra no painel
     carregarDadosAutomatizados();
 });
 
@@ -458,7 +465,6 @@ async function carregarDadosAutomatizados() {
     }
 
     try {
-        // Busca o arquivo JSON sem cache para garantir que pegamos os dados mais novos do Actions
         const response = await fetch('dados.json?t=' + new Date().getTime());
         if (!response.ok) {
             throw new Error("O arquivo de dados integrados ainda não está disponível no servidor.");
@@ -466,12 +472,10 @@ async function carregarDadosAutomatizados() {
         
         const jsonResponse = await response.json();
         
-        // Se a API retornou erro em formato JSON
         if (jsonResponse.message && jsonResponse.message.includes("Not Found")) {
             throw new Error("Erro na API do TomTicket: Verifique se o ID ou Token estão corretos.");
         }
 
-        // Tenta encontrar a lista de chamados dinamicamente em qualquer formato que a API responda
         let listaChamados = [];
         if (Array.isArray(jsonResponse)) {
             listaChamados = jsonResponse;
@@ -484,20 +488,17 @@ async function carregarDadosAutomatizados() {
             throw new Error("Formato de dados desconhecido. Abra o console do navegador para inspecionar.");
         }
 
-        // Armazena uma cópia bruta para o painel flutuante de diagnóstico antes do mapeamento
         dadosBrutosAPI = listaChamados;
 
-        // Mapeia as colunas do TomTicket v2.0 para os nomes esperados pelas lógicas dos gráficos
+        // Mapeia as colunas exatas da API v2.0 do TomTicket
         dadosPlanilhaGlobal = listaChamados.map(chamado => {
             const nomeCliente = chamado.customer && chamado.customer.name ? chamado.customer.name : "Desconhecido";
             const statusReaberto = chamado.reopened === true ? "sim" : "Não";
 
-            // Traduz a prioridade numérica para os termos textuais esperados pelos filtros
             let termoPrioridade = "Normal";
             if (chamado.priority === 3) termoPrioridade = "Alta";
             if (chamado.priority > 3) termoPrioridade = "Urgente";
 
-            // Avalia se o SLA foi cumprido acessando o sub-objeto de deadline
             const slaCumprido = chamado.sla && chamado.sla.deadline && chamado.sla.deadline.accomplished === false ? "não" : "sim";
 
             return {
@@ -546,9 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnInspecionar && modal) {
         btnInspecionar.addEventListener('click', () => {
             modal.style.display = 'flex';
-            
             if (dadosBrutosAPI && dadosBrutosAPI.length > 0) {
-                // Exibe os 2 primeiros chamados formatados de maneira amigável
                 codigoBruto.textContent = JSON.stringify(dadosBrutosAPI.slice(0, 2), null, 2);
             } else {
                 codigoBruto.textContent = "Aguardando sincronização: Nenhum dado bruto foi carregado da API do TomTicket no momento.";
@@ -583,7 +582,7 @@ function processarIndicadoresEstrategicos() {
         if (!valInicio || !valFim) {
             let datasExistentes = [];
             dadosPlanilhaGlobal.forEach(chamado => {
-                let dataOriginalCria = chamado['Data de Criação'] || chamado['Data_de_Criação'] || chamado['Abertura'];
+                let dataOriginalCria = chamado['Data de Criação'];
                 let d = tratarFormatoDataExcel(dataOriginalCria);
                 if (d) datasExistentes.push(d);
             });
@@ -650,14 +649,14 @@ function processarIndicadoresEstrategicos() {
         dadosPlanilhaGlobal.forEach(chamado => {
             if (!chamado || Object.keys(chamado).length === 0) return;
 
-            let dataOriginalCria = chamado['Data de Criação'] || chamado['Data_de_Criação'] || chamado['Abertura'];
+            let dataOriginalCria = chamado['Data de Criação'];
             let dataCriacao = tratarFormatoDataExcel(dataOriginalCria);
             if (!dataCriacao) return;
 
-            const status = String(chamado['Status'] || chamado['Última Situação'] || chamado['Situação'] || '').toLowerCase();
+            const status = String(chamado['Status'] || '').toLowerCase();
             const clienteNome = String(chamado['Cliente'] || 'Desconhecido').trim();
             const prioridade = String(chamado['Prioridade'] || '').toLowerCase().trim();
-            const slaCumprido = String(chamado['SLA de Deadline Cumprido'] || chamado['SLA_de_Deadline_Cumprido'] || chamado['SLA'] || '').toLowerCase().trim();
+            const slaCumprido = String(chamado['SLA de Deadline Cumprido'] || '').toLowerCase().trim();
             
             const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido') || status.includes('encerrado');
             const isEmAndamento = status.includes('andamento') || status.includes('atendimento') || status.includes('aberto') || status.includes('vinculado') || status.includes('sem atendente') || status === '';
@@ -665,7 +664,7 @@ function processarIndicadoresEstrategicos() {
             const valorReabertoRaw = chamado['Reaberto'];
             const isReaberto = valorReabertoRaw && String(valorReabertoRaw).toLowerCase().trim() === 'sim';
 
-            let dataOriginalFechamento = chamado['Data de Finalização'] || chamado['Data_de_Finalização'] || chamado['Encerramento'];
+            let dataOriginalFechamento = chamado['Data de Finalização'];
             let dataFinalizacao = tratarFormatoDataExcel(dataOriginalFechamento);
 
             if (!isFinalizado && dataCriacao <= filtroFim) {
@@ -702,13 +701,13 @@ function processarIndicadoresEstrategicos() {
                 totalProtocolosPeriodo++;
                 const mesAnoLabel = `${String(dataCriacao.getMonth() + 1).padStart(2, '0')}/${dataCriacao.getFullYear()}`;
 
-                if (!mesesAgrupadosGeral[mesAnoLabel]) mesesAgrupadosGeral[mesAnoLabel] = { total: 0, urgent: 0 };
+                if (!mesesAgrupadosGeral[mesAnoLabel]) mesesAgrupadosGeral[mesAnoLabel] = { total: 0, urgente: 0 };
                 if (!performanceMensalAgrupada[mesAnoLabel]) {
                     performanceMensalAgrupada[mesAnoLabel] = { criados: 0, fechadosNoMesmoMes: 0, dentroSla: 0, totalValidosSla: 0 };
                 }
 
                 mesesAgrupadosGeral[mesAnoLabel].total++;
-                if (prioridade.includes('urgente')) mesesAgrupadosGeral[mesAnoLabel].urgent++;
+                if (prioridade.includes('urgente')) mesesAgrupadosGeral[mesAnoLabel].urgente++;
                 performanceMensalAgrupada[mesAnoLabel].criados++;
 
                 if (isReaberto) {
@@ -759,7 +758,7 @@ function processarIndicadoresEstrategicos() {
         });
 
         const dataTotalBarras = labelsOrdenadas.map(lbl => mesesAgrupadosGeral[lbl].total);
-        const dataUrgenteBarras = labelsOrdenadas.map(lbl => mesesAgrupadosGeral[lbl].urgent || 0);
+        const dataUrgenteBarras = labelsOrdenadas.map(lbl => mesesAgrupadosGeral[lbl].urgente || 0);
         inicializarGraficoGeral(labelsOrdenadas, dataTotalBarras, dataUrgenteBarras);
 
         let arrayTaxasResolucao = [];
@@ -837,14 +836,14 @@ function processarIndicadoresEstrategicos() {
 
             dadosPlanilhaGlobal.forEach(chamado => {
                 if (!chamado || Object.keys(chamado).length === 0) return;
-                let dataOriginalCria = chamado['Data de Criação'] || chamado['Data_de_Criação'] || chamado['Abertura'];
+                let dataOriginalCria = chamado['Data de Criação'];
                 let dataCria = tratarFormatoDataExcel(dataOriginalCria);
                 if (!dataCria) return;
 
-                let dataOriginalFechamento = chamado['Data de Finalização'] || chamado['Data_de_Finalização'] || chamado['Encerramento'];
+                let dataOriginalFechamento = chamado['Data de Finalização'];
                 let dataFechamento = tratarFormatoDataExcel(dataOriginalFechamento);
 
-                const status = String(chamado['Status'] ||').toLowerCase();
+                const status = String(chamado['Status'] || '').toLowerCase();
                 const isFinalizado = status.includes('finalizada') || status.includes('fechado') || status.includes('concluido') || status.includes('encerrado');
 
                 if (dataCria < primeiroDiaDoMes) {
@@ -907,9 +906,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const configurarCampoDataLivre = (input) => {
         if (!input) return;
 
-        // Quando foca, transforma em texto e mostra no formato DD/MM/AAAA para edição
         input.addEventListener('focus', () => {
-            let valorAtual = input.value; // Formato nativo: YYYY-MM-DD
+            let valorAtual = input.value; 
             input.type = 'text';
             input.placeholder = 'DDMMAAAA';
             
@@ -921,23 +919,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Quando perde o foco, processa a entrada (com ou sem barras)
         input.addEventListener('blur', () => {
             let valorDigitado = input.value.trim();
-            
-            // Remove qualquer caractere que não seja número para avaliar o que foi digitado
             let apenasNumeros = valorDigitado.replace(/\D/g, '');
 
-            // Se você digitou exatamente 8 números (ex: 31072026)
             if (apenasNumeros.length === 8) {
                 const dia = apenasNumeros.substring(0, 2);
                 const mes = apenasNumeros.substring(2, 4);
                 const ano = apenasNumeros.substring(4, 8);
-                
-                // Força o formato ISO que o navegador precisa interna e visualmente
                 input.value = `${ano}-${mes}-${dia}`;
             } 
-            // Caso você tenha digitado usando barras normalmente (ex: 31/07/2026)
             else if (valorDigitado.includes('/')) {
                 const partes = valorDigitado.split('/');
                 if (partes.length === 3) {
@@ -948,16 +939,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            // Retorna para o tipo 'date' para manter o calendário visual funcionando
             input.type = 'date';
 
-            // Atualiza o dashboard e os gráficos na hora
             if (typeof dadosPlanilhaGlobal !== 'undefined' && dadosPlanilhaGlobal.length > 0) {
                 processarIndicadoresEstrategicos();
             }
         });
 
-        // Garante a atualização caso escolha pelo clique no calendário
         input.addEventListener('change', () => {
             if (input.type === 'date' && typeof dadosPlanilhaGlobal !== 'undefined' && dadosPlanilhaGlobal.length > 0) {
                 processarIndicadoresEstrategicos();

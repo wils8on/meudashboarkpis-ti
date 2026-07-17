@@ -133,6 +133,7 @@ let chartBacklogDistribuicao = null;
 let chartAging = null;
 let chartReabertosMes = null;
 let chartReabertosCliente = null;
+let chartDiaHora = null; // Nova instância global para o gráfico multidimensional
 
 function inicializarGraficoGeral(labels = [], dadosTotal = [], dadosUrgentes = []) {
     const ctx = document.getElementById('graficoGeral');
@@ -165,6 +166,49 @@ function inicializarGraficoGeral(labels = [], dadosTotal = [], dadosUrgentes = [
                     font: { weight: 'bold', size: 11 },
                     formatter: value => value > 0 ? value : ''
                 }
+            }
+        }
+    });
+}
+
+function inicializarGraficoDiaHora(matrizDados = {}) {
+    const ctx = document.getElementById('graficoDiaHora');
+    if (!ctx) return;
+    if (chartDiaHora) chartDiaHora.destroy();
+
+    const corTexto = obterCorTextoPorTema();
+    const corGrid = obterCorGridPorTema();
+
+    // Cria as 24 horas fixas para o eixo X (00h às 23h)
+    const horasLabels = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+
+    const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const coresDias = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'];
+
+    const datasets = diasSemana.map((dia, idx) => ({
+        label: dia,
+        data: Array.from({ length: 24 }, (_, h) => matrizDados[idx]?.[h] || 0),
+        borderColor: coresDias[idx],
+        backgroundColor: coresDias[idx],
+        borderWidth: 2.5,
+        pointRadius: 2,
+        fill: false,
+        tension: 0.2
+    }));
+
+    chartDiaHora = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: { labels: horasLabels, datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, ticks: { color: corTexto }, grid: { color: corGrid } },
+                x: { ticks: { color: corTexto }, grid: { color: corGrid } }
+            },
+            plugins: {
+                legend: { position: 'top', labels: { color: corTexto, boxWidth: 12 } },
+                datalabels: { display: false } // Desativa os labels em cima dos pontos para não poluir
             }
         }
     });
@@ -570,7 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnCopiar.addEventListener('click', () => {
             if (codigoBruto.textContent) {
                 navigator.clipboard.writeText(codigoBruto.textContent)
-                    .then(() => alert("Estrutura JSON copiada com sucesso!"))
+                    .then(() => alert("Estrutura JSON copied com sucesso!"))
                     .catch(err => console.error("Erro ao copiar o JSON:", err));
             }
         });
@@ -652,6 +696,11 @@ function processarIndicadoresEstrategicos() {
         let reabertosPorMesAgrupado = {};
         let reabertosPorClienteAgrupado = {};
 
+        // Variáveis de controle para as novas métricas operacionais
+        let somaHorasTrabalho = 0;
+        let qtdChamadosFinalizadosComTempo = 0;
+        let matrizDiaHora = {}; // Guardará o cruzamento multidimensional de horários
+
         let bucketsAging = [0, 0, 0, 0, 0];
         const hoje = new Date();
 
@@ -677,6 +726,27 @@ function processarIndicadoresEstrategicos() {
 
             let dataOriginalFechamento = chamado['Data de Finalização'];
             let dataFinalizacao = tratarFormatoDataExcel(dataOriginalFechamento);
+
+            // Mapeamento multidimensional: Dia da Semana x Hora (Apenas dentro do filtro de data ativo)
+            if (dataCriacao >= filtroInicio && dataCriacao <= filtroFim) {
+                const diaSemanaIdx = dataCriacao.getDay(); // 0 = Domingo, 1 = Segunda, etc.
+                const horaDia = dataCriacao.getHours(); // 0 às 23
+
+                if (!matrizDiaHora[diaSemanaIdx]) matrizDiaHora[diaSemanaIdx] = {};
+                if (!matrizDiaHora[diaSemanaIdx][horaDia]) matrizDiaHora[diaSemanaIdx][horaDia] = 0;
+                
+                matrizDiaHora[diaSemanaIdx][horaDia]++;
+            }
+
+            // Cálculo do Tempo de Resolução (MTTR)
+            if (isFinalizado && dataFinalizacao) {
+                const diffMilissegundos = dataFinalizacao - dataCriacao;
+                if (diffMilissegundos >= 0) {
+                    const diffHoras = diffMilissegundos / (1000 * 60 * 60);
+                    somaHorasTrabalho += diffHoras;
+                    qtdChamadosFinalizadosComTempo++;
+                }
+            }
 
             if (!isFinalizado && dataCriacao <= filtroFim) {
                 totalChamadosAbertosCalculados++;
@@ -769,6 +839,9 @@ function processarIndicadoresEstrategicos() {
         const dataUrgenteBarras = labelsOrdenadas.map(lbl => mesesAgrupadosGeral[lbl].urgente || 0);
         inicializarGraficoGeral(labelsOrdenadas, dataTotalBarras, dataUrgenteBarras);
 
+        // Renderiza o novo gráfico multidimensional de ocupação semanal
+        inicializarGraficoDiaHora(matrizDiaHora);
+
         let arrayTaxasResolucao = [];
         let arrayIndicesSla = [];
         let melhorMesNome = "Nenhum";
@@ -791,10 +864,27 @@ function processarIndicadoresEstrategicos() {
         const pctDemandasAtuais = totalProtocolosPeriodo > 0 ? ((totalAndamento / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
         const pctFinalizados = totalProtocolosPeriodo > 0 ? ((totalFinalizados / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
 
+        // Atualização dos Cards Principais
         const cardT = document.getElementById('kpiTotal'); if (cardT) cardT.textContent = totalProtocolosPeriodo;
         const cardF = document.getElementById('kpiFinalizados'); if (cardF) cardF.textContent = `${pctFinalizados}%`;
         const cardAtuais = document.getElementById('kpiDemandasAtuais'); if (cardAtuais) cardAtuais.textContent = `${pctDemandasAtuais}%`;
         
+        // Exibição amigável do Tempo Médio de Trabalho (MTTR)
+        const cardTempoMedio = document.getElementById('kpiTempoMedio');
+        if (cardTempoMedio) {
+            if (qtdChamadosFinalizadosComTempo > 0) {
+                const mediaHorasPuras = somaHorasTrabalho / qtdChamadosFinalizadosComTempo;
+                if (mediaHorasPuras >= 24) {
+                    const dias = (mediaHorasPuras / 24).toFixed(1);
+                    cardTempoMedio.textContent = `${dias.replace('.', ',')} dias`;
+                } else {
+                    cardTempoMedio.textContent = `${mediaHorasPuras.toFixed(1).replace('.', ',')}h`;
+                }
+            } else {
+                cardTempoMedio.textContent = "0,0h";
+            }
+        }
+
         const cardReabertos = document.getElementById('kpiReabertos');
         if (cardReabertos) {
             const pctReabertos = totalProtocolosPeriodo > 0 ? ((totalReabertosPeriodo / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
@@ -1108,7 +1198,7 @@ if (formEditar) {
 
             listaClientes[index] = cliente;
             localStorage.setItem('cadastroClientesDB', JSON.stringify(listaClientes));
-            alert("Vínculo organizacional updated e gravado na linha do tempo histórica!");
+            alert("Vínculo organizacional atualizado e gravado na linha do tempo histórica!");
         } else {
             alert("Nenhuma alteração detectada nos campos de Setor ou Unidade.");
         }

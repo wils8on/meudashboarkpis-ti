@@ -12,7 +12,6 @@
            ESTILOS EXCLUSIVOS PARA IMPRESSÃO EXECUTIVA CORPORATIVA (PAISAGEM)
            ========================================================================= */
         @media print {
-            /* Força o navegador a configurar a folha em formato Paisagem (Horizontal) */
             @page {
                 size: landscape;
                 margin: 8mm 10mm 8mm 10mm;
@@ -29,7 +28,6 @@
                 print-color-adjust: exact !important;
             }
 
-            /* Oculta barras laterais, botões de upload e elementos operacionais */
             .sidebar, 
             .top-bar, 
             .upload-section, 
@@ -52,7 +50,6 @@
                 width: 100% !important;
             }
 
-            /* Separa cada aba analítica em uma folha exclusiva de PDF */
             .tab-content {
                 display: block !important;
                 visibility: visible !important;
@@ -62,10 +59,9 @@
                 width: 100% !important;
             }
 
-            /* Garante o encaixe linear perfeito dos cards de indicadores */
             .kpi-grid {
                 display: grid !important;
-                grid-template-columns: repeat(5, 1fr) !important;
+                grid-template-columns: repeat(3, 1fr) !important;
                 gap: 10px !important;
                 margin-bottom: 15px !important;
                 width: 100% !important;
@@ -85,7 +81,6 @@
                 color: #1e3a8a !important;
             }
 
-            /* Enquadra os contêineres de gráficos dentro do limite de largura da página */
             .chart-container, .charts-split-grid {
                 background: #ffffff !important;
                 border: 1px solid #e2e8f0 !important;
@@ -100,42 +95,10 @@
                 box-sizing: border-box !important;
             }
 
-            .charts-split-grid {
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-                gap: 15px !important;
-            }
-
             canvas {
                 max-width: 100% !important;
                 width: 100% !important;
                 height: auto !important;
-            }
-
-            /* Ajustes estéticos das planilhas de dados em formato de impressão */
-            .table-wrapper-box {
-                box-shadow: none !important;
-                border: 1px solid #e2e8f0 !important;
-                page-break-inside: avoid !important;
-                width: 100% !important;
-            }
-
-            table.data-table {
-                width: 100% !important;
-                border-collapse: collapse !important;
-            }
-
-            table.data-table th {
-                background: #f1f5f9 !important;
-                color: #0f172a !important;
-                border-bottom: 2px solid #cbd5e1 !important;
-                padding: 6px !important;
-            }
-
-            table.data-table td {
-                border-bottom: 1px solid #e2e8f0 !important;
-                color: #334155 !important;
-                padding: 6px !important;
             }
         }
     </style>
@@ -208,7 +171,6 @@
             <header class="top-bar">
                 <h2>Plataforma de Indicadores</h2>
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <!-- Botão Inspecionar API adicionado lado a lado ao de exportação -->
                     <button id="btnInspecionarAPI" style="padding: 8px 16px; background: #475569; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-bug"></i> Inspecionar Dados API
                     </button>
@@ -234,7 +196,8 @@
                     </div>
 
                     <h3>Métricas Consolidadas</h3>
-                    <div class="kpi-grid">
+                    <!-- Grid reajustada via CSS inline temporário para acomodar o 6º Card de MTTR de forma equilibrada -->
+                    <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px;">
                         <div class="kpi-card azul">
                             <div class="kpi-info"><p>Chamados no Período</p><h3 id="kpiTotal">0</h3></div>
                             <i class="fa-solid fa-ticket icon"></i>
@@ -251,6 +214,10 @@
                             <div class="kpi-info"><p>% Chamados Reabertos</p><h3 id="kpiReabertos">0,00%</h3></div>
                             <i class="fa-solid fa-arrows-rotate icon"></i>
                         </div>
+                        <div class="kpi-card roxo">
+                            <div class="kpi-info"><p>Tempo Médio Trabalho</p><h3 id="kpiTempoMedio">0.0h</h3></div>
+                            <i class="fa-solid fa-business-time icon"></i>
+                        </div>
                         <div class="kpi-card comparativo">
                             <div class="kpi-info"><p>vs Ano Anterior</p><h3 id="kpiCrescimento">0,00%</h3></div>
                             <i class="fa-solid fa-scale-balanced icon"></i>
@@ -259,6 +226,12 @@
 
                     <div class="chart-container">
                         <canvas id="graficoGeral"></canvas>
+                    </div>
+
+                    <!-- Novo Gráfico: Distribuição Dia da Semana x Horário de Atendimento -->
+                    <div class="chart-container" style="margin-top: 25px; height: 400px;">
+                        <h4><i class="fa-solid fa-business-time"></i> Volumetria Ocupacional: Dia da Semana x Hora de Abertura</h4>
+                        <canvas id="graficoDiaHora"></canvas>
                     </div>
 
                     <div class="charts-split-grid" style="margin-top: 25px;">
@@ -406,7 +379,7 @@
                         </div>
 
                         <div class="table-wrapper-box">
-                            <div class="table-header-title">Clientes Cadastrados no System</div>
+                            <div class="table-header-title">Clientes Cadastrados no Sistema</div>
                             <div class="table-scroll-container">
                                 <table class="data-table">
                                     <thead>
@@ -419,7 +392,7 @@
                                     </thead>
                                     <tbody id="tabelaUsuariosCorpo">
                                         <tr>
-                                            <td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px;">Nenhum cliente carregado. Suba uma planilha na aba Visão Geral para popular a base.</td>
+                                            <td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px;">Nenhum cliente carregado. Base organizacional vazia.</td>
                                         </tr>
                                     </tbody>
                                 </table>

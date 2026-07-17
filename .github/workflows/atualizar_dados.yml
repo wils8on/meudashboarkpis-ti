@@ -28,6 +28,9 @@ jobs:
           node -e '
           const fs = require("fs");
 
+          // Função utilitária para criar um atraso de tempo (delay)
+          const aguardar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
           async function coletarDados() {
             const token = process.env.TOMTICKET_TOKEN;
             if (!token) {
@@ -38,13 +41,12 @@ jobs:
             let pagina = 1;
             let todosChamados = [];
 
-            console.log("🚀 Iniciando coleta automatizada v2.0...");
+            console.log("🚀 Iniciando coleta automatizada v2.0 com controle de requisições...");
 
             while (true) {
               console.log(`📡 Buscando página ${pagina}...`);
               
               try {
-                // Passa a paginação por parâmetros de busca (query params) para evitar erro 404
                 const url = `https://api.tomticket.com/v2.0/ticket/list?page=${pagina}&pagina=${pagina}`;
                 const response = await fetch(url, {
                   method: "GET",
@@ -92,6 +94,10 @@ jobs:
                   break;
                 }
 
+                // Espera 1,5 segundo antes de disparar a próxima página para respeitar o Rate Limit do servidor
+                console.log("⏱️ Aguardando 1,5 segundo para evitar bloqueio...");
+                await aguardar(1500);
+
               } catch (error) {
                 console.error(`💥 Falha crítica de conexão/conversão na página ${pagina}:`, error);
                 process.exit(1);
@@ -111,5 +117,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add dados.json
-          git diff-index --quiet HEAD || git commit -m "data: Sincronização robusta de todos os chamados da API"
+          git diff-index --quiet HEAD || git commit -m "data: Sincronização estável de todos os chamados da API"
           git push

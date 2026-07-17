@@ -4,7 +4,7 @@ on:
   schedule:
     # Agenda para rodar de 20 em 20 minutos automaticamente
     - cron: "*/20 * * * *"
-  workflow_dispatch: # Permite que você force a atualização clicando em um botão no GitHub se quiser
+  workflow_dispatch: # Permite forçar a execução manual pelo botão no GitHub
 
 permissions:
   contents: write
@@ -17,11 +17,12 @@ jobs:
       - name: Baixar repositório
         uses: actions/checkout@v4
 
-      - name: Consultar API do TomTicket e gerar JSON
+      - name: Consultar API v2.0 do TomTicket e gerar JSON
         run: |
-          # Faz a chamada oficial com o Token primeiro, seguido pela página 1
-          curl -X GET "https://api.tomticket.com/v1/chamados/${{ secrets.TOMTICKET_TOKEN }}/1" \
-          -H "accept: application/json" \
+          # Consulta a API v2.0 enviando o Token de forma oculta e extremamente segura por cabeçalho (Bearer)
+          curl -X GET "https://api.tomticket.com/v2.0/ticket/list" \
+          -H "Authorization: Bearer ${{ secrets.TOMTICKET_TOKEN }}" \
+          -H "Accept: application/json" \
           -o dados.json
 
       - name: Salvar e publicar os dados atualizados
@@ -29,6 +30,6 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add dados.json
-          # Só faz o commit se houver alguma diferença nos dados para evitar commits vazios
+          # Só faz o commit se houver diferença real nos dados
           git diff-index --quiet HEAD || git commit -m "data: Atualização automatizada dos chamados"
           git push

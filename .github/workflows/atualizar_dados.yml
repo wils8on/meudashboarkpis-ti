@@ -44,7 +44,8 @@ jobs:
               console.log(`📡 Buscando página ${pagina}...`);
               
               try {
-                const url = `https://api.tomticket.com/v2.0/ticket/list/${pagina}`;
+                // Passa a paginação por parâmetros de busca (query params) para evitar erro 404
+                const url = `https://api.tomticket.com/v2.0/ticket/list?page=${pagina}&pagina=${pagina}`;
                 const response = await fetch(url, {
                   method: "GET",
                   headers: {
@@ -53,7 +54,6 @@ jobs:
                   }
                 });
 
-                // Se a API recusar a requisição (ex: Token inválido ou URL errada)
                 if (!response.ok) {
                   const textoErro = await response.text();
                   console.error(`❌ Erro na requisição (Página ${pagina}): Status HTTP ${response.status}`);
@@ -106,7 +106,7 @@ jobs:
           coletarDados();
           '
 
-      - name: Salvar e publicar os dados atualizados
+      - name: Salvar e publicar os dados updated
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"

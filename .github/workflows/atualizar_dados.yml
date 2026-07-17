@@ -17,19 +17,65 @@ jobs:
       - name: Baixar repositório
         uses: actions/checkout@v4
 
-      - name: Consultar API v2.0 do TomTicket e gerar JSON
+      - name: Coletar e consolidar todas as páginas de chamados (v2.0)
         run: |
-          # Consulta a API v2.0 enviando o Token de forma oculta e extremamente segura por cabeçalho (Bearer)
-          curl -X GET "https://api.tomticket.com/v2.0/ticket/list" \
-          -H "Authorization: Bearer ${{ secrets.TOMTICKET_TOKEN }}" \
-          -H "Accept: application/json" \
-          -o dados.json
+          # Inicia variáveis de controle
+          page=1
+          combined_data="[]"
+
+          echo "Iniciando a coleta de chamados do TomTicket..."
+
+          while true; do
+            echo "Consultando a página $page..."
+            
+            # Faz o download seguro da página atual
+            response=$(curl -s -X GET "https://api.tomticket.com/v2.0/ticket/list/$page" \
+              -H "Authorization: Bearer ${{ secrets.TOMTICKET_TOKEN }}" \
+              -H "Accept: application/json")
+
+            # Extrai a lista de chamados utilizando 'jq' (manipulador nativo de JSON do runner)
+            # Tenta buscar em .data, .chamados ou diretamente a raiz
+            page_data=$(echo "$response" | jq -r '.data // .chamados // .')
+
+            # Verifica se a página retornou um array vazio ou inválido
+            if [ "$page_data" = "null" ] || [ "$(echo "$page_data" | jq '. | length')" -eq 0 ]; then
+              echo "Nenhum chamado encontrado na página $page. Consolidação finalizada."
+              break
+            fi
+
+            # Junta o bloco de chamados atual ao acumulador geral
+            combined_data=$(jq -n --argjson existing "$combined_data" --argjson new "$page_data" '$existing + $new')
+
+            # Se a página retornou menos que 50 chamados, significa que é a última página
+            count=$(echo "$page_data" | jq '. | length')
+            echo "Página $page importada com sucesso: $count chamados coletados."
+            
+            if [ "$count" -lt 50 ]; then
+              echo "Última página alcançada."
+              break
+            fi
+
+            # Avança para a próxima página
+            page=$((page+1))
+
+            # Limite de segurança para evitar loops infinitos acidentais
+            if [ $page -gt 100 ]; then
+              echo "Limite máximo de segurança (100 páginas) atingido."
+              break
+            fi
+          done
+
+          # Consolida tudo na estrutura exata que o dashboard já lê
+          echo "Gravando dados combinados..."
+          jq -n --argjson d "$combined_data" '{data: $d}' > dados.json
+
+          echo "Sucesso! Total de chamados unificados: $(jq '.data | length' dados.json)"
 
       - name: Salvar e publicar os dados atualizados
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add dados.json
-          # Só faz o commit se houver diferença real nos dados
-          git diff-index --quiet HEAD || git commit -m "data: Atualização automatizada dos chamados"
+          # Só realiza o commit se houver diferença real de dados para evitar commits repetidos
+          git diff-index --quiet HEAD || git commit -m "data: Sincronização de todos os chamados da API"
           git push

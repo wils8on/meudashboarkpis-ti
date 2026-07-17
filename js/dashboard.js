@@ -450,24 +450,41 @@ async function carregarDadosAutomatizados() {
     }
 
     try {
-        // Busca o arquivo JSON gerado com total segurança pelo GitHub Action
-        const response = await fetch('dados.json');
+        // Busca o arquivo JSON sem cache para garantir que pegamos os dados mais novos do Actions
+        const response = await fetch('dados.json?t=' + new Date().getTime());
         if (!response.ok) {
             throw new Error("O arquivo de dados integrados ainda não está disponível no servidor.");
         }
         
         const jsonResponse = await response.json();
         
-        // Mapeie os dados vindos do TomTicket para a estrutura que seu dashboard já consome
-        // Nota: Altere as propriedades (ex: c.protocolo, c.titulo) para baterem exatamente com o retorno JSON da API do TomTicket
-        dadosPlanilhaGlobal = jsonResponse.data.map(chamado => ({
-            'Protocolo': chamado.id || chamado.protocolo || "",
+        // Se a API retornou erro em formato JSON
+        if (jsonResponse.message && jsonResponse.message.includes("Not Found")) {
+            throw new Error("Erro na API do TomTicket: Verifique se o ID ou Token estão corretos.");
+        }
+
+        // Tenta encontrar a lista de chamados dinamicamente em qualquer formato que a API responda
+        let listaChamados = [];
+        if (Array.isArray(jsonResponse)) {
+            listaChamados = jsonResponse;
+        } else if (jsonResponse.data && Array.isArray(jsonResponse.data)) {
+            listaChamados = jsonResponse.data;
+        } else if (jsonResponse.chamados && Array.isArray(jsonResponse.chamados)) {
+            listaChamados = jsonResponse.chamados;
+        } else {
+            console.error("Formato inesperado do JSON:", jsonResponse);
+            throw new Error("Formato de dados desconhecido. Abra o console do navegador para inspecionar.");
+        }
+
+        // Mapeia as colunas do TomTicket para os nomes esperados pelas lógicas dos gráficos
+        dadosPlanilhaGlobal = listaChamados.map(chamado => ({
+            'Protocolo': chamado.id || chamado.protocolo || chamado.numero || "",
             'Assunto': chamado.titulo || chamado.assunto || "",
             'Status': chamado.situacao || chamado.status || "Aberto",
             'Cliente': chamado.cliente_nome || chamado.cliente || "Desconhecido",
             'Prioridade': chamado.prioridade || "Normal",
-            'Data de Criação': chamado.data_abertura || chamado.data_criacao || "",
-            'Data de Finalização': chamado.data_fechamento || chamado.data_finalizacao || "",
+            'Data de Criação': chamado.data_abertura || chamado.data_criacao || chamado.data_aberto || "",
+            'Data de Finalização': chamado.data_fechamento || chamado.data_finalizacao || chamado.data_conclusao || "",
             'SLA de Deadline Cumprido': chamado.sla_cumprido || "sim",
             'Reaberto': chamado.reaberto || "Não"
         }));
@@ -480,11 +497,13 @@ async function carregarDadosAutomatizados() {
             if (uploadStatus) {
                 uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Conectado à API! Atualizado automaticamente em segundo plano.</span>`;
             }
+        } else {
+            throw new Error("A lista de chamados retornou vazia.");
         }
     } catch (erro) {
         console.error("Erro na leitura automática de dados:", erro);
         if (uploadStatus) {
-            uploadStatus.innerHTML = `<span style="color: #fb923c;"><i class="fa-solid fa-triangle-exclamation"></i> Aguardando primeira sincronização automática do servidor...</span>`;
+            uploadStatus.innerHTML = `<span style="color: #fb923c; font-weight: bold;"><i class="fa-solid fa-triangle-exclamation"></i> Erro de Sincronização: ${erro.message}</span>`;
         }
     }
 }

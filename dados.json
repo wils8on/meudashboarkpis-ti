@@ -1,6 +1,79 @@
 {
   "data": [
     {
+      "id": "bd732d255928752275f052cc19d7be97",
+      "protocol": 1382,
+      "subject": "SEM ACESSO AO E-MAIL",
+      "message": "<p fr-original-style=\"\">Chamado aberto para registro.</p>",
+      "message_truncated": false,
+      "mimetype": "text/html",
+      "customer": {
+        "name": "Bruno Coimbra",
+        "email": "bruno.coimbra@dialise.com.br",
+        "internal_id": null,
+        "organization": {
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "ticket_type": "Externo",
+      "work_time": 2400,
+      "elapsed_time": 11,
+      "creation_date": "2026-07-22 09:35:09-03:00",
+      "sla": {
+        "startup": {
+          "date": "2026-07-23 08:05:10-03:00",
+          "accomplished": true
+        },
+        "deadline": {
+          "date": null,
+          "accomplished": true
+        }
+      },
+      "cost": {
+        "hourly": 0,
+        "overtime": 0,
+        "total_final": 0,
+        "total_overtime": 0,
+        "total_gross": 0
+      },
+      "evaluation": {
+        "problem_solved": null,
+        "grade": null,
+        "comment": null
+      },
+      "first_reply_date": null,
+      "end_date": "2026-07-22 09:35:20-03:00",
+      "situation": {
+        "id": 5,
+        "apply_date": "2026-07-22 09:35:20-03:00",
+        "description": "Finalizado"
+      },
+      "category": {
+        "id": "68daf1168b99bf5ac0e225dae6198046",
+        "name": "Sem acesso ou Solicitar acesso "
+      },
+      "department": {
+        "id": "b52a06ccb90a5ccad05b3f7ca95fecd8",
+        "name": "Acessos a sistemas e E-mails"
+      },
+      "operator": {
+        "id": "a2a674acd07253b3d0447bee595b25e8",
+        "name": "Wilson Jesus"
+      },
+      "status": {
+        "id": null,
+        "description": null,
+        "apply_date": null
+      },
+      "parent_ticket_id": null,
+      "schedule_date": null,
+      "active_whatsapp": false,
+      "closed_by_inactivity": false,
+      "reopened": false
+    },
+    {
       "id": "6f0505978e3d8a8919d2a325b7867952",
       "protocol": 1381,
       "subject": "Configuração de máquina de nova colaboradora",
@@ -92,7 +165,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 61188,
+      "elapsed_time": 67576,
       "creation_date": "2026-07-21 15:20:43-03:00",
       "sla": {
         "startup": {
@@ -165,7 +238,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 141715,
+      "elapsed_time": 148103,
       "creation_date": "2026-07-20 16:58:36-03:00",
       "sla": {
         "startup": {
@@ -238,7 +311,7 @@
       "priority": 2,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 144608,
+      "elapsed_time": 150996,
       "creation_date": "2026-07-20 16:10:23-03:00",
       "sla": {
         "startup": {
@@ -457,7 +530,7 @@
       "priority": 4,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 408705,
+      "elapsed_time": 415093,
       "creation_date": "2026-07-17 14:48:46-03:00",
       "sla": {
         "startup": {
@@ -530,7 +603,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 416065,
+      "elapsed_time": 422453,
       "creation_date": "2026-07-17 12:46:06-03:00",
       "sla": {
         "startup": {
@@ -676,12 +749,12 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 487643,
+      "elapsed_time": 494031,
       "creation_date": "2026-07-16 16:53:08-03:00",
       "sla": {
         "startup": {
           "date": "2026-07-22 09:23:08-03:00",
-          "accomplished": true
+          "accomplished": false
         },
         "deadline": {
           "date": "2026-07-29 10:13:48-03:00",
@@ -822,7 +895,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 420,
-      "elapsed_time": 493781,
+      "elapsed_time": 500169,
       "creation_date": "2026-07-16 15:10:50-03:00",
       "sla": {
         "startup": {
@@ -968,7 +1041,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 507482,
+      "elapsed_time": 513870,
       "creation_date": "2026-07-16 11:22:29-03:00",
       "sla": {
         "startup": {
@@ -1844,7 +1917,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1031627,
+      "elapsed_time": 1038015,
       "creation_date": "2026-07-10 09:46:44-03:00",
       "sla": {
         "startup": {
@@ -2136,7 +2209,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1115276,
+      "elapsed_time": 1121664,
       "creation_date": "2026-07-09 10:32:35-03:00",
       "sla": {
         "startup": {
@@ -3012,7 +3085,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1352248,
+      "elapsed_time": 1358636,
       "creation_date": "2026-07-06 16:43:03-03:00",
       "sla": {
         "startup": {
@@ -3158,7 +3231,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1369984,
+      "elapsed_time": 1376372,
       "creation_date": "2026-07-06 11:47:27-03:00",
       "sla": {
         "startup": {
@@ -3367,11 +3440,11 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 1,
@@ -3888,7 +3961,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 2839273,
+      "elapsed_time": 2845661,
       "creation_date": "2026-06-19 11:39:20-03:00",
       "sla": {
         "startup": {
@@ -4472,7 +4545,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3432859,
+      "elapsed_time": 3439247,
       "creation_date": "2026-06-12 14:46:14-03:00",
       "sla": {
         "startup": {
@@ -4545,7 +4618,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3433005,
+      "elapsed_time": 3439393,
       "creation_date": "2026-06-12 14:43:48-03:00",
       "sla": {
         "startup": {
@@ -4837,7 +4910,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3451176,
+      "elapsed_time": 3457564,
       "creation_date": "2026-06-12 09:40:57-03:00",
       "sla": {
         "startup": {
@@ -5275,7 +5348,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3704437,
+      "elapsed_time": 3710825,
       "creation_date": "2026-06-09 11:19:56-03:00",
       "sla": {
         "startup": {
@@ -6652,17 +6725,17 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4397429,
+      "elapsed_time": 4403817,
       "creation_date": "2026-06-01 10:50:04-03:00",
       "sla": {
         "startup": {
@@ -7027,7 +7100,7 @@
       "priority": 2,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 4742365,
+      "elapsed_time": 4748753,
       "creation_date": "2026-05-28 11:01:08-03:00",
       "sla": {
         "startup": {
@@ -7100,7 +7173,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4811150,
+      "elapsed_time": 4817538,
       "creation_date": "2026-05-27 15:54:43-03:00",
       "sla": {
         "startup": {
@@ -8550,11 +8623,11 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 4,
@@ -9071,7 +9144,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 6460241,
+      "elapsed_time": 6466629,
       "creation_date": "2026-05-08 13:49:54-03:00",
       "sla": {
         "startup": {
@@ -9134,7 +9207,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -9144,7 +9217,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 6467338,
+      "elapsed_time": 6473726,
       "creation_date": "2026-05-08 11:51:37-03:00",
       "sla": {
         "startup": {
@@ -10239,7 +10312,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 7241514,
+      "elapsed_time": 7247902,
       "creation_date": "2026-04-29 12:48:41-03:00",
       "sla": {
         "startup": {
@@ -10813,11 +10886,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -10886,7 +10959,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -10959,11 +11032,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -11261,7 +11334,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 3420,
-      "elapsed_time": 7765215,
+      "elapsed_time": 7771603,
       "creation_date": "2026-04-23 11:20:22-03:00",
       "sla": {
         "startup": {
@@ -11991,7 +12064,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8350864,
+      "elapsed_time": 8357252,
       "creation_date": "2026-04-16 16:39:33-03:00",
       "sla": {
         "startup": {
@@ -12283,7 +12356,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8443893,
+      "elapsed_time": 8450281,
       "creation_date": "2026-04-15 14:49:04-03:00",
       "sla": {
         "startup": {
@@ -12648,7 +12721,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8520963,
+      "elapsed_time": 8527351,
       "creation_date": "2026-04-14 17:24:34-03:00",
       "sla": {
         "startup": {
@@ -13076,11 +13149,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -13305,7 +13378,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8672858,
+      "elapsed_time": 8679246,
       "creation_date": "2026-04-12 23:12:59-03:00",
       "sla": {
         "startup": {
@@ -14609,11 +14682,11 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -17383,11 +17456,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -17456,11 +17529,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -19719,11 +19792,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -21033,7 +21106,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -22347,11 +22420,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -22566,11 +22639,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 3,
@@ -22639,7 +22712,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -22858,11 +22931,11 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -23087,7 +23160,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 14419637,
+      "elapsed_time": 14426026,
       "creation_date": "2026-02-05 10:53:26-03:00",
       "sla": {
         "startup": {
@@ -24610,7 +24683,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -25204,7 +25277,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 16305526,
+      "elapsed_time": 16311915,
       "creation_date": "2026-01-14 15:01:57-03:00",
       "sla": {
         "startup": {
@@ -26581,7 +26654,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -27019,7 +27092,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -27457,7 +27530,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -30387,7 +30460,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 2700,
-      "elapsed_time": 20643356,
+      "elapsed_time": 20649745,
       "creation_date": "2025-11-25 10:04:51-03:00",
       "sla": {
         "startup": {
@@ -32786,11 +32859,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -33735,7 +33808,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -37166,11 +37239,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -38553,7 +38626,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -38626,11 +38699,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -43006,11 +43079,11 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -44466,7 +44539,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -48408,11 +48481,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -48919,7 +48992,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -50671,7 +50744,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -51620,11 +51693,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 3,
@@ -56000,11 +56073,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -58190,11 +58263,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 1,
@@ -58482,7 +58555,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -59139,7 +59212,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -59869,7 +59942,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -60599,7 +60672,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -62862,11 +62935,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -64541,11 +64614,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -66001,7 +66074,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -66147,11 +66220,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -69724,7 +69797,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -70089,11 +70162,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -70235,11 +70308,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -70965,7 +71038,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -71330,11 +71403,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -71476,7 +71549,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -71695,7 +71768,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -76586,11 +76659,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 4,
@@ -77170,7 +77243,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -77243,11 +77316,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -78776,7 +78849,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -81258,11 +81331,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -81477,7 +81550,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -81769,7 +81842,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -81988,11 +82061,11 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Jackson Pereira",
-        "email": "jackson.pereira@taurovita.com",
+        "email": "jackson.pereira@dialise.com.br",
         "internal_id": null,
         "organization": {
-          "id": "cc28ca8b1c1f1368664f221bca955692",
-          "name": "Taurovita"
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -82937,7 +83010,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -83083,7 +83156,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -84178,7 +84251,7 @@
       "mimetype": "text/plain",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -84470,7 +84543,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -85346,7 +85419,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",
@@ -85565,7 +85638,7 @@
       "mimetype": "text/html",
       "customer": {
         "name": "Bruno Coimbra",
-        "email": "bruno.coimbra@taurovita.com",
+        "email": "bruno.coimbra@dialise.com.br",
         "internal_id": null,
         "organization": {
           "id": "a41eac45bb9c3594deab3f00063a739e",

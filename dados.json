@@ -384,7 +384,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 150139,
+      "elapsed_time": 159159,
       "creation_date": "2026-07-21 15:20:43-03:00",
       "sla": {
         "startup": {
@@ -428,9 +428,9 @@
         "name": "Tiago Silva"
       },
       "status": {
-        "id": null,
-        "description": null,
-        "apply_date": null
+        "id": "d896aa09aa3d0d4ee6575cde718e9bd4",
+        "description": "Analise para Desenvolvimento",
+        "apply_date": "2026-07-23 09:03:06-03:00"
       },
       "parent_ticket_id": null,
       "schedule_date": null,
@@ -457,7 +457,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 230666,
+      "elapsed_time": 239686,
       "creation_date": "2026-07-20 16:58:36-03:00",
       "sla": {
         "startup": {
@@ -530,7 +530,7 @@
       "priority": 2,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 233559,
+      "elapsed_time": 242579,
       "creation_date": "2026-07-20 16:10:23-03:00",
       "sla": {
         "startup": {
@@ -822,7 +822,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 505016,
+      "elapsed_time": 514036,
       "creation_date": "2026-07-17 12:46:06-03:00",
       "sla": {
         "startup": {
@@ -968,7 +968,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 576594,
+      "elapsed_time": 585614,
       "creation_date": "2026-07-16 16:53:08-03:00",
       "sla": {
         "startup": {
@@ -976,7 +976,7 @@
           "accomplished": false
         },
         "deadline": {
-          "date": "2026-07-29 10:13:48-03:00",
+          "date": null,
           "accomplished": true
         }
       },
@@ -992,12 +992,12 @@
         "grade": null,
         "comment": null
       },
-      "first_reply_date": null,
+      "first_reply_date": "2026-07-23 09:56:49-03:00",
       "end_date": null,
       "situation": {
-        "id": 1,
-        "apply_date": "2026-07-20 16:13:48-03:00",
-        "description": "Aguardando interação do atendente"
+        "id": 2,
+        "apply_date": "2026-07-23 09:56:49-03:00",
+        "description": "Respondido, aguardando resposta do cliente"
       },
       "category": {
         "id": "0a175418c7c55381b3b1b3f5ab983823",
@@ -1012,9 +1012,9 @@
         "name": "Antônio Ferreira"
       },
       "status": {
-        "id": null,
-        "description": null,
-        "apply_date": null
+        "id": "591e991e887943c17d57b5f9d9191848",
+        "description": "Em análise",
+        "apply_date": "2026-07-23 09:56:58-03:00"
       },
       "parent_ticket_id": null,
       "schedule_date": null,
@@ -1114,7 +1114,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 420,
-      "elapsed_time": 582732,
+      "elapsed_time": 591752,
       "creation_date": "2026-07-16 15:10:50-03:00",
       "sla": {
         "startup": {
@@ -1260,7 +1260,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 596433,
+      "elapsed_time": 605453,
       "creation_date": "2026-07-16 11:22:29-03:00",
       "sla": {
         "startup": {
@@ -2136,7 +2136,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1120578,
+      "elapsed_time": 1129598,
       "creation_date": "2026-07-10 09:46:44-03:00",
       "sla": {
         "startup": {
@@ -2428,7 +2428,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1204227,
+      "elapsed_time": 1213247,
       "creation_date": "2026-07-09 10:32:35-03:00",
       "sla": {
         "startup": {
@@ -3449,8 +3449,8 @@
       },
       "priority": 2,
       "ticket_type": "Externo",
-      "work_time": 0,
-      "elapsed_time": 1458935,
+      "work_time": 12600,
+      "elapsed_time": 1465471,
       "creation_date": "2026-07-06 11:47:27-03:00",
       "sla": {
         "startup": {
@@ -3475,11 +3475,11 @@
         "comment": null
       },
       "first_reply_date": "2026-07-06 13:51:33-03:00",
-      "end_date": null,
+      "end_date": "2026-07-23 10:51:58-03:00",
       "situation": {
-        "id": 2,
-        "apply_date": "2026-07-16 15:16:51-03:00",
-        "description": "Respondido, aguardando resposta do cliente"
+        "id": 5,
+        "apply_date": "2026-07-23 10:51:58-03:00",
+        "description": "Finalizado"
       },
       "category": {
         "id": "9cfbafae58809ffabee92d3a7282fe37",
@@ -3494,9 +3494,9 @@
         "name": "Tiago Silva"
       },
       "status": {
-        "id": "2e9dd8c6876587ec292df764447d234d",
-        "description": "Aguardando cliente",
-        "apply_date": "2026-07-16 15:38:25-03:00"
+        "id": null,
+        "description": null,
+        "apply_date": null
       },
       "parent_ticket_id": null,
       "schedule_date": null,
@@ -4180,7 +4180,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 2928224,
+      "elapsed_time": 2937244,
       "creation_date": "2026-06-19 11:39:20-03:00",
       "sla": {
         "startup": {
@@ -4764,7 +4764,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3521810,
+      "elapsed_time": 3530830,
       "creation_date": "2026-06-12 14:46:14-03:00",
       "sla": {
         "startup": {
@@ -4837,7 +4837,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3521956,
+      "elapsed_time": 3530976,
       "creation_date": "2026-06-12 14:43:48-03:00",
       "sla": {
         "startup": {
@@ -5129,7 +5129,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3540127,
+      "elapsed_time": 3549147,
       "creation_date": "2026-06-12 09:40:57-03:00",
       "sla": {
         "startup": {
@@ -5567,7 +5567,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3793388,
+      "elapsed_time": 3802408,
       "creation_date": "2026-06-09 11:19:56-03:00",
       "sla": {
         "startup": {
@@ -6954,7 +6954,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4486380,
+      "elapsed_time": 4495400,
       "creation_date": "2026-06-01 10:50:04-03:00",
       "sla": {
         "startup": {
@@ -7319,7 +7319,7 @@
       "priority": 2,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 4831318,
+      "elapsed_time": 4840338,
       "creation_date": "2026-05-28 11:01:08-03:00",
       "sla": {
         "startup": {
@@ -7392,7 +7392,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4900103,
+      "elapsed_time": 4909123,
       "creation_date": "2026-05-27 15:54:43-03:00",
       "sla": {
         "startup": {
@@ -9436,7 +9436,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 6556289,
+      "elapsed_time": 6565309,
       "creation_date": "2026-05-08 11:51:37-03:00",
       "sla": {
         "startup": {
@@ -10531,7 +10531,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 7330465,
+      "elapsed_time": 7339485,
       "creation_date": "2026-04-29 12:48:41-03:00",
       "sla": {
         "startup": {
@@ -11553,7 +11553,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 3420,
-      "elapsed_time": 7854166,
+      "elapsed_time": 7863186,
       "creation_date": "2026-04-23 11:20:22-03:00",
       "sla": {
         "startup": {
@@ -12283,7 +12283,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8439815,
+      "elapsed_time": 8448835,
       "creation_date": "2026-04-16 16:39:33-03:00",
       "sla": {
         "startup": {
@@ -12575,7 +12575,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8532844,
+      "elapsed_time": 8541864,
       "creation_date": "2026-04-15 14:49:04-03:00",
       "sla": {
         "startup": {
@@ -12940,7 +12940,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8609914,
+      "elapsed_time": 8618934,
       "creation_date": "2026-04-14 17:24:34-03:00",
       "sla": {
         "startup": {
@@ -13597,7 +13597,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8761809,
+      "elapsed_time": 8770829,
       "creation_date": "2026-04-12 23:12:59-03:00",
       "sla": {
         "startup": {
@@ -23379,7 +23379,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 14508588,
+      "elapsed_time": 14517608,
       "creation_date": "2026-02-05 10:53:26-03:00",
       "sla": {
         "startup": {
@@ -25496,7 +25496,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 16394477,
+      "elapsed_time": 16403497,
       "creation_date": "2026-01-14 15:01:57-03:00",
       "sla": {
         "startup": {
@@ -30679,7 +30679,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 2700,
-      "elapsed_time": 20732307,
+      "elapsed_time": 20741327,
       "creation_date": "2025-11-25 10:04:51-03:00",
       "sla": {
         "startup": {

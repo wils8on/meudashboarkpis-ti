@@ -19,7 +19,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 117316,
+      "elapsed_time": 129978,
       "creation_date": "2026-07-27 12:35:37-03:00",
       "sla": {
         "startup": {
@@ -238,7 +238,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 364673,
+      "elapsed_time": 377335,
       "creation_date": "2026-07-24 15:53:00-03:00",
       "sla": {
         "startup": {
@@ -311,7 +311,7 @@
       "priority": 4,
       "ticket_type": "Externo",
       "work_time": 540,
-      "elapsed_time": 364751,
+      "elapsed_time": 377413,
       "creation_date": "2026-07-24 15:51:42-03:00",
       "sla": {
         "startup": {
@@ -384,7 +384,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 384209,
+      "elapsed_time": 396871,
       "creation_date": "2026-07-24 10:27:24-03:00",
       "sla": {
         "startup": {
@@ -457,7 +457,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 540,
-      "elapsed_time": 451961,
+      "elapsed_time": 464623,
       "creation_date": "2026-07-23 15:38:12-03:00",
       "sla": {
         "startup": {
@@ -603,7 +603,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 455803,
+      "elapsed_time": 468465,
       "creation_date": "2026-07-23 14:34:10-03:00",
       "sla": {
         "startup": {
@@ -1114,7 +1114,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 706337,
+      "elapsed_time": 718999,
       "creation_date": "2026-07-20 16:58:36-03:00",
       "sla": {
         "startup": {
@@ -1187,7 +1187,7 @@
       "priority": 2,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 709230,
+      "elapsed_time": 721892,
       "creation_date": "2026-07-20 16:10:23-03:00",
       "sla": {
         "startup": {
@@ -1479,7 +1479,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 980687,
+      "elapsed_time": 993349,
       "creation_date": "2026-07-17 12:46:06-03:00",
       "sla": {
         "startup": {
@@ -1625,7 +1625,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1052265,
+      "elapsed_time": 1064927,
       "creation_date": "2026-07-16 16:53:08-03:00",
       "sla": {
         "startup": {
@@ -1771,7 +1771,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 420,
-      "elapsed_time": 1058403,
+      "elapsed_time": 1071065,
       "creation_date": "2026-07-16 15:10:50-03:00",
       "sla": {
         "startup": {
@@ -1917,7 +1917,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1072104,
+      "elapsed_time": 1084766,
       "creation_date": "2026-07-16 11:22:29-03:00",
       "sla": {
         "startup": {
@@ -2793,7 +2793,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1596249,
+      "elapsed_time": 1608911,
       "creation_date": "2026-07-10 09:46:44-03:00",
       "sla": {
         "startup": {
@@ -3085,7 +3085,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1679898,
+      "elapsed_time": 1692560,
       "creation_date": "2026-07-09 10:32:35-03:00",
       "sla": {
         "startup": {
@@ -4837,7 +4837,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3403895,
+      "elapsed_time": 3416557,
       "creation_date": "2026-06-19 11:39:20-03:00",
       "sla": {
         "startup": {
@@ -5421,7 +5421,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3997481,
+      "elapsed_time": 4010143,
       "creation_date": "2026-06-12 14:46:14-03:00",
       "sla": {
         "startup": {
@@ -5494,7 +5494,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3997627,
+      "elapsed_time": 4010289,
       "creation_date": "2026-06-12 14:43:48-03:00",
       "sla": {
         "startup": {
@@ -5786,7 +5786,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4015798,
+      "elapsed_time": 4028460,
       "creation_date": "2026-06-12 09:40:57-03:00",
       "sla": {
         "startup": {
@@ -6224,7 +6224,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4269059,
+      "elapsed_time": 4281721,
       "creation_date": "2026-06-09 11:19:56-03:00",
       "sla": {
         "startup": {
@@ -7611,7 +7611,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4962053,
+      "elapsed_time": 4974715,
       "creation_date": "2026-06-01 10:50:04-03:00",
       "sla": {
         "startup": {
@@ -7976,7 +7976,7 @@
       "priority": 2,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 5306989,
+      "elapsed_time": 5319651,
       "creation_date": "2026-05-28 11:01:08-03:00",
       "sla": {
         "startup": {
@@ -8049,7 +8049,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 5375774,
+      "elapsed_time": 5388436,
       "creation_date": "2026-05-27 15:54:43-03:00",
       "sla": {
         "startup": {
@@ -10093,7 +10093,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 7031960,
+      "elapsed_time": 7044622,
       "creation_date": "2026-05-08 11:51:37-03:00",
       "sla": {
         "startup": {
@@ -11188,7 +11188,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 7806137,
+      "elapsed_time": 7818800,
       "creation_date": "2026-04-29 12:48:41-03:00",
       "sla": {
         "startup": {
@@ -12210,7 +12210,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 3420,
-      "elapsed_time": 8329836,
+      "elapsed_time": 8342499,
       "creation_date": "2026-04-23 11:20:22-03:00",
       "sla": {
         "startup": {
@@ -12940,7 +12940,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8915485,
+      "elapsed_time": 8928148,
       "creation_date": "2026-04-16 16:39:33-03:00",
       "sla": {
         "startup": {
@@ -13232,7 +13232,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9008514,
+      "elapsed_time": 9021177,
       "creation_date": "2026-04-15 14:49:04-03:00",
       "sla": {
         "startup": {
@@ -13597,7 +13597,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9085584,
+      "elapsed_time": 9098247,
       "creation_date": "2026-04-14 17:24:34-03:00",
       "sla": {
         "startup": {
@@ -14254,7 +14254,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9237479,
+      "elapsed_time": 9250142,
       "creation_date": "2026-04-12 23:12:59-03:00",
       "sla": {
         "startup": {
@@ -24036,7 +24036,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 14984258,
+      "elapsed_time": 14996922,
       "creation_date": "2026-02-05 10:53:26-03:00",
       "sla": {
         "startup": {
@@ -26153,7 +26153,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 16870149,
+      "elapsed_time": 16882813,
       "creation_date": "2026-01-14 15:01:57-03:00",
       "sla": {
         "startup": {
@@ -31336,7 +31336,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 2700,
-      "elapsed_time": 21207977,
+      "elapsed_time": 21218163,
       "creation_date": "2025-11-25 10:04:51-03:00",
       "sla": {
         "startup": {
@@ -31361,11 +31361,11 @@
         "comment": null
       },
       "first_reply_date": "2025-11-26 09:05:55-03:00",
-      "end_date": null,
+      "end_date": "2026-07-29 00:00:54-03:00",
       "situation": {
-        "id": 2,
-        "apply_date": "2026-07-21 17:35:16-03:00",
-        "description": "Respondido, aguardando resposta do cliente"
+        "id": 5,
+        "apply_date": "2026-07-29 00:00:54-03:00",
+        "description": "Finalizado"
       },
       "category": {
         "id": "af4c2651ad6e9a96e5096b72913e17a4",

@@ -1,6 +1,225 @@
 {
   "data": [
     {
+      "id": "32742a19166b3788f3f456248588f280",
+      "protocol": 1401,
+      "subject": "Parametrização da Tela Parceiros",
+      "message": "<p fr-original-style=\"\">Durante demonstração foi organizada a tela de parceiros para que a equipe de Qualidade tivesse acesso apenas aos campos necessários para cadastro de prospect e indicação de campo de CNPJ como obrigatório no preenchimento do cadastro.</p>",
+      "message_truncated": false,
+      "mimetype": "text/html",
+      "customer": {
+        "name": "Mariana Ferrari",
+        "email": "mariana.ferrari@dialise.com.br",
+        "internal_id": "",
+        "organization": {
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
+        }
+      },
+      "priority": 1,
+      "ticket_type": "Externo",
+      "work_time": 1200,
+      "elapsed_time": 8,
+      "creation_date": "2026-07-30 08:20:28-03:00",
+      "sla": {
+        "startup": {
+          "date": "2026-08-07 11:20:28-03:00",
+          "accomplished": true
+        },
+        "deadline": {
+          "date": null,
+          "accomplished": true
+        }
+      },
+      "cost": {
+        "hourly": 0,
+        "overtime": 0,
+        "total_final": 0,
+        "total_overtime": 0,
+        "total_gross": 0
+      },
+      "evaluation": {
+        "problem_solved": null,
+        "grade": null,
+        "comment": null
+      },
+      "first_reply_date": null,
+      "end_date": "2026-07-30 08:20:36-03:00",
+      "situation": {
+        "id": 5,
+        "apply_date": "2026-07-30 08:20:36-03:00",
+        "description": "Finalizado"
+      },
+      "category": {
+        "id": "af4c2651ad6e9a96e5096b72913e17a4",
+        "name": "Solicitações e Sugestões"
+      },
+      "department": {
+        "id": "7e83cf7e4cca751863fbb6f174c27b36",
+        "name": "Sistemas "
+      },
+      "operator": {
+        "id": "a2a674acd07253b3d0447bee595b25e8",
+        "name": "Wilson Jesus"
+      },
+      "status": {
+        "id": null,
+        "description": null,
+        "apply_date": null
+      },
+      "parent_ticket_id": null,
+      "schedule_date": null,
+      "active_whatsapp": false,
+      "closed_by_inactivity": false,
+      "reopened": false
+    },
+    {
+      "id": "c8fe63f219fa102446d192a00761a033",
+      "protocol": 1400,
+      "subject": "CRIAÇÃO DE FILTRO EM PARCEIROS",
+      "message": "<p fr-original-style=\"\">Foi solicitada a criação de um filtro da tela de parceiro para listagem rápida dos clientes cadastrados para representante especifico.</p>",
+      "message_truncated": false,
+      "mimetype": "text/html",
+      "customer": {
+        "name": "Larissa Pereira",
+        "email": "larissa.pereira@dialise.com.br",
+        "internal_id": "",
+        "organization": {
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
+        }
+      },
+      "priority": 1,
+      "ticket_type": "Externo",
+      "work_time": 900,
+      "elapsed_time": 14,
+      "creation_date": "2026-07-30 08:17:38-03:00",
+      "sla": {
+        "startup": {
+          "date": "2026-08-07 11:17:38-03:00",
+          "accomplished": true
+        },
+        "deadline": {
+          "date": null,
+          "accomplished": true
+        }
+      },
+      "cost": {
+        "hourly": 0,
+        "overtime": 0,
+        "total_final": 0,
+        "total_overtime": 0,
+        "total_gross": 0
+      },
+      "evaluation": {
+        "problem_solved": null,
+        "grade": null,
+        "comment": null
+      },
+      "first_reply_date": null,
+      "end_date": "2026-07-30 08:17:52-03:00",
+      "situation": {
+        "id": 5,
+        "apply_date": "2026-07-30 08:17:52-03:00",
+        "description": "Finalizado"
+      },
+      "category": {
+        "id": "af4c2651ad6e9a96e5096b72913e17a4",
+        "name": "Solicitações e Sugestões"
+      },
+      "department": {
+        "id": "7e83cf7e4cca751863fbb6f174c27b36",
+        "name": "Sistemas "
+      },
+      "operator": {
+        "id": "a2a674acd07253b3d0447bee595b25e8",
+        "name": "Wilson Jesus"
+      },
+      "status": {
+        "id": null,
+        "description": null,
+        "apply_date": null
+      },
+      "parent_ticket_id": null,
+      "schedule_date": null,
+      "active_whatsapp": false,
+      "closed_by_inactivity": false,
+      "reopened": false
+    },
+    {
+      "id": "6c4392fd2d93891a69dd440c2b10ceba",
+      "protocol": 1399,
+      "subject": "Checklist de recebimento e expedição",
+      "message": "O link do formulário do Checklist de recebimento e expedição não esta abrindo na minha máquina",
+      "message_truncated": false,
+      "mimetype": "text/plain",
+      "customer": {
+        "name": "Linaldo Rocha",
+        "email": "linaldo.rocha@dialise.com.br",
+        "internal_id": null,
+        "organization": {
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "ticket_type": "Externo",
+      "work_time": 0,
+      "elapsed_time": 2784,
+      "creation_date": "2026-07-30 07:58:43-03:00",
+      "sla": {
+        "startup": {
+          "date": "2026-08-04 09:30:00-03:00",
+          "accomplished": true
+        },
+        "deadline": {
+          "date": null,
+          "accomplished": null
+        }
+      },
+      "cost": {
+        "hourly": 0,
+        "overtime": 0,
+        "total_final": 0,
+        "total_overtime": 0,
+        "total_gross": 0
+      },
+      "evaluation": {
+        "problem_solved": null,
+        "grade": null,
+        "comment": null
+      },
+      "first_reply_date": null,
+      "end_date": null,
+      "situation": {
+        "id": 0,
+        "apply_date": "2026-07-30 07:58:43-03:00",
+        "description": "Sem atendente vinculado"
+      },
+      "category": {
+        "id": "68daf1168b99bf5ac0e225dae6198046",
+        "name": "Sem acesso ou Solicitar acesso "
+      },
+      "department": {
+        "id": "b52a06ccb90a5ccad05b3f7ca95fecd8",
+        "name": "Acessos a sistemas e E-mails"
+      },
+      "operator": {
+        "id": null,
+        "name": null
+      },
+      "status": {
+        "id": null,
+        "description": null,
+        "apply_date": null
+      },
+      "parent_ticket_id": null,
+      "schedule_date": null,
+      "active_whatsapp": false,
+      "closed_by_inactivity": false,
+      "reopened": false
+    },
+    {
       "id": "53f86c921b4928877ee20494e773cff8",
       "protocol": 1398,
       "subject": "cadastro no kolossus",
@@ -19,7 +238,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 50735,
+      "elapsed_time": 57937,
       "creation_date": "2026-07-29 16:39:30-03:00",
       "sla": {
         "startup": {
@@ -92,7 +311,7 @@
       "priority": 2,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 52082,
+      "elapsed_time": 59284,
       "creation_date": "2026-07-29 16:17:03-03:00",
       "sla": {
         "startup": {
@@ -165,7 +384,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 55457,
+      "elapsed_time": 62659,
       "creation_date": "2026-07-29 15:20:48-03:00",
       "sla": {
         "startup": {
@@ -311,7 +530,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 238168,
+      "elapsed_time": 245370,
       "creation_date": "2026-07-27 12:35:37-03:00",
       "sla": {
         "startup": {
@@ -320,7 +539,7 @@
         },
         "deadline": {
           "date": null,
-          "accomplished": null
+          "accomplished": true
         }
       },
       "cost": {
@@ -335,12 +554,12 @@
         "grade": null,
         "comment": null
       },
-      "first_reply_date": null,
+      "first_reply_date": "2026-07-30 08:24:34-03:00",
       "end_date": null,
       "situation": {
-        "id": 0,
-        "apply_date": "2026-07-27 12:35:37-03:00",
-        "description": "Sem atendente vinculado"
+        "id": 2,
+        "apply_date": "2026-07-30 08:24:34-03:00",
+        "description": "Respondido, aguardando resposta do cliente"
       },
       "category": {
         "id": "0a175418c7c55381b3b1b3f5ab983823",
@@ -351,13 +570,13 @@
         "name": "Sistemas "
       },
       "operator": {
-        "id": null,
-        "name": null
+        "id": "a2a674acd07253b3d0447bee595b25e8",
+        "name": "Wilson Jesus"
       },
       "status": {
-        "id": null,
-        "description": null,
-        "apply_date": null
+        "id": "7aedb98d9468c54138e559bdeb509c85",
+        "description": "Em Analise Técnica",
+        "apply_date": "2026-07-30 08:24:47-03:00"
       },
       "parent_ticket_id": null,
       "schedule_date": null,
@@ -530,7 +749,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 485525,
+      "elapsed_time": 492727,
       "creation_date": "2026-07-24 15:53:00-03:00",
       "sla": {
         "startup": {
@@ -603,7 +822,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 540,
-      "elapsed_time": 485603,
+      "elapsed_time": 492805,
       "creation_date": "2026-07-24 15:51:42-03:00",
       "sla": {
         "startup": {
@@ -676,7 +895,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 505061,
+      "elapsed_time": 512263,
       "creation_date": "2026-07-24 10:27:24-03:00",
       "sla": {
         "startup": {
@@ -895,7 +1114,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 576655,
+      "elapsed_time": 583857,
       "creation_date": "2026-07-23 14:34:10-03:00",
       "sla": {
         "startup": {
@@ -1406,7 +1625,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 827189,
+      "elapsed_time": 834391,
       "creation_date": "2026-07-20 16:58:36-03:00",
       "sla": {
         "startup": {
@@ -1479,7 +1698,7 @@
       "priority": 1,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 830082,
+      "elapsed_time": 837284,
       "creation_date": "2026-07-20 16:10:23-03:00",
       "sla": {
         "startup": {
@@ -1771,7 +1990,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1101539,
+      "elapsed_time": 1108741,
       "creation_date": "2026-07-17 12:46:06-03:00",
       "sla": {
         "startup": {
@@ -1917,7 +2136,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1173117,
+      "elapsed_time": 1180319,
       "creation_date": "2026-07-16 16:53:08-03:00",
       "sla": {
         "startup": {
@@ -3085,7 +3304,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1717101,
+      "elapsed_time": 1724303,
       "creation_date": "2026-07-10 09:46:44-03:00",
       "sla": {
         "startup": {
@@ -3377,7 +3596,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1800750,
+      "elapsed_time": 1807952,
       "creation_date": "2026-07-09 10:32:35-03:00",
       "sla": {
         "startup": {
@@ -5114,7 +5333,7 @@
       "id": "28c0b57266876b1d92307b941bb91769",
       "protocol": 1328,
       "subject": "ATUALIZAÇÃO TABELA TGFFIN EM BD",
-      "message": "<p fr-original-style=\"\">Sandro,&nbsp;</p><p fr-original-style=\"\"><br></p><p fr-original-style=\"\">preciso que faça o ajuste de atualização da tabela TGFFIN, para que a mesma exclua os registros com NUFIN igual ao NUFIN da tabela TGFFIN_EXC para que eu possa seguir com as validações do BI do financeiro.</p>",
+      "message": "\n\n<p fr-original-style=\"\">Sandro,&nbsp;</p><p fr-original-style=\"\"><br></p><p fr-original-style=\"\">preciso que fa&ccedil;a o ajuste de atualiza&ccedil;&atilde;o da tabela TGFFIN, para que a mesma exclua os registros com NUFIN igual ao NUFIN da tabela TGFFIN_EXC para que eu possa seguir com as valida&ccedil;&otilde;es do BI do financeiro.</p>\n\n",
       "message_truncated": false,
       "mimetype": "text/html",
       "customer": {
@@ -5126,19 +5345,19 @@
           "name": "Diálise"
         }
       },
-      "priority": 3,
+      "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 3524747,
+      "elapsed_time": 3531949,
       "creation_date": "2026-06-19 11:39:20-03:00",
       "sla": {
         "startup": {
-          "date": "2026-06-22 10:09:20-03:00",
-          "accomplished": false
+          "date": "2026-08-04 10:03:25-03:00",
+          "accomplished": true
         },
         "deadline": {
-          "date": "2026-06-24 14:39:20-03:00",
-          "accomplished": false
+          "date": "2026-08-07 11:33:25-03:00",
+          "accomplished": true
         }
       },
       "cost": {
@@ -5713,7 +5932,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4118333,
+      "elapsed_time": 4125535,
       "creation_date": "2026-06-12 14:46:14-03:00",
       "sla": {
         "startup": {
@@ -5786,7 +6005,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4118479,
+      "elapsed_time": 4125681,
       "creation_date": "2026-06-12 14:43:48-03:00",
       "sla": {
         "startup": {
@@ -6078,7 +6297,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4136650,
+      "elapsed_time": 4143852,
       "creation_date": "2026-06-12 09:40:57-03:00",
       "sla": {
         "startup": {
@@ -6516,7 +6735,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4389911,
+      "elapsed_time": 4397113,
       "creation_date": "2026-06-09 11:19:56-03:00",
       "sla": {
         "startup": {
@@ -7903,7 +8122,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 5082904,
+      "elapsed_time": 5090107,
       "creation_date": "2026-06-01 10:50:04-03:00",
       "sla": {
         "startup": {
@@ -8268,7 +8487,7 @@
       "priority": 2,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 5427840,
+      "elapsed_time": 5435043,
       "creation_date": "2026-05-28 11:01:08-03:00",
       "sla": {
         "startup": {
@@ -8341,7 +8560,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 5496625,
+      "elapsed_time": 5503828,
       "creation_date": "2026-05-27 15:54:43-03:00",
       "sla": {
         "startup": {
@@ -10385,7 +10604,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 7152811,
+      "elapsed_time": 7160014,
       "creation_date": "2026-05-08 11:51:37-03:00",
       "sla": {
         "startup": {
@@ -11480,7 +11699,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 7926989,
+      "elapsed_time": 7934192,
       "creation_date": "2026-04-29 12:48:41-03:00",
       "sla": {
         "startup": {
@@ -13232,7 +13451,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9036337,
+      "elapsed_time": 9043540,
       "creation_date": "2026-04-16 16:39:33-03:00",
       "sla": {
         "startup": {
@@ -13524,7 +13743,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9129366,
+      "elapsed_time": 9136569,
       "creation_date": "2026-04-15 14:49:04-03:00",
       "sla": {
         "startup": {
@@ -13889,7 +14108,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9206436,
+      "elapsed_time": 9213639,
       "creation_date": "2026-04-14 17:24:34-03:00",
       "sla": {
         "startup": {
@@ -14546,7 +14765,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9358331,
+      "elapsed_time": 9365536,
       "creation_date": "2026-04-12 23:12:59-03:00",
       "sla": {
         "startup": {
@@ -24328,7 +24547,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 15105110,
+      "elapsed_time": 15112313,
       "creation_date": "2026-02-05 10:53:26-03:00",
       "sla": {
         "startup": {
@@ -26445,7 +26664,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 16991001,
+      "elapsed_time": 16998204,
       "creation_date": "2026-01-14 15:01:57-03:00",
       "sla": {
         "startup": {

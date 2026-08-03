@@ -1,12 +1,12 @@
 {
   "data": [
     {
-      "id": "3858fedda3866ca63bfddd6414b0cff2",
-      "protocol": 1409,
-      "subject": "BAIXAR WHATS BUSINES",
-      "message": "Não consegui baixar o whats corporativo, somente web! \r\nPedi um email de google, entrei no meu pessoal!! Porém agora pedi pra baixar pro meu celular e não pro pc",
+      "id": "499674eeedaedc15cc60043c7961ce63",
+      "protocol": 1410,
+      "subject": "ACTIVE",
+      "message": "SEM ACESSO ",
       "message_truncated": false,
-      "mimetype": "text/plain",
+      "mimetype": "text/html",
       "customer": {
         "name": "Danielle Santos",
         "email": "danielle.franco@dialise.com.br",
@@ -19,16 +19,16 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 262,
-      "creation_date": "2026-08-03 15:02:34-03:00",
+      "elapsed_time": 4471,
+      "creation_date": "2026-08-03 15:44:42-03:00",
       "sla": {
         "startup": {
-          "date": "2026-08-06 16:32:34-03:00",
-          "accomplished": true
+          "date": "2026-08-03 16:14:42-03:00",
+          "accomplished": false
         },
         "deadline": {
-          "date": null,
-          "accomplished": null
+          "date": "2026-08-12 10:10:20-03:00",
+          "accomplished": true
         }
       },
       "cost": {
@@ -46,9 +46,82 @@
       "first_reply_date": null,
       "end_date": null,
       "situation": {
-        "id": 0,
-        "apply_date": "2026-08-03 15:02:34-03:00",
-        "description": "Sem atendente vinculado"
+        "id": 1,
+        "apply_date": "2026-08-03 16:10:20-03:00",
+        "description": "Aguardando interação do atendente"
+      },
+      "category": {
+        "id": "68daf1168b99bf5ac0e225dae6198046",
+        "name": "Sem acesso ou Solicitar acesso "
+      },
+      "department": {
+        "id": "b52a06ccb90a5ccad05b3f7ca95fecd8",
+        "name": "Acessos a sistemas e E-mails"
+      },
+      "operator": {
+        "id": "4aa925c465c4d1345082f9ab14d97b58",
+        "name": "Antônio Ferreira"
+      },
+      "status": {
+        "id": null,
+        "description": null,
+        "apply_date": null
+      },
+      "parent_ticket_id": null,
+      "schedule_date": null,
+      "active_whatsapp": false,
+      "closed_by_inactivity": false,
+      "reopened": false
+    },
+    {
+      "id": "3858fedda3866ca63bfddd6414b0cff2",
+      "protocol": 1409,
+      "subject": "BAIXAR WHATS BUSINES",
+      "message": "Não consegui baixar o whats corporativo, somente web! \r\nPedi um email de google, entrei no meu pessoal!! Porém agora pedi pra baixar pro meu celular e não pro pc",
+      "message_truncated": false,
+      "mimetype": "text/plain",
+      "customer": {
+        "name": "Danielle Santos",
+        "email": "danielle.franco@dialise.com.br",
+        "internal_id": null,
+        "organization": {
+          "id": "a41eac45bb9c3594deab3f00063a739e",
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "ticket_type": "Externo",
+      "work_time": 180,
+      "elapsed_time": 5624,
+      "creation_date": "2026-08-03 15:02:34-03:00",
+      "sla": {
+        "startup": {
+          "date": "2026-08-06 16:32:34-03:00",
+          "accomplished": true
+        },
+        "deadline": {
+          "date": null,
+          "accomplished": true
+        }
+      },
+      "cost": {
+        "hourly": 0,
+        "overtime": 0,
+        "total_final": 0,
+        "total_overtime": 0,
+        "total_gross": 0
+      },
+      "evaluation": {
+        "problem_solved": null,
+        "grade": null,
+        "comment": null
+      },
+      "first_reply_date": "2026-08-03 16:30:27-03:00",
+      "end_date": "2026-08-03 16:36:18-03:00",
+      "situation": {
+        "id": 5,
+        "apply_date": "2026-08-03 16:36:18-03:00",
+        "description": "Finalizado"
       },
       "category": {
         "id": "ed9f2777f40921b9fc334f1b40ce02a9",
@@ -59,8 +132,8 @@
         "name": "Computadores e Equipamentos"
       },
       "operator": {
-        "id": null,
-        "name": null
+        "id": "6e7abaec3769a5a7faa2328b24fd2a19",
+        "name": "Tiago Silva"
       },
       "status": {
         "id": null,
@@ -165,7 +238,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 257337,
+      "elapsed_time": 264074,
       "creation_date": "2026-07-31 15:37:59-03:00",
       "sla": {
         "startup": {
@@ -238,7 +311,7 @@
       "priority": 4,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 260338,
+      "elapsed_time": 267075,
       "creation_date": "2026-07-31 14:47:58-03:00",
       "sla": {
         "startup": {
@@ -457,7 +530,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 346505,
+      "elapsed_time": 353242,
       "creation_date": "2026-07-30 14:51:51-03:00",
       "sla": {
         "startup": {
@@ -822,7 +895,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 426446,
+      "elapsed_time": 433183,
       "creation_date": "2026-07-29 16:39:30-03:00",
       "sla": {
         "startup": {
@@ -1041,7 +1114,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 613879,
+      "elapsed_time": 620616,
       "creation_date": "2026-07-27 12:35:37-03:00",
       "sla": {
         "startup": {
@@ -1333,7 +1406,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 540,
-      "elapsed_time": 861314,
+      "elapsed_time": 868051,
       "creation_date": "2026-07-24 15:51:42-03:00",
       "sla": {
         "startup": {
@@ -2136,7 +2209,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1202900,
+      "elapsed_time": 1209637,
       "creation_date": "2026-07-20 16:58:36-03:00",
       "sla": {
         "startup": {
@@ -2209,7 +2282,7 @@
       "priority": 1,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 1205793,
+      "elapsed_time": 1212530,
       "creation_date": "2026-07-20 16:10:23-03:00",
       "sla": {
         "startup": {
@@ -2501,7 +2574,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1477250,
+      "elapsed_time": 1483987,
       "creation_date": "2026-07-17 12:46:06-03:00",
       "sla": {
         "startup": {
@@ -2647,7 +2720,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 1548828,
+      "elapsed_time": 1555565,
       "creation_date": "2026-07-16 16:53:08-03:00",
       "sla": {
         "startup": {
@@ -3815,7 +3888,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 2092814,
+      "elapsed_time": 2099551,
       "creation_date": "2026-07-10 09:46:44-03:00",
       "sla": {
         "startup": {
@@ -4107,7 +4180,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 2176463,
+      "elapsed_time": 2183200,
       "creation_date": "2026-07-09 10:32:35-03:00",
       "sla": {
         "startup": {
@@ -6443,7 +6516,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4494044,
+      "elapsed_time": 4500781,
       "creation_date": "2026-06-12 14:46:14-03:00",
       "sla": {
         "startup": {
@@ -6516,7 +6589,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4494190,
+      "elapsed_time": 4500927,
       "creation_date": "2026-06-12 14:43:48-03:00",
       "sla": {
         "startup": {
@@ -7246,7 +7319,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 4765622,
+      "elapsed_time": 4772361,
       "creation_date": "2026-06-09 11:19:56-03:00",
       "sla": {
         "startup": {
@@ -8633,7 +8706,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 5458616,
+      "elapsed_time": 5465353,
       "creation_date": "2026-06-01 10:50:04-03:00",
       "sla": {
         "startup": {
@@ -8998,7 +9071,7 @@
       "priority": 2,
       "ticket_type": "Interno",
       "work_time": 0,
-      "elapsed_time": 5803552,
+      "elapsed_time": 5810289,
       "creation_date": "2026-05-28 11:01:08-03:00",
       "sla": {
         "startup": {
@@ -9071,7 +9144,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 5872337,
+      "elapsed_time": 5879074,
       "creation_date": "2026-05-27 15:54:43-03:00",
       "sla": {
         "startup": {
@@ -11115,7 +11188,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 7528525,
+      "elapsed_time": 7535262,
       "creation_date": "2026-05-08 11:51:37-03:00",
       "sla": {
         "startup": {
@@ -12210,7 +12283,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 8302701,
+      "elapsed_time": 8309438,
       "creation_date": "2026-04-29 12:48:41-03:00",
       "sla": {
         "startup": {
@@ -13962,7 +14035,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9412049,
+      "elapsed_time": 9418786,
       "creation_date": "2026-04-16 16:39:33-03:00",
       "sla": {
         "startup": {
@@ -14254,7 +14327,7 @@
       "priority": 1,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9505078,
+      "elapsed_time": 9511815,
       "creation_date": "2026-04-15 14:49:04-03:00",
       "sla": {
         "startup": {
@@ -14619,7 +14692,7 @@
       "priority": 3,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9582150,
+      "elapsed_time": 9588887,
       "creation_date": "2026-04-14 17:24:34-03:00",
       "sla": {
         "startup": {
@@ -15276,7 +15349,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 9734045,
+      "elapsed_time": 9740782,
       "creation_date": "2026-04-12 23:12:59-03:00",
       "sla": {
         "startup": {
@@ -25058,7 +25131,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 15480823,
+      "elapsed_time": 15487559,
       "creation_date": "2026-02-05 10:53:26-03:00",
       "sla": {
         "startup": {
@@ -27175,7 +27248,7 @@
       "priority": 2,
       "ticket_type": "Externo",
       "work_time": 0,
-      "elapsed_time": 17366714,
+      "elapsed_time": 17373450,
       "creation_date": "2026-01-14 15:01:57-03:00",
       "sla": {
         "startup": {

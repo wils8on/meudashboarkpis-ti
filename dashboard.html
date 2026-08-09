@@ -48,6 +48,7 @@
             .editor-form-box,
             td button,
             #btnInspecionarAPI,
+            #aba-acessos,
             #modalInspeção {
                 display: none !important;
             }
@@ -195,6 +196,11 @@
                 <li>
                     <a href="#" class="nav-item" data-target="kpis-suporte">
                         <i class="fa-solid fa-headset"></i> <span>Suporte/Atendimento</span>
+                    </a>
+                </li>
+                <li id="adminAccessNav" hidden>
+                    <a href="#" class="nav-item" data-target="aba-acessos">
+                        <i class="fa-solid fa-user-shield"></i> <span>Controle de Acesso</span>
                     </a>
                 </li>
             </ul>
@@ -525,6 +531,42 @@
                     </div>
                 </section>
 
+                <section id="aba-acessos" class="tab-content" aria-labelledby="accessManagementTitle">
+                    <div class="module-header" data-accent="plum">
+                        <span class="module-icon"><i class="fa-solid fa-user-shield"></i></span>
+                        <div><span class="section-kicker">Administração protegida</span><h3 id="accessManagementTitle">Controle de acesso</h3><p>Cadastre usuários e interrompa ou restabeleça o acesso ao painel em tempo real.</p></div>
+                    </div>
+
+                    <div class="access-summary-grid">
+                        <div class="access-summary-card"><span>Total cadastrado</span><strong id="accessTotalCount">0</strong></div>
+                        <div class="access-summary-card access-allowed"><span>Acesso permitido</span><strong id="accessAllowedCount">0</strong></div>
+                        <div class="access-summary-card access-blocked"><span>Acesso bloqueado</span><strong id="accessBlockedCount">0</strong></div>
+                    </div>
+
+                    <div class="access-management-layout">
+                        <div class="editor-form-box access-create-card">
+                            <h4><i class="fa-solid fa-user-plus"></i> Cadastrar usuário</h4>
+                            <p class="access-form-copy">O e-mail deve ser o mesmo utilizado pela pessoa para entrar com a conta Google.</p>
+                            <form id="accessUserForm">
+                                <div class="form-item"><label for="accessUserName">Nome</label><input id="accessUserName" type="text" maxlength="100" autocomplete="off" placeholder="Ex: Maria Souza"></div>
+                                <div class="form-item"><label for="accessUserEmail">E-mail Google</label><input id="accessUserEmail" type="email" maxlength="160" autocomplete="off" required placeholder="nome@empresa.com.br"></div>
+                                <button type="submit" class="btn-submit-form"><i class="fa-solid fa-user-check"></i> Cadastrar e permitir acesso</button>
+                            </form>
+                            <div id="accessFormStatus" class="access-form-status" role="status" aria-live="polite"></div>
+                        </div>
+
+                        <div class="table-wrapper-box">
+                            <div class="table-header-title"><div><span class="section-kicker">Usuários autorizados</span><strong>Diretório de acesso</strong></div><button id="accessRefreshButton" class="table-edit-btn" type="button"><i class="fa-solid fa-rotate"></i> Atualizar</button></div>
+                            <div class="table-scroll-container access-table-scroll">
+                                <table class="data-table access-table">
+                                    <thead><tr><th>Usuário</th><th>Perfil</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead>
+                                    <tbody id="accessUsersBody"><tr><td colspan="4" class="table-empty-state">Carregando usuários autorizados...</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div>
         </main>
     </div>
@@ -560,6 +602,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script type="module" src="js/auth-guard.js"></script>
     <script type="module" src="js/client-store.js"></script>
+    <script type="module" src="js/access-admin.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
 </html>

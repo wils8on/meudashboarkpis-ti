@@ -481,6 +481,35 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .table-edit-btn:hover { color: var(--primary-2); border-color: var(--primary); background: var(--primary-soft); }
 .table-empty-state { padding: 24px !important; color: var(--ink-muted) !important; text-align: center; }
 
+/* Controle administrativo de acesso */
+.access-summary-grid { margin-bottom: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.access-summary-card { padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-sm); }
+.access-summary-card span { color: var(--ink-muted); font: 600 9px var(--font-mono); text-transform: uppercase; letter-spacing: .045em; }
+.access-summary-card strong { color: var(--primary-2); font: 700 24px var(--font-display); }
+.access-summary-card.access-allowed strong { color: var(--teal); }
+.access-summary-card.access-blocked strong { color: var(--rust); }
+.access-management-layout { display: grid; grid-template-columns: minmax(270px, .7fr) minmax(0, 1.5fr); gap: 18px; align-items: start; }
+.access-form-copy { margin: -6px 0 16px; color: var(--ink-muted); font-size: 10px; line-height: 1.6; }
+.access-form-status { min-height: 20px; margin-top: 12px; color: var(--ink-muted); font-size: 10px; line-height: 1.5; }
+.access-form-status[data-state="success"] { color: var(--teal); }
+.access-form-status[data-state="error"] { color: var(--rust); }
+.access-user-cell { display: grid; gap: 3px; }
+.access-user-cell strong { color: var(--ink); font-size: 11px; }
+.access-user-cell small { color: var(--ink-faint); font-size: 9px; }
+.access-status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 999px; font: 600 9px var(--font-mono); }
+.access-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
+.access-status.allowed { color: var(--teal); background: var(--teal-soft); }
+.access-status.blocked { color: var(--rust); background: var(--rust-soft); }
+.access-role { color: var(--primary-2); font: 600 9px var(--font-mono); text-transform: uppercase; }
+.access-actions { display: flex; justify-content: center; gap: 6px; }
+.access-action { min-height: 30px; padding: 0 9px; color: var(--ink); border: 1px solid var(--border); border-radius: 8px; background: var(--surface-strong); font-size: 9px; font-weight: 700; }
+.access-action:hover { border-color: var(--primary-2); }
+.access-action.block { color: var(--rust); }
+.access-action.allow { color: var(--teal); }
+.access-action.delete { width: 30px; padding: 0; color: var(--ink-faint); }
+.access-action:disabled { cursor: not-allowed; opacity: .4; }
+.access-table-scroll { max-height: 520px; }
+
 /* Modal de diagnóstico (sobrescreve estilos inline legados) */
 #modalInspeção { background: rgba(7, 5, 15, .76) !important; backdrop-filter: blur(10px); }
 #modalInspeção > div { background: var(--surface-solid) !important; border: 1px solid var(--border-strong) !important; border-radius: var(--radius-lg) !important; box-shadow: 0 24px 80px rgba(0,0,0,.48), 0 0 46px var(--primary-soft) !important; }
@@ -509,6 +538,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     .aging-kpi-grid { grid-template-columns: repeat(3, minmax(160px, 1fr)) !important; }
     .quiet-hours-panel { grid-template-columns: 1fr; }
     .quiet-hours-panel > small { grid-column: 1; }
+    .access-management-layout { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 760px) {
@@ -554,6 +584,8 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     .chart-container { height: 330px !important; padding: 15px; border-radius: var(--radius-md); }
     .quiet-hours-panel { padding: 15px; }
     .quiet-hours-suggestions { grid-template-columns: 1fr; }
+    .access-summary-grid { grid-template-columns: 1fr; }
+    .access-table { min-width: 680px; }
 }
 
 @media (max-width: 440px) {

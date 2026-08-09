@@ -6,6 +6,8 @@ import { firebaseConfig } from './firebase-config.js';
 const localDevelopment = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 
 if (localDevelopment) {
+    window.dashboardAuthorization = { email: 'admin@localhost', nome: 'Administrador local', status: 'permitido', role: 'admin' };
+    window.dispatchEvent(new CustomEvent('dashboard-auth-ready', { detail: window.dashboardAuthorization }));
     window.dashboardSignOut = async () => window.location.assign('index.html');
     document.body.classList.remove('auth-pending');
 } else {
@@ -29,6 +31,12 @@ if (localDevelopment) {
 
             localStorage.setItem('user_email', user.email);
             localStorage.setItem('user_nome', user.displayName || user.email);
+            window.dashboardAuthorization = {
+                ...authorization.data(),
+                email: user.email.toLowerCase(),
+                nome: authorization.data().nome || user.displayName || user.email
+            };
+            window.dispatchEvent(new CustomEvent('dashboard-auth-ready', { detail: window.dashboardAuthorization }));
             document.body.classList.remove('auth-pending');
         } catch (error) {
             console.error('Acesso ao dashboard recusado:', error);

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'painel-kpi-v1';
+const CACHE_NAME = 'painel-kpi-v2';
 const APP_SHELL = [
     './',
     './index.html',
@@ -10,6 +10,7 @@ const APP_SHELL = [
     './js/firebase-config.js',
     './js/auth-guard.js',
     './js/client-store.js',
+    './js/access-admin.js',
     './js/login.js',
     './js/dashboard.js'
 ];

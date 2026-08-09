@@ -2,11 +2,36 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null && request.auth.token.email != null;
+    }
+
+    function currentEmail() {
+      return request.auth.token.email;
+    }
+
+    function isAdmin() {
+      return signedIn()
+             && exists(/databases/$(database)/documents/usuarios_autorizados/$(currentEmail()))
+             && get(/databases/$(database)/documents/usuarios_autorizados/$(currentEmail())).data.status == 'permitido'
+             && get(/databases/$(database)/documents/usuarios_autorizados/$(currentEmail())).data.role == 'admin';
+    }
+
     match /usuarios_autorizados/{email} {
-      allow read: if request.auth != null
-                  && request.auth.token.email != null
-                  && request.auth.token.email == email;
-      allow write: if false;
+      allow get: if signedIn() && (currentEmail() == email || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isAdmin()
+                    && request.resource.data.email == email
+                    && request.resource.data.status == 'permitido'
+                    && request.resource.data.role == 'usuario';
+      allow update: if isAdmin()
+                    && request.resource.data.email == email
+                    && request.resource.data.role == resource.data.role
+                    && request.resource.data.status in ['permitido', 'bloqueado']
+                    && (email != currentEmail()
+                        || (request.resource.data.status == 'permitido'
+                            && request.resource.data.role == 'admin'));
+      allow delete: if isAdmin() && email != currentEmail();
     }
 
     match /clientes/{clientId} {

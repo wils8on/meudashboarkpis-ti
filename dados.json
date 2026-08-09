@@ -1,11 +1,961 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-09T04:44:08.821Z",
-    "total_records": 1357,
+    "updated_at": "2026-08-09T05:19:50.867Z",
+    "total_records": 1407,
     "privacy": "sanitized-v1"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 4,
+      "creation_date": "2026-08-06 15:22:59-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": false
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-06 15:05:37-03:00",
+      "end_date": "2026-08-06 15:09:13-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 4,
+      "creation_date": "2026-08-06 10:38:50-03:00",
+      "end_date": "2026-08-06 16:54:07-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": true,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-06 08:50:39-03:00",
+      "end_date": "2026-08-06 08:51:48-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-05 16:11:54-03:00",
+      "end_date": "2026-08-05 16:41:44-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Sem organização"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-05 16:07:46-03:00",
+      "end_date": "2026-08-05 16:08:17-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-05 10:04:09-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-05 08:21:03-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando terceiro"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Sem organização"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-04 16:52:17-03:00",
+      "end_date": "2026-08-04 16:52:25-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-04 12:06:30-03:00",
+      "end_date": "2026-08-04 12:07:07-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-04 11:51:28-03:00",
+      "end_date": "2026-08-04 11:51:45-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-04 09:11:15-03:00",
+      "end_date": "2026-08-04 11:29:44-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": true,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-04 08:20:14-03:00",
+      "end_date": "2026-08-04 11:22:49-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-03 15:44:42-03:00",
+      "end_date": "2026-08-04 09:55:02-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-03 15:02:34-03:00",
+      "end_date": "2026-08-03 16:36:18-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 4,
+      "creation_date": "2026-07-31 16:26:58-03:00",
+      "end_date": "2026-08-03 10:44:46-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-31 15:37:59-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido, aguardando resposta do cliente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-31 14:47:58-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-31 10:03:14-03:00",
+      "end_date": "2026-07-31 10:44:52-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-07-31 08:27:37-03:00",
+      "end_date": "2026-07-31 11:05:00-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-30 14:51:51-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Em Analise Técnica"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-07-30 10:25:14-03:00",
+      "end_date": "2026-07-30 15:20:57-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 1,
+      "creation_date": "2026-07-30 08:20:28-03:00",
+      "end_date": "2026-07-30 08:20:36-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 1,
+      "creation_date": "2026-07-30 08:17:38-03:00",
+      "end_date": "2026-07-30 08:17:52-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-30 07:58:43-03:00",
+      "end_date": "2026-07-30 14:28:25-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-29 16:39:30-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": false
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-07-29 15:20:48-03:00",
+      "end_date": "2026-07-30 09:35:57-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Sem organização"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-29 11:35:13-03:00",
+      "end_date": "2026-07-29 11:46:23-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-27 12:35:37-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Em Analise Técnica"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-07-24 16:15:51-03:00",
+      "end_date": "2026-07-28 08:49:17-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Sem organização"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-24 15:59:21-03:00",
+      "end_date": "2026-07-27 11:17:02-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-24 15:53:00-03:00",
+      "end_date": "2026-07-31 15:37:26-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-24 15:51:42-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido pelo cliente, aguardando resposta"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Sem organização"
+        }
+      },
+      "priority": 1,
+      "creation_date": "2026-07-24 10:27:24-03:00",
+      "end_date": "2026-07-30 14:35:15-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-07-23 15:38:12-03:00",
+      "end_date": "2026-07-29 15:59:30-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-23 15:08:37-03:00",
+      "end_date": "2026-07-23 15:09:02-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-23 14:34:10-03:00",
+      "end_date": "2026-07-30 14:02:44-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-23 08:49:41-03:00",
+      "end_date": "2026-07-23 08:59:52-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-07-22 16:24:58-03:00",
+      "end_date": "2026-07-23 09:01:01-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-07-22 11:25:03-03:00",
+      "end_date": "2026-07-22 11:50:32-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-07-22 09:35:09-03:00",
+      "end_date": "2026-07-22 09:35:20-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Sem organização"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-21 15:26:24-03:00",
+      "end_date": "2026-07-21 15:27:10-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": true,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-07-21 15:20:43-03:00",
+      "end_date": "2026-07-24 14:41:07-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-20 16:58:36-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando terceiro"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Sem organização"
+        }
+      },
+      "priority": 1,
+      "creation_date": "2026-07-20 16:10:23-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-07-20 09:39:37-03:00",
+      "end_date": "2026-07-21 08:35:29-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-17 16:20:19-03:00",
+      "end_date": "2026-07-20 11:13:06-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 4,
+      "creation_date": "2026-07-17 14:48:46-03:00",
+      "end_date": "2026-07-22 11:41:35-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": false
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-07-17 12:46:06-03:00",
+      "end_date": "2026-08-04 09:02:19-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Sem organização"
+        }
+      },
+      "priority": 4,
+      "creation_date": "2026-07-17 09:26:40-03:00",
+      "end_date": "2026-07-17 09:41:14-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -17,12 +967,12 @@
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": null
+          "accomplished": true
         }
       },
       "reopened": false,
       "status": {
-        "description": "Sem atendente vinculado"
+        "description": "Em análise"
       }
     },
     {
@@ -33,15 +983,15 @@
       },
       "priority": 2,
       "creation_date": "2026-07-16 16:40:25-03:00",
-      "end_date": null,
+      "end_date": "2026-07-20 07:37:37-03:00",
       "sla": {
         "deadline": {
-          "accomplished": null
+          "accomplished": true
         }
       },
       "reopened": false,
       "status": {
-        "description": "Sem atendente vinculado"
+        "description": "Finalizado"
       }
     },
     {
@@ -52,7 +1002,7 @@
       },
       "priority": 2,
       "creation_date": "2026-07-16 15:10:50-03:00",
-      "end_date": null,
+      "end_date": "2026-07-29 16:01:58-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -60,7 +1010,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido pelo cliente, aguardando resposta"
+        "description": "Finalizado"
       }
     },
     {
@@ -90,15 +1040,15 @@
       },
       "priority": 2,
       "creation_date": "2026-07-16 11:22:29-03:00",
-      "end_date": null,
+      "end_date": "2026-07-29 08:43:30-03:00",
       "sla": {
         "deadline": {
-          "accomplished": null
+          "accomplished": true
         }
       },
       "reopened": false,
       "status": {
-        "description": "Sem atendente vinculado"
+        "description": "Finalizado"
       }
     },
     {
@@ -411,7 +1361,7 @@
           "name": "Diálise"
         }
       },
-      "priority": 4,
+      "priority": 3,
       "creation_date": "2026-07-09 09:26:32-03:00",
       "end_date": "2026-07-09 09:26:39-03:00",
       "sla": {
@@ -622,7 +1572,7 @@
       },
       "priority": 3,
       "creation_date": "2026-07-06 16:43:03-03:00",
-      "end_date": null,
+      "end_date": "2026-07-22 11:45:06-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -630,7 +1580,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em Analise Técnica"
+        "description": "Finalizado"
       }
     },
     {
@@ -660,7 +1610,7 @@
       },
       "priority": 2,
       "creation_date": "2026-07-06 11:47:27-03:00",
-      "end_date": null,
+      "end_date": "2026-07-23 10:51:58-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -668,7 +1618,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando cliente"
+        "description": "Finalizado"
       }
     },
     {
@@ -712,7 +1662,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 1,
@@ -848,17 +1798,17 @@
           "name": "Diálise"
         }
       },
-      "priority": 3,
+      "priority": 2,
       "creation_date": "2026-06-19 11:39:20-03:00",
-      "end_date": null,
+      "end_date": "2026-07-30 10:38:03-03:00",
       "sla": {
         "deadline": {
-          "accomplished": false
+          "accomplished": true
         }
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Finalizado"
       }
     },
     {
@@ -1097,7 +2047,7 @@
       },
       "priority": 3,
       "creation_date": "2026-06-12 09:40:57-03:00",
-      "end_date": null,
+      "end_date": "2026-07-30 08:48:19-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -1105,7 +2055,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em Analise Técnica"
+        "description": "Finalizado"
       }
     },
     {
@@ -1567,7 +2517,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -2061,7 +3011,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 4,
@@ -2199,7 +3149,7 @@
       },
       "priority": 3,
       "creation_date": "2026-05-08 13:49:54-03:00",
-      "end_date": null,
+      "end_date": "2026-07-22 16:20:35-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -2207,7 +3157,7 @@
       },
       "reopened": true,
       "status": {
-        "description": "Aguardando Retorno do Setor Responsável"
+        "description": "Finalizado"
       }
     },
     {
@@ -2650,7 +3600,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -2688,7 +3638,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -2767,9 +3717,9 @@
           "name": "Diálise"
         }
       },
-      "priority": 2,
+      "priority": 1,
       "creation_date": "2026-04-23 11:20:22-03:00",
-      "end_date": null,
+      "end_date": "2026-07-29 15:58:19-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -2777,7 +3727,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando cliente"
+        "description": "Finalizado"
       }
     },
     {
@@ -3239,7 +4189,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -3638,7 +4588,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -4360,7 +5310,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -4379,7 +5329,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -4968,7 +5918,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -5652,7 +6602,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -5709,7 +6659,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 3,
@@ -5785,7 +6735,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -7747,7 +8697,7 @@
       },
       "priority": 3,
       "creation_date": "2025-11-25 10:04:51-03:00",
-      "end_date": null,
+      "end_date": "2026-07-29 00:00:54-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -7755,7 +8705,7 @@
       },
       "reopened": true,
       "status": {
-        "description": "Aguardando terceiro"
+        "description": "Finalizado"
       }
     },
     {
@@ -8369,7 +9319,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -9509,7 +10459,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -9889,7 +10839,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -11029,7 +11979,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -12435,7 +13385,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -13271,7 +14221,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 3,
@@ -14411,7 +15361,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -14981,7 +15931,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 1,
@@ -16197,7 +17147,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -16634,7 +17584,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -16658,7 +17608,7 @@
       },
       "priority": 3,
       "creation_date": "2024-12-18 17:12:35-03:00",
-      "end_date": null,
+      "end_date": "2026-07-17 10:31:17-03:00",
       "sla": {
         "deadline": {
           "accomplished": false
@@ -16666,7 +17616,7 @@
       },
       "reopened": true,
       "status": {
-        "description": "Em pausa"
+        "description": "Finalizado"
       }
     },
     {
@@ -17052,7 +18002,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -18078,7 +19028,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -18116,7 +19066,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -18401,7 +19351,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -19769,7 +20719,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 4,
@@ -19940,7 +20890,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -20985,7 +21935,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -21175,7 +22125,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Taurovita"
+          "name": "Diálise"
         }
       },
       "priority": 2,

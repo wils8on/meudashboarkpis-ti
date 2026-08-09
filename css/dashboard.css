@@ -381,9 +381,13 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .chart-container {
     width: 100%;
     min-width: 0;
+    min-height: 0;
     height: 380px;
     max-height: 450px;
     position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    overflow: hidden;
     margin-bottom: 20px;
     padding: 20px;
     border: 1px solid var(--border);
@@ -392,6 +396,13 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     box-shadow: var(--shadow-glow);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+}
+.chart-container > canvas {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
 }
 .chart-container h4 { margin-bottom: 15px; color: var(--ink); font-size: 13px; font-weight: 600; }
 .chart-container h4 i { margin-right: 6px; color: var(--primary-2); }

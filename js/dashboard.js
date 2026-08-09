@@ -656,8 +656,16 @@ async function carregarDadosAutomatizados() {
             if (syncRecordCount) syncRecordCount.textContent = listaChamados.length.toLocaleString('pt-BR');
             if (syncLastUpdate) {
                 const dataSincronizacao = jsonResponse.meta?.updated_at ? new Date(jsonResponse.meta.updated_at) : new Date();
-                syncLastUpdate.textContent = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(dataSincronizacao);
-                syncLastUpdate.title = `Última sincronização: ${dataSincronizacao.toLocaleString('pt-BR')}`;
+                const dataMaisRecente = jsonResponse.meta?.newest_creation_date
+                    ? new Date(jsonResponse.meta.newest_creation_date)
+                    : listaChamados.reduce((maisRecente, chamado) => {
+                        const data = chamado.creation_date ? new Date(chamado.creation_date) : null;
+                        return data && !Number.isNaN(data.getTime()) && (!maisRecente || data > maisRecente) ? data : maisRecente;
+                    }, null);
+                syncLastUpdate.textContent = dataMaisRecente
+                    ? `Dados até ${new Intl.DateTimeFormat('pt-BR').format(dataMaisRecente)}`
+                    : new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(dataSincronizacao);
+                syncLastUpdate.title = `Coleta executada em ${dataSincronizacao.toLocaleString('pt-BR')}${dataMaisRecente ? `; chamado mais recente em ${dataMaisRecente.toLocaleString('pt-BR')}` : ''}`;
             }
         } else {
             throw new Error("A lista de chamados retornou vazia.");

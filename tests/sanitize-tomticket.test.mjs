@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildSanitizedPayload, sanitizeTicket } from '../scripts/sanitize-tomticket.mjs';
+import { extractPage, getDateRange, assertFreshSource } from '../scripts/sync-tomticket.mjs';
 
 test('remove conteúdo pessoal e preserva somente métricas operacionais', () => {
     const sanitized = sanitizeTicket({
@@ -33,4 +34,21 @@ test('inclui metadados de privacidade e contagem', () => {
     assert.equal(payload.meta.privacy, 'sanitized-v1');
     assert.equal(payload.meta.total_records, 2);
     assert.equal(payload.meta.updated_at, '2026-08-09T00:00:00.000Z');
+});
+
+test('interpreta os metadados oficiais de paginação do TomTicket', () => {
+    const page = extractPage({ data: [{ creation_date: '2026-08-08 10:00:00-03:00' }], pages: 3, next_page: 2 });
+    assert.equal(page.tickets.length, 1);
+    assert.equal(page.pages, 3);
+    assert.equal(page.nextPage, 2);
+});
+
+test('detecta a faixa temporal e rejeita uma origem defasada', () => {
+    const range = getDateRange([
+        { creation_date: '2026-07-16 10:00:00-03:00' },
+        { creation_date: '2026-08-08 10:00:00-03:00' }
+    ]);
+    assert.equal(range.newest.toISOString(), '2026-08-08T13:00:00.000Z');
+    assert.doesNotThrow(() => assertFreshSource(range.newest, new Date('2026-08-09T12:00:00Z')));
+    assert.throws(() => assertFreshSource(range.oldest, new Date('2026-08-09T12:00:00Z')), /dados defasados/);
 });

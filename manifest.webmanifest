@@ -1,0 +1,18 @@
+{
+  "name": "Painel de Indicadores de TI",
+  "short_name": "Painel KPI",
+  "description": "Indicadores operacionais integrados ao TomTicket.",
+  "start_url": "./dashboard.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#100b1d",
+  "theme_color": "#100b1d",
+  "icons": [
+    {
+      "src": "./assets/pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

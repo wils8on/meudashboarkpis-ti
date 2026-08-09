@@ -576,6 +576,93 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarDadosAutomatizados();
 });
 
+let eventoInstalacaoPWA = null;
+
+window.addEventListener('beforeinstallprompt', evento => {
+    evento.preventDefault();
+    eventoInstalacaoPWA = evento;
+});
+
+window.addEventListener('appinstalled', () => {
+    eventoInstalacaoPWA = null;
+    const botao = document.getElementById('btnInstalarPWA');
+    if (botao) botao.hidden = true;
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js').catch(error => console.warn('PWA indisponível:', error));
+    }
+
+    const botao = document.getElementById('btnInstalarPWA');
+    if (!botao) return;
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        botao.hidden = true;
+        return;
+    }
+
+    botao.addEventListener('click', async () => {
+        if (eventoInstalacaoPWA) {
+            await eventoInstalacaoPWA.prompt();
+            await eventoInstalacaoPWA.userChoice;
+            eventoInstalacaoPWA = null;
+            return;
+        }
+        const mensagem = /iphone|ipad|ipod/i.test(navigator.userAgent)
+            ? 'No iPhone ou iPad, toque em Compartilhar e depois em “Adicionar à Tela de Início”.'
+            : 'Abra o menu do navegador e selecione “Instalar aplicativo” ou “Adicionar à tela inicial”.';
+        window.alert(mensagem);
+    });
+});
+
+function contarDiasDaSemanaNoPeriodo(inicio, fim) {
+    const contagem = Array(7).fill(0);
+    const cursor = new Date(inicio.getFullYear(), inicio.getMonth(), inicio.getDate(), 12);
+    const limite = new Date(fim.getFullYear(), fim.getMonth(), fim.getDate(), 12);
+    while (cursor <= limite) {
+        contagem[cursor.getDay()]++;
+        cursor.setDate(cursor.getDate() + 1);
+    }
+    return contagem;
+}
+
+function atualizarJanelasTranquilas(matrizDados, inicio, fim) {
+    const container = document.getElementById('quietHoursSuggestions');
+    if (!container) return;
+    const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    const horasElegiveis = [9, 10, 11, 14, 15, 16];
+    const ocorrencias = contarDiasDaSemanaNoPeriodo(inicio, fim);
+    const candidatos = [];
+
+    for (let dia = 1; dia <= 5; dia++) {
+        if (!ocorrencias[dia]) continue;
+        for (const hora of horasElegiveis) {
+            const volume = matrizDados[dia]?.[hora] || 0;
+            candidatos.push({ dia, hora, media: volume / ocorrencias[dia] });
+        }
+    }
+
+    candidatos.sort((a, b) => a.media - b.media || a.dia - b.dia || a.hora - b.hora);
+    const selecionados = [];
+    for (const candidato of candidatos) {
+        const adjacente = selecionados.some(item => item.dia === candidato.dia && Math.abs(item.hora - candidato.hora) <= 1);
+        if (!adjacente) selecionados.push(candidato);
+        if (selecionados.length === 3) break;
+    }
+
+    if (!selecionados.length) {
+        container.innerHTML = '<span class="quiet-hours-empty">Não há dias úteis suficientes no período para recomendar uma janela.</span>';
+        return;
+    }
+
+    container.innerHTML = selecionados.map((item, indice) => `
+        <div class="quiet-slot">
+            <strong>${indice + 1}. ${dias[item.dia]}, ${String(item.hora).padStart(2, '0')}h–${String(item.hora + 1).padStart(2, '0')}h</strong>
+            <span>Média de ${item.media.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} chamado(s)</span>
+        </div>
+    `).join('');
+}
+
 async function carregarDadosAutomatizados() {
     const uploadStatus = document.getElementById('uploadStatus');
     if (uploadStatus) {
@@ -985,6 +1072,7 @@ function processarIndicadoresEstrategicos() {
 
         // Renderiza o novo gráfico multidimensional de ocupação semanal
         inicializarGraficoDiaHora(matrizDiaHora);
+        atualizarJanelasTranquilas(matrizDiaHora, filtroInicio, filtroFim);
 
         let arrayTaxasResolucao = [];
         let arrayIndicesSla = [];

@@ -1,9 +1,11 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-09T05:19:50.867Z",
+    "updated_at": "2026-08-09T06:03:02.659Z",
     "total_records": 1407,
-    "privacy": "sanitized-v1"
+    "privacy": "sanitized-v1",
+    "oldest_creation_date": "2023-06-07T14:16:47.000Z",
+    "newest_creation_date": "2026-08-06T18:22:59.000Z"
   },
   "data": [
     {

@@ -1,15 +1,21 @@
 // ==========================================
 // 1. GUARDA DE SEGURANÇA, LOGOUT, TEMA & EXPORTAÇÃO EXECUTIVA PDF
 // ==========================================
-if (localStorage.getItem('logado') !== 'true') {
-    window.location.href = 'index.html';
+if (['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+    document.body.classList.remove('auth-pending');
 }
 
 const btnLogout = document.getElementById('btnLogout');
 if (btnLogout) {
-    btnLogout.addEventListener('click', function() {
+    btnLogout.addEventListener('click', async function() {
         localStorage.removeItem('logado');
-        window.location.href = 'index.html';
+        localStorage.removeItem('user_email');
+        localStorage.removeItem('user_nome');
+        if (typeof window.dashboardSignOut === 'function') {
+            await window.dashboardSignOut();
+        } else {
+            window.location.href = 'index.html';
+        }
     });
 }
 
@@ -25,8 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Inicialização do Tema
 document.addEventListener('DOMContentLoaded', () => {
-    const temaSalvo = localStorage.getItem('dashboard-theme') || 'light';
+    const temaSalvo = localStorage.getItem('dashboard-theme') || 'dark';
     document.documentElement.setAttribute('data-theme', temaSalvo);
+    configurarPadraoDosGraficos();
+
+    const nomeUsuario = localStorage.getItem('user_nome');
+    const userNameElement = document.querySelector('.user-profile strong');
+    if (nomeUsuario && userNameElement) {
+        userNameElement.textContent = nomeUsuario.split(' ')[0];
+    }
 });
 
 window.alternarModoTema = function() {
@@ -35,6 +48,7 @@ window.alternarModoTema = function() {
     
     document.documentElement.setAttribute('data-theme', novoTema);
     localStorage.setItem('dashboard-theme', novoTema);
+    configurarPadraoDosGraficos();
     
     if (dadosPlanilhaGlobal.length > 0) {
         processarIndicadoresEstrategicos();
@@ -51,6 +65,29 @@ function obterCorGridPorTema() {
     return temaAtivo === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 }
 
+function configurarPadraoDosGraficos() {
+    if (typeof Chart === 'undefined') return;
+    const temaEscuro = document.documentElement.getAttribute('data-theme') !== 'light';
+    Chart.defaults.color = temaEscuro ? '#9a96b8' : '#6b6684';
+    Chart.defaults.font.family = 'Inter, -apple-system, BlinkMacSystemFont, sans-serif';
+    Chart.defaults.font.size = 11;
+    Chart.defaults.animation.duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 420;
+    Chart.defaults.interaction.mode = 'index';
+    Chart.defaults.interaction.intersect = false;
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+    Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
+    Chart.defaults.plugins.legend.labels.boxWidth = 7;
+    Chart.defaults.plugins.legend.labels.boxHeight = 7;
+    Chart.defaults.plugins.legend.labels.padding = 16;
+    Chart.defaults.plugins.tooltip.backgroundColor = temaEscuro ? 'rgba(23, 20, 38, .96)' : 'rgba(255, 255, 255, .98)';
+    Chart.defaults.plugins.tooltip.titleColor = temaEscuro ? '#f3f1fb' : '#211e33';
+    Chart.defaults.plugins.tooltip.bodyColor = temaEscuro ? '#d5d1e6' : '#4f4a66';
+    Chart.defaults.plugins.tooltip.borderColor = temaEscuro ? 'rgba(255,255,255,.16)' : 'rgba(90,70,150,.18)';
+    Chart.defaults.plugins.tooltip.borderWidth = 1;
+    Chart.defaults.plugins.tooltip.cornerRadius = 10;
+    Chart.defaults.plugins.tooltip.padding = 11;
+}
+
 // ==========================================
 // 2. SISTEMA DE NAVEGAÇÃO (MENU LATERAL)
 // ==========================================
@@ -58,6 +95,13 @@ const menuItems = document.querySelectorAll('.nav-item');
 const tabs = document.querySelectorAll('.tab-content');
 
 menuItems.forEach(item => {
+    const itemLabelInicial = item.querySelector('span')?.textContent.trim();
+    if (itemLabelInicial) {
+        item.title = itemLabelInicial;
+        item.setAttribute('aria-label', itemLabelInicial);
+    }
+    item.setAttribute('aria-current', item.classList.contains('active') ? 'page' : 'false');
+
     item.addEventListener('click', function(e) {
         e.preventDefault();
         
@@ -65,11 +109,21 @@ menuItems.forEach(item => {
         const targetTarget = document.getElementById(targetSectionId);
         
         if (targetTarget) {
-            menuItems.forEach(i => i.classList.remove('active'));
+            menuItems.forEach(i => {
+                i.classList.remove('active');
+                i.setAttribute('aria-current', 'false');
+            });
             this.classList.add('active');
+            this.setAttribute('aria-current', 'page');
             
             tabs.forEach(tab => tab.classList.remove('active'));
             targetTarget.classList.add('active');
+
+            const pageTitle = document.getElementById('pageTitle');
+            const itemLabel = this.querySelector('span');
+            if (pageTitle && itemLabel) {
+                pageTitle.textContent = itemLabel.textContent.trim();
+            }
             
             if (targetSectionId === 'aba-usuarios') {
                 renderizarTabelaUsuarios();
@@ -134,6 +188,28 @@ let chartAging = null;
 let chartReabertosMes = null;
 let chartReabertosCliente = null;
 let chartDiaHora = null; // Nova instância global para o gráfico multidimensional
+
+document.addEventListener('DOMContentLoaded', () => {
+    const descricoesGraficos = {
+        graficoGeral: 'Gráfico de chamados criados e chamados urgentes por mês',
+        graficoDiaHora: 'Gráfico de volumetria por dia da semana e hora de abertura',
+        graficoReabertosMes: 'Gráfico da quantidade de chamados reabertos por mês',
+        graficoReabertosCliente: 'Ranking de clientes por quantidade de reaberturas',
+        graficoLinhaResolucao: 'Gráfico da taxa de resolução mensal',
+        graficoSlaMensal: 'Gráfico do cumprimento de SLA por mês',
+        graficoBacklogEvolucao: 'Gráfico da evolução de conclusão do backlog',
+        graficoBacklogDistribuicao: 'Gráfico da distribuição do backlog atual',
+        graficoAging: 'Gráfico de chamados abertos por faixa de aging'
+    };
+
+    Object.entries(descricoesGraficos).forEach(([id, descricao]) => {
+        const canvas = document.getElementById(id);
+        if (!canvas) return;
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label', descricao);
+        canvas.tabIndex = 0;
+    });
+});
 
 function inicializarGraficoGeral(labels = [], dadosTotal = [], dadosUrgentes = []) {
     const ctx = document.getElementById('graficoGeral');
@@ -534,7 +610,7 @@ async function carregarDadosAutomatizados() {
 
         // Mapeia as colunas exatas da API v2.0 do TomTicket
         dadosPlanilhaGlobal = listaChamados.map(chamado => {
-            const nomeCliente = chamado.customer && chamado.customer.name ? chamado.customer.name : "Desconhecido";
+            const nomeCliente = chamado.customer?.organization?.name || "Sem organização";
             const statusReaberto = chamado.reopened === true ? "sim" : "Não";
 
             let termoPrioridade = "Normal";
@@ -555,8 +631,8 @@ async function carregarDadosAutomatizados() {
             }
 
             return {
-                'Protocolo': chamado.protocol || chamado.id || "",
-                'Assunto': chamado.subject || "",
+                'Protocolo': "",
+                'Assunto': "",
                 'Status': descStatus,
                 'Cliente': nomeCliente,
                 'Prioridade': termoPrioridade,
@@ -568,12 +644,20 @@ async function carregarDadosAutomatizados() {
         });
 
         if (dadosPlanilhaGlobal.length > 0) {
-            verificarECadastrarClientesNovos(dadosPlanilhaGlobal);
+            await verificarECadastrarClientesNovos(dadosPlanilhaGlobal);
             processarIndicadoresEstrategicos();
-            renderizarTabelaUsuarios();
+            await renderizarTabelaUsuarios();
             
             if (uploadStatus) {
-                uploadStatus.innerHTML = `<span style="color: #10b981;"><i class="fa-solid fa-circle-check"></i> Conectado à API! Base sincronizada com sucesso.</span>`;
+                uploadStatus.innerHTML = `<span class="sync-success"><i class="fa-solid fa-circle-check"></i> Base sincronizada com sucesso</span>`;
+            }
+            const syncRecordCount = document.getElementById('syncRecordCount');
+            const syncLastUpdate = document.getElementById('syncLastUpdate');
+            if (syncRecordCount) syncRecordCount.textContent = listaChamados.length.toLocaleString('pt-BR');
+            if (syncLastUpdate) {
+                const dataSincronizacao = jsonResponse.meta?.updated_at ? new Date(jsonResponse.meta.updated_at) : new Date();
+                syncLastUpdate.textContent = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(dataSincronizacao);
+                syncLastUpdate.title = `Última sincronização: ${dataSincronizacao.toLocaleString('pt-BR')}`;
             }
         } else {
             throw new Error("A lista de chamados retornou vazia.");
@@ -581,7 +665,7 @@ async function carregarDadosAutomatizados() {
     } catch (erro) {
         console.error("Erro na leitura automática de dados:", erro);
         if (uploadStatus) {
-            uploadStatus.innerHTML = `<span style="color: #fb923c; font-weight: bold;"><i class="fa-solid fa-triangle-exclamation"></i> Erro de Sincronização: ${erro.message}</span>`;
+            uploadStatus.innerHTML = `<span class="sync-error"><i class="fa-solid fa-triangle-exclamation"></i> Erro de sincronização: ${erro.message}</span>`;
         }
     }
 }
@@ -596,20 +680,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnFecharBtn = document.getElementById('btnFecharModalInspeção');
     const btnCopiar = document.getElementById('btnCopiarJSON');
     const codigoBruto = document.getElementById('codigoBrutoJSON');
+    let elementoFocoAnterior = null;
 
     if (btnInspecionar && modal) {
         btnInspecionar.addEventListener('click', () => {
+            elementoFocoAnterior = document.activeElement;
             modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden', 'false');
             if (dadosBrutosAPI && dadosBrutosAPI.length > 0) {
                 codigoBruto.textContent = JSON.stringify(dadosBrutosAPI.slice(0, 2), null, 2);
             } else {
                 codigoBruto.textContent = "Aguardando sincronização: Nenhum dado bruto foi carregado da API do TomTicket no momento.";
             }
+            btnFecharX.focus();
         });
 
-        const fecharModal = () => { modal.style.display = 'none'; };
+        const fecharModal = () => {
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            if (elementoFocoAnterior instanceof HTMLElement) elementoFocoAnterior.focus();
+        };
         btnFecharX.addEventListener('click', fecharModal);
         btnFecharBtn.addEventListener('click', fecharModal);
+        modal.addEventListener('click', event => {
+            if (event.target === modal) fecharModal();
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && modal.style.display === 'flex') fecharModal();
+        });
 
         btnCopiar.addEventListener('click', () => {
             if (codigoBruto.textContent) {
@@ -624,6 +722,42 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 // 6. ENGENHARIA DOS INDICADORES E MOTOR ANALÍTICO
 // ==========================================
+function atualizarLeituraExecutiva({ percentualFinalizados, percentualDemandas, percentualReabertos, totalAbertos }) {
+    const resolution = document.getElementById('briefResolution');
+    const backlog = document.getElementById('briefBacklog');
+    const reopen = document.getElementById('briefReopen');
+
+    if (resolution) {
+        const estado = percentualFinalizados >= 90 ? 'positive' : percentualFinalizados >= 75 ? 'attention' : 'critical';
+        const mensagem = percentualFinalizados >= 90
+            ? 'Ritmo de conclusão saudável no período'
+            : percentualFinalizados >= 75
+                ? 'Conclusão exige acompanhamento próximo'
+                : 'Taxa de conclusão abaixo do nível esperado';
+        resolution.dataset.state = estado;
+        resolution.querySelector('span').textContent = mensagem;
+    }
+
+    if (backlog) {
+        const estado = percentualDemandas <= 10 ? 'positive' : percentualDemandas <= 25 ? 'attention' : 'critical';
+        backlog.dataset.state = estado;
+        backlog.querySelector('span').textContent = totalAbertos === 1
+            ? '1 chamado permanece em aberto'
+            : `${totalAbertos.toLocaleString('pt-BR')} chamados permanecem em aberto`;
+    }
+
+    if (reopen) {
+        const estado = percentualReabertos <= 5 ? 'positive' : percentualReabertos <= 10 ? 'attention' : 'critical';
+        const mensagem = percentualReabertos <= 5
+            ? 'Reaberturas dentro de uma faixa controlada'
+            : percentualReabertos <= 10
+                ? 'Reaberturas merecem atenção preventiva'
+                : 'Reaberturas indicam risco de recorrência';
+        reopen.dataset.state = estado;
+        reopen.querySelector('span').textContent = mensagem;
+    }
+}
+
 function processarIndicadoresEstrategicos() {
     const uploadStatus = document.getElementById('uploadStatus');
     if (dadosPlanilhaGlobal.length === 0) return;
@@ -695,6 +829,7 @@ function processarIndicadoresEstrategicos() {
         let totalReabertosPeriodo = 0;
         let reabertosPorMesAgrupado = {};
         let reabertosPorClienteAgrupado = {};
+        let clientesPeriodo = new Set();
 
         // Variáveis de controle para as novas métricas operacionais
         let somaHorasTrabalho = 0;
@@ -779,6 +914,7 @@ function processarIndicadoresEstrategicos() {
 
             if (dataCriacao >= filtroInicio && dataCriacao <= filtroFim) {
                 totalProtocolosPeriodo++;
+                clientesPeriodo.add(clienteNome);
                 const mesAnoLabel = `${String(dataCriacao.getMonth() + 1).padStart(2, '0')}/${dataCriacao.getFullYear()}`;
 
                 if (!mesesAgrupadosGeral[mesAnoLabel]) mesesAgrupadosGeral[mesAnoLabel] = { total: 0, urgente: 0 };
@@ -885,11 +1021,26 @@ function processarIndicadoresEstrategicos() {
             }
         }
 
+        const pctReabertosNumero = totalProtocolosPeriodo > 0 ? (totalReabertosPeriodo / totalProtocolosPeriodo) * 100 : 0;
+        const pctReabertos = pctReabertosNumero.toFixed(2).replace('.', ',');
         const cardReabertos = document.getElementById('kpiReabertos');
         if (cardReabertos) {
-            const pctReabertos = totalProtocolosPeriodo > 0 ? ((totalReabertosPeriodo / totalProtocolosPeriodo) * 100).toFixed(2).replace('.', ',') : '0,00';
             cardReabertos.textContent = `${pctReabertos}%`;
         }
+
+        const finalizadosContext = document.getElementById('kpiFinalizadosContext');
+        const demandasContext = document.getElementById('kpiDemandasContext');
+        const reabertosContext = document.getElementById('kpiReabertosContext');
+        if (finalizadosContext) finalizadosContext.textContent = `${totalFinalizados.toLocaleString('pt-BR')} chamados concluídos`;
+        if (demandasContext) demandasContext.textContent = `${totalAndamento.toLocaleString('pt-BR')} chamados ainda abertos`;
+        if (reabertosContext) reabertosContext.textContent = `${totalReabertosPeriodo.toLocaleString('pt-BR')} reincidências no período`;
+
+        atualizarLeituraExecutiva({
+            percentualFinalizados: totalProtocolosPeriodo > 0 ? (totalFinalizados / totalProtocolosPeriodo) * 100 : 0,
+            percentualDemandas: totalProtocolosPeriodo > 0 ? (totalAndamento / totalProtocolosPeriodo) * 100 : 0,
+            percentualReabertos: pctReabertosNumero,
+            totalAbertos: totalAndamento
+        });
 
         let labelCrescimento = "0,00%";
         if (totalProtocolosAnoAnterior > 0) {
@@ -909,6 +1060,12 @@ function processarIndicadoresEstrategicos() {
         const perf2 = document.getElementById('perfCard2'); if (perf2) perf2.textContent = `${totalValidosParaSla > 0 ? ((totalDentroSlaSoma / totalValidosParaSla) * 100).toFixed(2).replace('.', ',') : '0,00'}%`;
         const perf3 = document.getElementById('perfCard3'); if (perf3) perf3.textContent = `${totalFechadosNoFiltro > 0 ? ((fechadosMesDiferente / totalFechadosNoFiltro) * 100).toFixed(2).replace('.', ',') : '0,00'}%`;
         const perf4 = document.getElementById('perfCard4'); if (perf4) perf4.textContent = melhorMesNome !== "Nenhum" ? melhorMesNome : "Nenhum";
+
+        const totalUrgentesPeriodo = dataUrgenteBarras.reduce((total, valor) => total + valor, 0);
+        const supportTotal = document.getElementById('supportTotal'); if (supportTotal) supportTotal.textContent = totalProtocolosPeriodo.toLocaleString('pt-BR');
+        const supportUrgent = document.getElementById('supportUrgent'); if (supportUrgent) supportUrgent.textContent = totalUrgentesPeriodo.toLocaleString('pt-BR');
+        const supportSla = document.getElementById('supportSla'); if (supportSla) supportSla.textContent = `${totalValidosParaSla > 0 ? ((totalDentroSlaSoma / totalValidosParaSla) * 100).toFixed(2).replace('.', ',') : '0,00'}%`;
+        const supportCustomers = document.getElementById('supportCustomers'); if (supportCustomers) supportCustomers.textContent = clientesPeriodo.size.toLocaleString('pt-BR');
 
         inicializarGraficosPerformance(labelsOrdenadas, arrayTaxasResolucao, arrayIndicesSla);
 
@@ -1054,58 +1211,64 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 // 7. GESTÃO ORG. DE CLIENTES E HISTÓRICO
 // ==========================================
-function verificarECadastrarClientesNovos(linhasPlanilha) {
+let listaClientesCache = [];
+
+function escaparHTML(valor) {
+    return String(valor ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+async function obterClientStore() {
+    if (!window.clientStoreReady) throw new Error('Camada de persistência de clientes indisponível.');
+    return window.clientStoreReady;
+}
+
+async function verificarECadastrarClientesNovos(linhasPlanilha) {
     try {
-        let listaClientesSalva = JSON.parse(localStorage.getItem('cadastroClientesDB')) || [];
-        let houveMudanca = false;
-
-        linhasPlanilha.forEach(chamado => {
-            if (!chamado) return;
-            const nomeCliente = String(chamado['Cliente'] || '').trim();
-            if (!nomeCliente || nomeCliente === "") return;
-
-            const existe = listaClientesSalva.some(c => c.nome.toLowerCase() === nomeCliente.toLowerCase());
-            if (!existe) {
-                listaClientesSalva.push({
-                    nome: nomeCliente,
-                    setorAtual: "Não Definido",
-                    unidade: "Não Definido",
-                    historicoSetores: [
-                        { data: obterDataFormatadaHoje(), logs: ["Cadastrado via importação de arquivo"] }
-                    ]
-                });
-                houveMudanca = true;
-            }
-        });
-
-        if (houveMudanca) {
-            localStorage.setItem('cadastroClientesDB', JSON.stringify(listaClientesSalva));
-        }
+        const nomes = [...new Set(linhasPlanilha
+            .map(chamado => String(chamado?.Cliente || '').trim())
+            .filter(nome => nome && nome !== 'Sem organização'))];
+        const store = await obterClientStore();
+        listaClientesCache = await store.seedOrganizations(nomes);
     } catch (erroCadastro) {
-        console.error("Falha segura ao verificar novos clientes:", erroCadastro);
+        console.error('Falha segura ao verificar novas organizações:', erroCadastro);
     }
 }
 
-function renderizarTabelaUsuarios() {
+async function renderizarTabelaUsuarios() {
     const corpoTabela = document.getElementById('tabelaUsuariosCorpo');
     if (!corpoTabela) return;
 
-    const listaClientes = JSON.parse(localStorage.getItem('cadastroClientesDB')) || [];
+    try {
+        const store = await obterClientStore();
+        listaClientesCache = await store.list();
+    } catch (error) {
+        console.error('Falha ao carregar organizações:', error);
+        corpoTabela.innerHTML = '<tr><td colspan="4" class="table-empty-state">Não foi possível carregar a base organizacional.</td></tr>';
+        return;
+    }
 
-    if (listaClientes.length === 0) {
-        corpoTabela.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 20px;">Nenhum cliente carregado. Base organizacional vazia.</td></tr>`;
+    const clientTableCount = document.getElementById('clientTableCount');
+    if (clientTableCount) clientTableCount.textContent = `${listaClientesCache.length.toLocaleString('pt-BR')} registros`;
+
+    if (listaClientesCache.length === 0) {
+        corpoTabela.innerHTML = '<tr><td colspan="4" class="table-empty-state">Nenhuma organização cadastrada.</td></tr>';
         return;
     }
 
     let htmlHTML = "";
-    listaClientes.forEach((cliente, index) => {
+    listaClientesCache.forEach((cliente, index) => {
         htmlHTML += `
-            <tr style="border-bottom: 1px solid var(--border-color);">
-                <td style="padding: 12px 16px; font-weight:600;">${cliente.nome}</td>
-                <td style="padding: 12px 16px;"><span style="background: var(--bg-table-hdr); padding:4px 8px; border-radius:4px; font-size:12px;">${cliente.setorAtual}</span></td>
-                <td style="padding: 12px 16px;"><span style="background: var(--bg-main); padding:4px 8px; border-radius:4px; font-size:12px; font-weight:500;">${cliente.unidade}</span></td>
-                <td style="padding: 12px 16px; text-align: center;">
-                    <button onclick="carregarClienteParaEdicao(${index})" style="padding: 6px 12px; background:#3b82f6; color:white; border:none; border-radius:4px; font-weight:600; cursor:pointer; font-size:12px;"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+            <tr>
+                <td class="client-name">${escaparHTML(cliente.nome)}</td>
+                <td><span class="table-badge">${escaparHTML(cliente.setorAtual)}</span></td>
+                <td><span class="table-badge table-badge-muted">${escaparHTML(cliente.unidade)}</span></td>
+                <td class="table-actions">
+                    <button onclick="carregarClienteParaEdicao(${index})" class="table-edit-btn"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
                 </td>
             </tr>
         `;
@@ -1114,15 +1277,14 @@ function renderizarTabelaUsuarios() {
 }
 
 window.carregarClienteParaEdicao = function(index) {
-    const listaClientes = JSON.parse(localStorage.getItem('cadastroClientesDB')) || [];
-    const cliente = listaClientes[index];
+    const cliente = listaClientesCache[index];
 
     if (!cliente) return;
 
     document.getElementById('editUserIndex').value = index;
     document.getElementById('editUserNome').value = cliente.nome;
-    document.getElementById('editUserSetor').value = cliente.setorAtual === "Não Definido" ? "" : cliente.setorAtual;
-    document.getElementById('editUserUnidade').value = cliente.unidade === "Não Definido" ? "" : cliente.unidade;
+    document.getElementById('editUserSetor').value = cliente.setorAtual.toLowerCase() === "não definido" ? "" : cliente.setorAtual;
+    document.getElementById('editUserUnidade').value = cliente.unidade.toLowerCase() === "não definido" ? "" : cliente.unidade;
     
     const hoje = new Date();
     document.getElementById('editUserDataMudanca').value = hoje.toISOString().split('T')[0];
@@ -1135,16 +1297,16 @@ function exibirHistoricoLogs(historico) {
     if (!containerHistorico) return;
 
     let htmlHTML = "";
-    [...historico].reverse().forEach(item => {
-        const logsUnificados = item.logs.join(" | ");
-        htmlHTML += `<li style="margin-bottom:6px;"><strong>${item.data}:</strong> ${logsUnificados}</li>`;
+    [...(historico || [])].reverse().forEach(item => {
+        const logsUnificados = (item.logs || []).map(escaparHTML).join(" | ");
+        htmlHTML += `<li><strong>${escaparHTML(item.data)}:</strong> ${logsUnificados}</li>`;
     });
-    containerHistorico.innerHTML = htmlHTML;
+    containerHistorico.innerHTML = htmlHTML || '<li class="history-empty">Nenhuma alteração registrada.</li>';
 }
 
 const formEditar = document.getElementById('formEditarUsuario');
 if (formEditar) {
-    formEditar.addEventListener('submit', function(e) {
+    formEditar.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const index = document.getElementById('editUserIndex').value;
@@ -1153,8 +1315,11 @@ if (formEditar) {
             return;
         }
 
-        let listaClientes = JSON.parse(localStorage.getItem('cadastroClientesDB')) || [];
-        let cliente = listaClientes[index];
+        let cliente = listaClientesCache[Number(index)];
+        if (!cliente) {
+            alert('A organização selecionada não está mais disponível.');
+            return;
+        }
 
         const novoSetor = document.getElementById('editUserSetor').value.trim() || "Não Definido";
         const novaUnidade = document.getElementById('editUserUnidade').value.trim() || "Não Definido";
@@ -1196,9 +1361,16 @@ if (formEditar) {
                 return new Date(anoA, mesA - 1, diaA) - new Date(anoB, mesB - 1, diaB);
             });
 
-            listaClientes[index] = cliente;
-            localStorage.setItem('cadastroClientesDB', JSON.stringify(listaClientes));
-            alert("Vínculo organizacional atualizado e gravado na linha do tempo histórica!");
+            try {
+                const store = await obterClientStore();
+                const clienteAtualizado = await store.update(cliente);
+                listaClientesCache[Number(index)] = clienteAtualizado;
+                alert("Vínculo organizacional atualizado e gravado na linha do tempo histórica!");
+            } catch (error) {
+                console.error('Falha ao salvar vínculo organizacional:', error);
+                alert('Não foi possível salvar a alteração. Verifique sua conexão e tente novamente.');
+                return;
+            }
         } else {
             alert("Nenhuma alteração detectada nos campos de Setor ou Unidade.");
         }
@@ -1207,7 +1379,7 @@ if (formEditar) {
         document.getElementById('editUserIndex').value = "";
         document.getElementById('listaHistoricoSetores').innerHTML = `<li style="color:#94a3b8; list-style:none;">Selecione um cliente para auditar o histórico.</li>`;
         
-        renderizarTabelaUsuarios();
+        await renderizarTabelaUsuarios();
     });
 }
 

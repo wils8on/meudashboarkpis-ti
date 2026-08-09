@@ -1,4 +1,4 @@
-name: Atualizar Dados do TomTicket
+name: Atualizar dados do TomTicket
 
 on:
   schedule:
@@ -8,9 +8,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: tomticket-data-sync
+  cancel-in-progress: false
+
 jobs:
-  build:
+  sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Baixar repositório
@@ -21,101 +26,18 @@ jobs:
         with:
           node-version: 20
 
-      - name: Executar coletor de chamados
+      - name: Validar sanitização
+        run: node --test tests/*.test.mjs
+
+      - name: Coletar e sanitizar chamados
         env:
           TOMTICKET_TOKEN: ${{ secrets.TOMTICKET_TOKEN }}
-        run: |
-          node -e '
-          const fs = require("fs");
+        run: node scripts/sync-tomticket.mjs
 
-          // Função utilitária para criar um atraso de tempo (delay)
-          const aguardar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-          async function coletarDados() {
-            const token = process.env.TOMTICKET_TOKEN;
-            if (!token) {
-              console.error("❌ ERRO: O segredo TOMTICKET_TOKEN não está cadastrado no GitHub!");
-              process.exit(1);
-            }
-
-            let pagina = 1;
-            let todosChamados = [];
-
-            console.log("🚀 Iniciando coleta automatizada v2.0 com controle de requisições...");
-
-            while (true) {
-              console.log(`📡 Buscando página ${pagina}...`);
-              
-              try {
-                const url = `https://api.tomticket.com/v2.0/ticket/list?page=${pagina}&pagina=${pagina}`;
-                const response = await fetch(url, {
-                  method: "GET",
-                  headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Accept": "application/json"
-                  }
-                });
-
-                if (!response.ok) {
-                  const textoErro = await response.text();
-                  console.error(`❌ Erro na requisição (Página ${pagina}): Status HTTP ${response.status}`);
-                  console.error(`📝 Resposta do servidor do TomTicket:`, textoErro);
-                  process.exit(1);
-                }
-
-                const json = await response.json();
-                
-                let chamadosPagina = [];
-                if (Array.isArray(json)) {
-                  chamadosPagina = json;
-                } else if (json && Array.isArray(json.data)) {
-                  chamadosPagina = json.data;
-                } else if (json && Array.isArray(json.chamados)) {
-                  chamadosPagina = json.chamados;
-                }
-
-                if (chamadosPagina.length === 0) {
-                  console.log("✅ Nenhum registro retornado nesta página. Coleta concluída.");
-                  break;
-                }
-
-                todosChamados.push(...chamadosPagina);
-                console.log(`🔹 Página ${pagina} processada. Total acumulado: ${todosChamados.length}`);
-
-                if (chamadosPagina.length < 50) {
-                  console.log("🏁 Última página alcançada.");
-                  break;
-                }
-
-                pagina++;
-                
-                if (pagina > 150) {
-                  console.log("⚠️ Limite máximo de segurança de páginas atingido.");
-                  break;
-                }
-
-                // Espera 1,5 segundo antes de disparar a próxima página para respeitar o Rate Limit do servidor
-                console.log("⏱️ Aguardando 1,5 segundo para evitar bloqueio...");
-                await aguardar(1500);
-
-              } catch (error) {
-                console.error(`💥 Falha crítica de conexão/conversão na página ${pagina}:`, error);
-                process.exit(1);
-              }
-            }
-
-            const resultadoFinal = { data: todosChamados };
-            fs.writeFileSync("dados.json", JSON.stringify(resultadoFinal, null, 2));
-            console.log(`🎉 Sucesso total! dados.json gerado com ${todosChamados.length} chamados.`);
-          }
-
-          coletarDados();
-          '
-
-      - name: Salvar e publicar os dados updated
+      - name: Publicar somente a base sanitizada
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add dados.json
-          git diff-index --quiet HEAD || git commit -m "data: Sincronização estável de todos os chamados da API"
+          git diff-index --quiet HEAD || git commit -m "data: sincroniza indicadores sanitizados do TomTicket"
           git push

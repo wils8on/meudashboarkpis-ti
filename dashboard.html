@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard de KPIs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -28,12 +31,15 @@
                 print-color-adjust: exact !important;
             }
 
-            .sidebar, 
-            .top-bar, 
-            .upload-section, 
-            .info-alert-box, 
+            .sidebar,
+            .top-bar,
+            .period-toolbar,
+            .sync-panel,
+            .executive-brief,
+            .info-alert-box,
+            .support-empty-state,
             .btn-submit-form,
-            .editor-form-box button,
+            .editor-form-box,
             td button,
             #btnInspecionarAPI,
             #modalInspeção {
@@ -50,14 +56,35 @@
                 width: 100% !important;
             }
 
+            .main-content::before {
+                content: "RELATÓRIO EXECUTIVO · INDICADORES OPERACIONAIS";
+                display: block;
+                margin-bottom: 8mm;
+                padding-bottom: 3mm;
+                color: #312e81;
+                border-bottom: 2px solid #8b5cf6;
+                font-size: 16pt;
+                font-weight: 800;
+                letter-spacing: .04em;
+            }
+
+            .content-body { padding: 0 !important; }
+
             .tab-content {
                 display: block !important;
                 visibility: visible !important;
                 opacity: 1 !important;
                 page-break-after: always !important;
-                padding-top: 5px !important;
+                padding-top: 2mm !important;
                 width: 100% !important;
             }
+
+            .tab-content:last-child { page-break-after: auto !important; }
+            .module-header { margin-bottom: 4mm !important; }
+            .module-header .module-icon { background: #f3f0ff !important; box-shadow: none !important; }
+            .module-header h3, .section-heading h3 { color: #111827 !important; }
+            .module-header p, .kpi-context, .section-heading p { color: #64748b !important; }
+            .section-kicker { color: #6d28d9 !important; }
 
             .kpi-grid {
                 display: grid !important;
@@ -74,14 +101,19 @@
                 color: #0f172a !important;
                 box-shadow: none !important;
                 padding: 10px !important;
-                border-radius: 6px !important;
+                min-height: 24mm !important;
+                border-radius: 8px !important;
+                backdrop-filter: none !important;
             }
+
+            .kpi-card::after { display: none !important; }
+            .kpi-info p { color: #64748b !important; }
 
             .kpi-card h3, .kpi-card .kpi-val-grandes {
                 color: #1e3a8a !important;
             }
 
-            .chart-container, .charts-split-grid {
+            .chart-container {
                 background: #ffffff !important;
                 border: 1px solid #e2e8f0 !important;
                 border-radius: 8px !important;
@@ -90,43 +122,42 @@
                 page-break-inside: avoid !important;
                 margin-top: 10px !important;
                 margin-bottom: 15px !important;
-                max-width: 100% !important;
+                height: 76mm !important;
+                max-height: 76mm !important;
                 width: 100% !important;
                 box-sizing: border-box !important;
+                backdrop-filter: none !important;
             }
+
+            .charts-split-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 5mm !important;
+                page-break-inside: avoid !important;
+            }
+
+            .chart-heading h4, .chart-container h4 { color: #0f172a !important; }
+            .chart-caption { color: #64748b !important; }
+            .users-management-layout { display: block !important; }
+            .table-wrapper-box { border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
+            .data-table th { color: #0f172a !important; background: #f1f5f9 !important; }
+            .data-table td { color: #334155 !important; }
 
             canvas {
                 max-width: 100% !important;
                 width: 100% !important;
-                height: auto !important;
+                height: 62mm !important;
             }
         }
     </style>
 </head>
-<body>
+<body class="auth-pending">
 
     <div class="wrapper">
-        <nav class="sidebar">
+        <nav class="sidebar" aria-label="Navegação principal">
             <div class="sidebar-header">
-                <h3><i class="fa-solid fa-chart-pie"></i> KPI Panel</h3>
-            </div>
-
-            <div class="theme-toggle-container">
-                <button onclick="window.alternarModoTema()" class="btn-theme-toggle">
-                    <i class="fa-solid fa-moon"></i> Alternar Tema
-                </button>
-            </div>
-
-            <div class="sidebar-filters">
-                <p class="filter-title">FILTRAR PERÍODO</p>
-                <div class="filter-group">
-                    <label>Data Inicial:</label>
-                    <input type="date" id="filtroDataInicio">
-                </div>
-                <div class="filter-group">
-                    <label>Data Final:</label>
-                    <input type="date" id="filtroDataFim">
-                </div>
+                <div class="brand-mark" aria-hidden="true"><i class="fa-solid fa-bolt"></i></div>
+                <span class="brand-label">KPI</span>
             </div>
 
             <ul class="nav-links">
@@ -163,78 +194,124 @@
             </ul>
 
             <div class="sidebar-footer">
-                <button id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+                <button onclick="window.alternarModoTema()" class="btn-theme-toggle" title="Alternar tema" aria-label="Alternar tema">
+                    <i class="fa-solid fa-moon"></i><span>Tema</span>
+                </button>
+                <button id="btnLogout" title="Sair" aria-label="Sair"><i class="fa-solid fa-right-from-bracket"></i><span>Sair</span></button>
             </div>
         </nav>
 
         <main class="main-content">
             <header class="top-bar">
-                <h2>Plataforma de Indicadores</h2>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button id="btnInspecionarAPI" style="padding: 8px 16px; background: #475569; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-bug"></i> Inspecionar Dados API
+                <div class="page-heading">
+                    <span class="page-kicker">Central operacional</span>
+                    <h2 id="pageTitle">Visão Geral</h2>
+                    <p>Acompanhe o ritmo, a eficiência e a saúde da operação.</p>
+                </div>
+                <div class="top-actions">
+                    <button id="btnInspecionarAPI" class="action-btn action-btn-ghost">
+                        <i class="fa-solid fa-code"></i><span>Dados API</span>
                     </button>
-                    <button id="btnExportarPDF" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-file-pdf"></i> Exportar Relatório PDF
+                    <button id="btnExportarPDF" class="action-btn action-btn-primary">
+                        <i class="fa-solid fa-arrow-down"></i><span>Exportar PDF</span>
                     </button>
                     <div class="user-profile">
+                        <span class="user-avatar"><i class="fa-solid fa-user"></i></span>
                         <span>Olá, <strong>Admin</strong></span>
                     </div>
                 </div>
             </header>
 
+            <div class="period-toolbar" aria-label="Filtros do dashboard">
+                <div class="period-toolbar-copy">
+                    <span class="period-icon"><i class="fa-regular fa-calendar"></i></span>
+                    <div><strong>Período de análise</strong><small>Refine todos os indicadores</small></div>
+                </div>
+                <div class="period-fields">
+                    <label><span>Data inicial</span><input type="date" id="filtroDataInicio"></label>
+                    <span class="period-separator"><i class="fa-solid fa-arrow-right"></i></span>
+                    <label><span>Data final</span><input type="date" id="filtroDataFim"></label>
+                </div>
+            </div>
+
             <div class="content-body">
                 
                 <section id="visao-geral" class="tab-content active">
-                    <div class="upload-section">
-                        <label for="excelFile" class="upload-box">
-                            <i class="fa-solid fa-file-excel"></i>
-                            <span>Clique ou arraste o arquivo Excel (.xlsx) aqui para atualizar os dados</span>
-                            <input type="file" id="excelFile" accept=".xlsx, .xls" style="display: none;">
-                        </label>
-                        <div id="uploadStatus" class="upload-status">Nenhum arquivo carregado (Aguardando base de dados)</div>
+                    <div class="sync-panel">
+                        <div class="sync-main">
+                            <span class="sync-indicator"><i class="fa-solid fa-arrows-rotate"></i></span>
+                            <div>
+                                <span class="sync-eyebrow">TomTicket · API operacional</span>
+                                <div id="uploadStatus" class="upload-status">Aguardando sincronização da base</div>
+                            </div>
+                        </div>
+                        <div class="sync-meta">
+                            <div><span>Registros</span><strong id="syncRecordCount">—</strong></div>
+                            <div><span>Atualizado</span><strong id="syncLastUpdate">—</strong></div>
+                            <label for="excelFile" class="import-trigger" title="Importar uma base manualmente">
+                                <i class="fa-solid fa-file-arrow-up"></i><span>Importar Excel</span>
+                                <input type="file" id="excelFile" accept=".xlsx, .xls" hidden>
+                            </label>
+                        </div>
                     </div>
 
-                    <h3>Métricas Consolidadas</h3>
-                    <!-- Grid reajustada via CSS inline temporário para acomodar o 6º Card de MTTR de forma equilibrada -->
-                    <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div class="section-heading">
+                        <div><span class="section-kicker">Pulso da operação</span><h3>Métricas consolidadas</h3></div>
+                        <p>Leitura resumida do período selecionado</p>
+                    </div>
+                    <div class="kpi-grid overview-kpi-grid">
                         <div class="kpi-card azul">
-                            <div class="kpi-info"><p>Chamados no Período</p><h3 id="kpiTotal">0</h3></div>
+                            <div class="kpi-info"><p>Chamados no período</p><h3 id="kpiTotal">0</h3><span class="kpi-context">Volume total recebido</span></div>
                             <i class="fa-solid fa-ticket icon"></i>
                         </div>
                         <div class="kpi-card verde">
-                            <div class="kpi-info"><p>% Finalizados</p><h3 id="kpiFinalizados">0,00%</h3></div>
+                            <div class="kpi-info"><p>Taxa de finalização</p><h3 id="kpiFinalizados">0,00%</h3><span class="kpi-context" id="kpiFinalizadosContext">Eficiência no período</span></div>
                             <i class="fa-solid fa-circle-check icon"></i>
                         </div>
                         <div class="kpi-card orange">
-                            <div class="kpi-info"><p>% Demandas Atuais</p><h3 id="kpiDemandasAtuais">0,00%</h3></div>
+                            <div class="kpi-info"><p>Demandas atuais</p><h3 id="kpiDemandasAtuais">0,00%</h3><span class="kpi-context" id="kpiDemandasContext">Carga ainda em aberto</span></div>
                             <i class="fa-solid fa-folder-open icon"></i>
                         </div>
                         <div class="kpi-card vermelho">
-                            <div class="kpi-info"><p>% Chamados Reabertos</p><h3 id="kpiReabertos">0,00%</h3></div>
+                            <div class="kpi-info"><p>Chamados reabertos</p><h3 id="kpiReabertos">0,00%</h3><span class="kpi-context" id="kpiReabertosContext">Índice de reincidência</span></div>
                             <i class="fa-solid fa-arrows-rotate icon"></i>
                         </div>
                         <div class="kpi-card roxo">
-                            <div class="kpi-info"><p>Tempo Médio Trabalho</p><h3 id="kpiTempoMedio">0.0h</h3></div>
+                            <div class="kpi-info"><p>Tempo médio de trabalho</p><h3 id="kpiTempoMedio">0.0h</h3><span class="kpi-context">Do início à conclusão</span></div>
                             <i class="fa-solid fa-business-time icon"></i>
                         </div>
                         <div class="kpi-card comparativo">
-                            <div class="kpi-info"><p>vs Ano Anterior</p><h3 id="kpiCrescimento">0,00%</h3></div>
+                            <div class="kpi-info"><p>Comparativo anual</p><h3 id="kpiCrescimento">0,00%</h3><span class="kpi-context">Versus o mesmo período</span></div>
                             <i class="fa-solid fa-scale-balanced icon"></i>
                         </div>
                     </div>
 
-                    <div class="chart-container">
+                    <div class="executive-brief" aria-label="Leitura executiva do período">
+                        <div class="brief-heading"><span><i class="fa-solid fa-wand-magic-sparkles"></i></span><div><strong>Leitura executiva</strong><small>Sinais calculados com a base atual</small></div></div>
+                        <div class="brief-signals">
+                            <div class="brief-signal" id="briefResolution"><i class="fa-solid fa-circle-check"></i><span>Aguardando leitura de resolução</span></div>
+                            <div class="brief-signal" id="briefBacklog"><i class="fa-solid fa-layer-group"></i><span>Aguardando leitura de demanda</span></div>
+                            <div class="brief-signal" id="briefReopen"><i class="fa-solid fa-arrow-rotate-left"></i><span>Aguardando leitura de reabertura</span></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container chart-featured">
+                        <div class="chart-heading">
+                            <div><span class="section-kicker">Evolução temporal</span><h4>Chamados criados por mês</h4></div>
+                            <span class="chart-caption">Volume total × prioridade urgente</span>
+                        </div>
                         <canvas id="graficoGeral"></canvas>
                     </div>
 
-                    <!-- Novo Gráfico: Distribuição Dia da Semana x Horário de Atendimento -->
-                    <div class="chart-container" style="margin-top: 25px; height: 400px;">
-                        <h4><i class="fa-solid fa-business-time"></i> Volumetria Ocupacional: Dia da Semana x Hora de Abertura</h4>
+                    <div class="chart-container chart-featured chart-occupancy">
+                        <div class="chart-heading">
+                            <div><span class="section-kicker">Capacidade operacional</span><h4>Volumetria por dia e hora de abertura</h4></div>
+                            <span class="chart-caption">Identifique os horários de maior pressão</span>
+                        </div>
                         <canvas id="graficoDiaHora"></canvas>
                     </div>
 
-                    <div class="charts-split-grid" style="margin-top: 25px;">
+                    <div class="charts-split-grid overview-secondary-charts">
                         <div class="chart-container">
                             <h4><i class="fa-solid fa-chart-line"></i> Quantidade de Chamados Reabertos por Mês</h4>
                             <canvas id="graficoReabertosMes"></canvas>
@@ -247,102 +324,112 @@
                 </section>
 
                 <section id="kpis-performance" class="tab-content">
-                    <h3>Análise de Performance Operacional e SLA</h3>
-                    <div class="kpi-grid" style="margin-bottom: 30px;">
+                    <div class="module-header" data-accent="teal">
+                        <span class="module-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                        <div><span class="section-kicker">Eficiência e compromisso</span><h3>Performance operacional e SLA</h3><p>Compare velocidade de resolução, aderência aos prazos e consistência mensal.</p></div>
+                    </div>
+                    <div class="kpi-grid module-kpi-grid">
                         <div class="kpi-card verde">
-                            <div class="kpi-info"><p>Finalizados no Mês de Abertura</p><h3 id="perfCard1">0,00%</h3></div>
+                            <div class="kpi-info"><p>Finalizados no mês de abertura</p><h3 id="perfCard1">0,00%</h3><span class="kpi-context">Resolvidos dentro do ciclo</span></div>
                             <i class="fa-solid fa-calendar-check icon"></i>
                         </div>
                         <div class="kpi-card azul">
-                            <div class="kpi-info"><p>Cumprimento de SLA (Deadline)</p><h3 id="perfCard2">0,00%</h3></div>
+                            <div class="kpi-info"><p>Cumprimento de SLA</p><h3 id="perfCard2">0,00%</h3><span class="kpi-context">Dentro do deadline</span></div>
                             <i class="fa-solid fa-clock-check icon"></i>
                         </div>
                         <div class="kpi-card laranja">
-                            <div class="kpi-info"><p>Finalizados em Meses Posteriores</p><h3 id="perfCard3">0,00%</h3></div>
+                            <div class="kpi-info"><p>Conclusões posteriores</p><h3 id="perfCard3">0,00%</h3><span class="kpi-context">Resolvidos após o mês inicial</span></div>
                             <i class="fa-solid fa-calendar-minus icon"></i>
                         </div>
                         <div class="kpi-card roxo">
-                            <div class="kpi-info"><p>Mês de Maior Eficiência</p><h3 id="perfCard4">Nenhum</h3></div>
+                            <div class="kpi-info"><p>Melhor eficiência mensal</p><h3 id="perfCard4">Nenhum</h3><span class="kpi-context">Destaque do período</span></div>
                             <i class="fa-solid fa-award icon"></i>
                         </div>
                     </div>
 
                     <div class="charts-split-grid">
                         <div class="chart-container">
-                            <h4><i class="fa-solid fa-chart-line"></i> Taxa de Resolução Mensal (%)</h4>
+                            <div class="chart-heading"><div><span class="section-kicker">Velocidade</span><h4>Taxa de resolução mensal</h4></div><span class="chart-caption">Percentual concluído no mês de abertura</span></div>
                             <canvas id="graficoLinhaResolucao"></canvas>
                         </div>
                         <div class="chart-container">
-                            <h4><i class="fa-solid fa-chart-bar"></i> Índice de Cumprimento de SLA por Mês</h4>
+                            <div class="chart-heading"><div><span class="section-kicker">Conformidade</span><h4>Cumprimento de SLA por mês</h4></div><span class="chart-caption">Chamados dentro do deadline</span></div>
                             <canvas id="graficoSlaMensal"></canvas>
                         </div>
                     </div>
                 </section>
 
                 <section id="aba-backlog" class="tab-content">
-                    <div class="info-alert-box">
-                        <h4><i class="fa-solid fa-circle-info"></i> O que é o Backlog?</h4>
-                        <p>Backlog representa a quantidade de chamados que ainda não foram finalizados, ou seja, demandas pendentes que estão em atendimento ou aguardando resolução. Esse indicador ajuda a medir o volume de trabalho acumulado e o nível de controle da operação.</p>
+                    <div class="module-header" data-accent="amber">
+                        <span class="module-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+                        <div><span class="section-kicker">Estoque operacional</span><h3>Backlog mensal</h3><p>Acompanhe o trabalho acumulado, a capacidade de conclusão e o saldo ainda pendente.</p></div>
                     </div>
-
-                    <div class="kpi-grid" style="margin-bottom: 20px;">
+                    <div class="info-alert-box compact-info">
+                        <i class="fa-solid fa-circle-info"></i><p>O total considera chamados do período e demandas herdadas que permaneceram abertas dentro da janela selecionada.</p>
+                    </div>
+                    <div class="kpi-grid backlog-kpi-grid">
                         <div class="kpi-card azul-header">
-                            <div class="kpi-info"><p>Total Acumulado (Período + Herdado)</p><div id="backlogCardTotal" class="kpi-val-grandes">0</div></div>
+                            <div class="kpi-info"><p>Total acumulado</p><div id="backlogCardTotal" class="kpi-val-grandes">0</div><span class="kpi-context">Período atual + herdado</span></div>
                         </div>
                         <div class="kpi-card verde-header">
-                            <div class="kpi-info"><p>Finalizados do Backlog</p><div id="backlogCardFechados" class="kpi-val-grandes">0 (0,00%)</div></div>
+                            <div class="kpi-info"><p>Backlog finalizado</p><div id="backlogCardFechados" class="kpi-val-grandes">0 (0,00%)</div><span class="kpi-context">Estoque já absorvido</span></div>
                         </div>
                         <div class="kpi-card laranja-header">
-                            <div class="kpi-info"><p>Demandas Atuais do Backlog</p><div id="backlogCardDemandasAtuais" class="kpi-val-grandes">0 (0,00%)</div></div>
+                            <div class="kpi-info"><p>Backlog atual</p><div id="backlogCardDemandasAtuais" class="kpi-val-grandes">0 (0,00%)</div><span class="kpi-context">Saldo ainda em atendimento</span></div>
                         </div>
                     </div>
 
                     <div class="charts-split-grid">
                         <div class="chart-container">
-                            <h4>Evolução de Conclusão do Backlog por Mês</h4>
+                            <div class="chart-heading"><div><span class="section-kicker">Movimentação</span><h4>Evolução da conclusão</h4></div><span class="chart-caption">Estoque inicial × finalizados</span></div>
                             <canvas id="graficoBacklogEvolucao"></canvas>
                         </div>
                         <div class="chart-container">
-                            <h4>Distribuição Volumétrica do Backlog Atual</h4>
+                            <div class="chart-heading"><div><span class="section-kicker">Composição</span><h4>Distribuição do backlog atual</h4></div><span class="chart-caption">Situação do volume acumulado</span></div>
                             <canvas id="graficoBacklogDistribuicao"></canvas>
                         </div>
                     </div>
                 </section>
 
                 <section id="aba-aging" class="tab-content">
-                    <h3>Análise de Aging dos Chamados em Aberto</h3>
-                    <div class="kpi-grid" style="margin-bottom: 30px;">
+                    <div class="module-header" data-accent="rust">
+                        <span class="module-icon"><i class="fa-solid fa-hourglass-half"></i></span>
+                        <div><span class="section-kicker">Risco por permanência</span><h3>Aging dos chamados em aberto</h3><p>Identifique demandas envelhecidas e priorize os casos com maior tempo sem conclusão.</p></div>
+                    </div>
+                    <div class="kpi-grid aging-kpi-grid">
                         <div class="kpi-card cinza">
-                            <div class="kpi-info"><p>> 7 dias</p><h3 id="agingCardSete">0</h3></div>
+                            <div class="kpi-info"><p>Acima de 7 dias</p><h3 id="agingCardSete">0</h3><span class="kpi-context">Primeira faixa de atenção</span></div>
                             <i class="fa-solid fa-hourglass-start icon"></i>
                         </div>
                         <div class="kpi-card cinza">
-                            <div class="kpi-info"><p>> 15 dias</p><h3 id="agingCardQuinze">0</h3></div>
+                            <div class="kpi-info"><p>Acima de 15 dias</p><h3 id="agingCardQuinze">0</h3><span class="kpi-context">Permanência elevada</span></div>
                             <i class="fa-solid fa-hourglass-half icon"></i>
                         </div>
                         <div class="kpi-card cinza">
-                            <div class="kpi-info"><p>> 30 dias</p><h3 id="agingCardTrinta">0</h3></div>
+                            <div class="kpi-info"><p>Acima de 30 dias</p><h3 id="agingCardTrinta">0</h3><span class="kpi-context">Faixa crítica</span></div>
                             <i class="fa-solid fa-hourglass-end icon"></i>
                         </div>
                         <div class="kpi-card vermelho">
-                            <div class="kpi-info"><p>Mais antigo</p><h3 id="agingCardMaisAntigo">0 dias</h3></div>
+                            <div class="kpi-info"><p>Chamado mais antigo</p><h3 id="agingCardMaisAntigo">0 dias</h3><span class="kpi-context">Maior permanência registrada</span></div>
                             <i class="fa-solid fa-calendar-xmark icon"></i>
                         </div>
                         <div class="kpi-card azul">
-                            <div class="kpi-info"><p>Média de idade</p><h3 id="agingCardMedia">0 dias</h3></div>
+                            <div class="kpi-info"><p>Idade média</p><h3 id="agingCardMedia">0 dias</h3><span class="kpi-context">Média das demandas abertas</span></div>
                             <i class="fa-solid fa-calculator icon"></i>
                         </div>
                     </div>
 
-                    <div class="chart-container" style="height: 450px;">
-                        <h4>Distribuição dos chamados em aberto por faixa de aging</h4>
+                    <div class="chart-container chart-featured aging-chart">
+                        <div class="chart-heading"><div><span class="section-kicker">Distribuição de risco</span><h4>Chamados abertos por faixa de aging</h4></div><span class="chart-caption">Do volume recente ao estoque crítico</span></div>
                         <canvas id="graficoAging"></canvas>
                     </div>
                 </section>
 
                 <section id="aba-usuarios" class="tab-content">
-                    <h3>Cadastro e Gestão Organizacional de Clientes</h3>
-                    <p class="section-desc">Os nomes abaixo são importados automaticamente da coluna Cliente do Excel. Aqui você pode configure e rastrear o histórico de alocações.</p>
+                    <div class="module-header" data-accent="plum">
+                        <span class="module-icon"><i class="fa-solid fa-users-gear"></i></span>
+                        <div><span class="section-kicker">Base organizacional</span><h3>Gestão de clientes</h3><p>Configure setor, unidade e histórico de alocação dos clientes identificados na operação.</p></div>
+                    </div>
                     
                     <div class="users-management-layout">
                         <div class="editor-form-box">
@@ -379,7 +466,7 @@
                         </div>
 
                         <div class="table-wrapper-box">
-                            <div class="table-header-title">Clientes Cadastrados no Sistema</div>
+                            <div class="table-header-title"><div><span class="section-kicker">Diretório</span><strong>Clientes cadastrados</strong></div><span class="table-count" id="clientTableCount">— registros</span></div>
                             <div class="table-scroll-container">
                                 <table class="data-table">
                                     <thead>
@@ -402,8 +489,20 @@
                 </section>
 
                 <section id="kpis-suporte" class="tab-content">
-                    <h3>Métricas de Atendimento</h3>
-                    <p>Espaço reservado para detalhes analíticos de Helpdesk.</p>
+                    <div class="module-header" data-accent="blue">
+                        <span class="module-icon"><i class="fa-solid fa-headset"></i></span>
+                        <div><span class="section-kicker">Central de atendimento</span><h3>Suporte e atendimento</h3><p>Uma leitura objetiva da carga recebida, urgência, reincidência e cobertura de SLA.</p></div>
+                    </div>
+                    <div class="kpi-grid support-kpi-grid">
+                        <div class="kpi-card azul"><div class="kpi-info"><p>Chamados atendidos</p><h3 id="supportTotal">0</h3><span class="kpi-context">Volume dentro do período</span></div><i class="fa-solid fa-headset icon"></i></div>
+                        <div class="kpi-card vermelho"><div class="kpi-info"><p>Prioridade urgente</p><h3 id="supportUrgent">0</h3><span class="kpi-context">Demandas de maior criticidade</span></div><i class="fa-solid fa-triangle-exclamation icon"></i></div>
+                        <div class="kpi-card verde"><div class="kpi-info"><p>Cobertura de SLA</p><h3 id="supportSla">0,00%</h3><span class="kpi-context">Chamados dentro do deadline</span></div><i class="fa-solid fa-shield-halved icon"></i></div>
+                        <div class="kpi-card roxo"><div class="kpi-info"><p>Clientes no período</p><h3 id="supportCustomers">0</h3><span class="kpi-context">Pessoas atendidas</span></div><i class="fa-solid fa-users icon"></i></div>
+                    </div>
+                    <div class="support-empty-state">
+                        <span><i class="fa-solid fa-chart-line"></i></span>
+                        <div><strong>Visão analítica preparada para evolução</strong><p>Os indicadores essenciais já utilizam a base atual. Na próxima camada, este espaço poderá receber canais, satisfação, primeira resposta e distribuição por atendente.</p></div>
+                    </div>
                 </section>
 
             </div>
@@ -411,10 +510,10 @@
     </div>
 
     <!-- MODAL DE INSPEÇÃO DE DADOS DA API -->
-    <div id="modalInspeção" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
-        <div style="background: #1e293b; width: 100%; max-width: 800px; border-radius: 8px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; max-height: 90vh; border: 1px solid #334155;">
+    <div id="modalInspeção" role="dialog" aria-modal="true" aria-labelledby="modalInspecaoTitulo" aria-hidden="true" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+        <div tabindex="-1" style="background: #1e293b; width: 100%; max-width: 800px; border-radius: 8px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; max-height: 90vh; border: 1px solid #334155;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #334155; padding-bottom: 12px;">
-                <h3 style="margin: 0; color: #f8fafc; display: flex; align-items: center; gap: 8px; font-family: sans-serif;">
+                <h3 id="modalInspecaoTitulo" style="margin: 0; color: #f8fafc; display: flex; align-items: center; gap: 8px; font-family: sans-serif;">
                     <i class="fa-solid fa-bug" style="color: #3b82f6;"></i> Diagnóstico: Estrutura da API TomTicket
                 </h3>
                 <button id="fecharModalInspeção" style="background: none; border: none; color: #94a3b8; font-size: 24px; cursor: pointer; line-height: 1;">&times;</button>
@@ -439,6 +538,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script type="module" src="js/auth-guard.js"></script>
+    <script type="module" src="js/client-store.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
 </html>

@@ -1,13 +1,32 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-10T19:18:34.257Z",
-    "total_records": 1409,
+    "updated_at": "2026-08-10T20:04:56.939Z",
+    "total_records": 1410,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-08-10T17:47:03.000Z"
+    "newest_creation_date": "2026-08-10T19:50:13.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-08-10 16:50:13-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -33,7 +52,7 @@
           "name": "Diálise"
         }
       },
-      "priority": 2,
+      "priority": 3,
       "creation_date": "2026-08-10 12:57:38-03:00",
       "end_date": null,
       "sla": {
@@ -1384,7 +1403,7 @@
       },
       "priority": 3,
       "creation_date": "2026-07-09 10:32:35-03:00",
-      "end_date": null,
+      "end_date": "2026-08-10 16:30:48-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -1392,7 +1411,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em Desenvolvimento"
+        "description": "Finalizado"
       }
     },
     {

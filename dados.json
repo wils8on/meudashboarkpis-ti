@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-14T09:40:36.631Z",
+    "updated_at": "2026-08-14T10:38:54.043Z",
     "total_records": 1411,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
@@ -204,12 +204,12 @@
           "name": "Diálise"
         }
       },
-      "priority": 2,
+      "priority": 1,
       "creation_date": "2026-08-05 10:04:09-03:00",
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": false
+          "accomplished": true
         }
       },
       "reopened": false,

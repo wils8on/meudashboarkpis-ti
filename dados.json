@@ -1,13 +1,32 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-14T16:40:34.370Z",
-    "total_records": 1414,
+    "updated_at": "2026-08-14T17:36:10.726Z",
+    "total_records": 1415,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-08-14T15:05:34.000Z"
+    "newest_creation_date": "2026-08-14T17:06:50.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-14 14:06:50-03:00",
+      "end_date": "2026-08-14 14:28:20-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
     {
       "customer": {
         "organization": {

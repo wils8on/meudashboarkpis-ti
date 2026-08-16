@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { buildSanitizedPayload } from './sanitize-tomticket.mjs';
+import { publishPrivateTickets } from './private-firestore.mjs';
 
 const MAX_PAGES = 150;
 const MAX_SOURCE_AGE_DAYS = 7;
@@ -84,6 +85,9 @@ async function sync() {
     result.meta.newest_creation_date = range.newest?.toISOString() || null;
     await writeFile('dados.json', `${JSON.stringify(result, null, 2)}\n`, 'utf8');
     console.log(`Sincronização concluída com ${result.meta.total_records} registros sanitizados.`);
+
+    const privateResult = await publishPrivateTickets(allTickets, process.env.FIREBASE_SERVICE_ACCOUNT);
+    console.log(`Camada privada publicada em ${privateResult.chunks} bloco(s), com ${privateResult.totalRecords} registros.`);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

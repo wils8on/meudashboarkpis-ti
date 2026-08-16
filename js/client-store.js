@@ -1,60 +1,58 @@
 import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-import { getFirestore, collection, doc, getDocs, query, serverTimestamp, setDoc, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDocs, serverTimestamp, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js';
 
 const localDevelopment = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-const localKey = 'cadastroOrganizacoesDB';
+const localKey = 'cadastroSolicitantesDB';
 
-const normalizeClient = client => ({
-    id: client.id || null,
-    nome: String(client.nome || '').trim(),
-    setorAtual: client.setorAtual || 'Não definido',
-    unidade: client.unidade || 'Não definido',
-    historicoSetores: Array.isArray(client.historicoSetores) ? client.historicoSetores : []
+const normalizeRequester = requester => ({
+    id: requester.id || null,
+    nome: String(requester.nome || '').trim(),
+    email: String(requester.email || '').trim().toLowerCase(),
+    organizacao: String(requester.organizacao || '').trim() || 'Sem organização',
+    setorAtual: requester.setorAtual || 'Não definido',
+    unidade: requester.unidade || 'Não definido',
+    historicoSetores: Array.isArray(requester.historicoSetores) ? requester.historicoSetores : []
 });
 
-const organizationId = name => encodeURIComponent(name.toLocaleLowerCase('pt-BR')).replaceAll('%', '_').slice(0, 300);
-const initialClient = name => ({
-    nome: name,
+const requesterKey = requester => requester.email || requester.nome.toLocaleLowerCase('pt-BR');
+const requesterId = requester => encodeURIComponent(requesterKey(requester)).replaceAll('%', '_').slice(0, 300);
+const initialRequester = requester => ({
+    nome: requester.nome,
+    email: requester.email || '',
+    organizacao: requester.organizacao || 'Sem organização',
     setorAtual: 'Não definido',
     unidade: 'Não definido',
-    historicoSetores: [{
-        data: new Date().toLocaleString('pt-BR'),
-        logs: ['Organização cadastrada pela sincronização sanitizada']
-    }]
+    historicoSetores: [{ data: new Date().toLocaleString('pt-BR'), logs: ['Solicitante cadastrado pela sincronização privada do TomTicket'] }]
 });
 
 function createLocalStore() {
     const read = () => {
-        try {
-            return (JSON.parse(localStorage.getItem(localKey)) || []).map(normalizeClient);
-        } catch {
-            return [];
-        }
+        try { return (JSON.parse(localStorage.getItem(localKey)) || []).map(normalizeRequester); }
+        catch { return []; }
     };
-    const write = clients => localStorage.setItem(localKey, JSON.stringify(clients));
-
+    const write = requesters => localStorage.setItem(localKey, JSON.stringify(requesters));
     return {
-        async list() {
-            return read().sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
-        },
-        async seedOrganizations(names) {
-            const clients = read();
-            const known = new Set(clients.map(client => client.nome.toLocaleLowerCase('pt-BR')));
-            names.forEach(name => {
-                if (!known.has(name.toLocaleLowerCase('pt-BR'))) clients.push(initialClient(name));
+        async list() { return read().sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')); },
+        async seedRequesters(incoming) {
+            const requesters = read();
+            const known = new Set(requesters.map(requesterKey));
+            incoming.forEach(item => {
+                const normalized = normalizeRequester(item);
+                if (normalized.nome && !known.has(requesterKey(normalized))) requesters.push(initialRequester(normalized));
             });
-            write(clients);
+            write(requesters);
             return this.list();
         },
-        async update(client) {
-            const clients = read();
-            const index = clients.findIndex(item => item.nome.toLocaleLowerCase('pt-BR') === client.nome.toLocaleLowerCase('pt-BR'));
-            if (index >= 0) clients[index] = normalizeClient(client);
-            else clients.push(normalizeClient(client));
-            write(clients);
-            return normalizeClient(client);
+        async update(requester) {
+            const requesters = read();
+            const normalized = normalizeRequester(requester);
+            const index = requesters.findIndex(item => requesterKey(item) === requesterKey(normalized));
+            if (index >= 0) requesters[index] = normalized;
+            else requesters.push(normalized);
+            write(requesters);
+            return normalized;
         }
     };
 }
@@ -64,7 +62,7 @@ function waitForUser(auth) {
         const unsubscribe = onAuthStateChanged(auth, user => {
             unsubscribe();
             if (user) resolve(user);
-            else reject(new Error('Sessão Firebase necessária para acessar clientes.'));
+            else reject(new Error('Sessão Firebase necessária para acessar solicitantes.'));
         }, reject);
     });
 }
@@ -73,49 +71,42 @@ async function createFirestoreStore() {
     const app = getApps()[0] || initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const user = await waitForUser(auth);
-    const clientsCollection = collection(db, 'clientes');
-
+    await waitForUser(auth);
+    const requestersCollection = collection(db, 'solicitantes');
     const list = async () => {
-        const snapshot = await getDocs(query(clientsCollection, where('ownerUid', '==', user.uid)));
-        return snapshot.docs
-            .map(item => normalizeClient({ id: item.id, ...item.data() }))
-            .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+        const snapshot = await getDocs(requestersCollection);
+        return snapshot.docs.map(item => normalizeRequester({ id: item.id, ...item.data() })).sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
     };
 
     return {
         list,
-        async seedOrganizations(names) {
+        async seedRequesters(incoming) {
             const existing = await list();
-            const known = new Set(existing.map(client => client.nome.toLocaleLowerCase('pt-BR')));
-            const missing = names.filter(name => !known.has(name.toLocaleLowerCase('pt-BR')));
-
-            await Promise.all(missing.map(async name => {
-                const client = initialClient(name);
-                await setDoc(doc(clientsCollection, organizationId(name)), {
-                    ...client,
-                    ownerUid: user.uid,
-                    updatedAt: serverTimestamp()
-                });
+            if (window.dashboardAuthorization?.role !== 'admin') return existing;
+            const known = new Set(existing.map(requesterKey));
+            const missing = incoming.map(normalizeRequester).filter(item => item.nome && !known.has(requesterKey(item)));
+            await Promise.all(missing.map(async item => {
+                const requester = initialRequester(item);
+                await setDoc(doc(requestersCollection, requesterId(requester)), { ...requester, updatedAt: serverTimestamp() });
             }));
             return list();
         },
-        async update(client) {
-            const id = client.id || organizationId(client.nome);
-            const normalized = normalizeClient({ ...client, id });
-            await setDoc(doc(clientsCollection, id), {
+        async update(requester) {
+            if (window.dashboardAuthorization?.role !== 'admin') throw new Error('Somente administradores podem alterar setores.');
+            const normalized = normalizeRequester(requester);
+            const id = normalized.id || requesterId(normalized);
+            await setDoc(doc(requestersCollection, id), {
                 nome: normalized.nome,
+                email: normalized.email,
+                organizacao: normalized.organizacao,
                 setorAtual: normalized.setorAtual,
                 unidade: normalized.unidade,
                 historicoSetores: normalized.historicoSetores,
-                ownerUid: user.uid,
                 updatedAt: serverTimestamp()
             }, { merge: true });
-            return normalized;
+            return { ...normalized, id };
         }
     };
 }
 
-window.clientStoreReady = localDevelopment
-    ? Promise.resolve(createLocalStore())
-    : createFirestoreStore();
+window.clientStoreReady = localDevelopment ? Promise.resolve(createLocalStore()) : createFirestoreStore();

@@ -17,6 +17,12 @@ service cloud.firestore {
              && get(/databases/$(database)/documents/usuarios_autorizados/$(currentEmail())).data.role == 'admin';
     }
 
+    function isAuthorized() {
+      return signedIn()
+             && exists(/databases/$(database)/documents/usuarios_autorizados/$(currentEmail()))
+             && get(/databases/$(database)/documents/usuarios_autorizados/$(currentEmail())).data.status == 'permitido';
+    }
+
     match /usuarios_autorizados/{email} {
       allow get: if signedIn() && (currentEmail() == email || isAdmin());
       allow list: if isAdmin();
@@ -42,6 +48,16 @@ service cloud.firestore {
       allow update: if request.auth != null
                     && resource.data.ownerUid == request.auth.uid
                     && request.resource.data.ownerUid == request.auth.uid;
+    }
+
+    match /tomticket_private/{documentId} {
+      allow read: if isAuthorized();
+      allow write: if false;
+    }
+
+    match /solicitantes/{requesterId} {
+      allow read: if isAuthorized();
+      allow create, update, delete: if isAdmin();
     }
 
     match /{document=**} {

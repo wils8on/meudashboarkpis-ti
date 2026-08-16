@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildSanitizedPayload, sanitizeTicket } from '../scripts/sanitize-tomticket.mjs';
 import { extractPage, getDateRange, assertFreshSource } from '../scripts/sync-tomticket.mjs';
+import { buildPrivateTicket, chunkPrivateTickets } from '../scripts/private-firestore.mjs';
 
 test('remove conteúdo pessoal e preserva somente métricas operacionais', () => {
     const sanitized = sanitizeTicket({
@@ -51,4 +52,23 @@ test('detecta a faixa temporal e rejeita uma origem defasada', () => {
     assert.equal(range.newest.toISOString(), '2026-08-08T13:00:00.000Z');
     assert.doesNotThrow(() => assertFreshSource(range.newest, new Date('2026-08-09T12:00:00Z')));
     assert.throws(() => assertFreshSource(range.oldest, new Date('2026-08-09T12:00:00Z')), /dados defasados/);
+});
+
+test('preserva detalhes necessários somente na representação privada', () => {
+    const source = {
+        protocol: 12345,
+        subject: 'Falha no equipamento',
+        customer: { name: 'Maria Silva', email: 'MARIA@EXAMPLE.COM', organization: { name: 'Unidade A' } },
+        creation_date: '2026-08-10 10:00:00-03:00'
+    };
+    const privateTicket = buildPrivateTicket(source);
+    assert.equal(privateTicket.protocol, 12345);
+    assert.equal(privateTicket.customer.name, 'Maria Silva');
+    assert.equal(privateTicket.customer.email, 'maria@example.com');
+    assert.equal(privateTicket.subject, 'Falha no equipamento');
+});
+
+test('divide a camada privada em blocos pequenos', () => {
+    const chunks = chunkPrivateTickets(Array.from({ length: 205 }, (_, protocol) => ({ protocol })), 100);
+    assert.deepEqual(chunks.map(chunk => chunk.length), [100, 100, 5]);
 });

@@ -354,7 +354,7 @@
                             <canvas id="graficoReabertosMes"></canvas>
                         </div>
                         <div class="chart-container">
-                            <h4><i class="fa-solid fa-ranking-star"></i> Ranking de Clientes por Reabertura</h4>
+                            <h4><i class="fa-solid fa-ranking-star"></i> Ranking de Solicitantes por Chamados</h4>
                             <canvas id="graficoReabertosCliente"></canvas>
                         </div>
                     </div>
@@ -460,21 +460,41 @@
                         <div class="chart-heading"><div><span class="section-kicker">Distribuição de risco</span><h4>Chamados abertos por faixa de aging</h4></div><span class="chart-caption">Do volume recente ao estoque crítico</span></div>
                         <canvas id="graficoAging"></canvas>
                     </div>
+                    <div class="table-wrapper-box aging-detail-box">
+                        <div class="table-header-title"><div><span class="section-kicker">Detalhamento operacional</span><strong>Chamados atualmente em aberto</strong></div><span class="table-count" id="agingTableCount">— chamados</span></div>
+                        <div class="table-scroll-container aging-table-scroll">
+                            <table class="data-table aging-detail-table">
+                                <thead><tr><th>Protocolo</th><th>Título</th><th>Solicitante</th><th>Tempo em aberto</th></tr></thead>
+                                <tbody id="agingTableBody"><tr><td colspan="4" class="table-empty-state">Aguardando a camada privada de chamados.</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </section>
 
                 <section id="aba-usuarios" class="tab-content">
                     <div class="module-header" data-accent="plum">
                         <span class="module-icon"><i class="fa-solid fa-users-gear"></i></span>
-                        <div><span class="section-kicker">Base organizacional</span><h3>Gestão de clientes</h3><p>Configure setor, unidade e histórico de alocação dos clientes identificados na operação.</p></div>
+                        <div><span class="section-kicker">Base de solicitantes</span><h3>Gerenciar clientes</h3><p>Classifique por setor as pessoas que abriram chamados e preserve o histórico de movimentações.</p></div>
+                    </div>
+
+                    <div class="kpi-grid requester-kpi-grid">
+                        <div class="kpi-card verde"><div class="kpi-info"><p>Solicitantes classificados</p><h3 id="requestersClassified">0</h3><span class="kpi-context">Com setor definido</span></div><i class="fa-solid fa-user-check icon"></i></div>
+                        <div class="kpi-card orange"><div class="kpi-info"><p>Sem classificação</p><h3 id="requestersUnclassified">0</h3><span class="kpi-context">Aguardando definição de setor</span></div><i class="fa-solid fa-user-clock icon"></i></div>
+                        <div class="kpi-card roxo"><div class="kpi-info"><p>Setores identificados</p><h3 id="requestersDepartments">0</h3><span class="kpi-context">Áreas com demanda registrada</span></div><i class="fa-solid fa-sitemap icon"></i></div>
+                    </div>
+
+                    <div class="chart-container requester-sector-chart">
+                        <div class="chart-heading"><div><span class="section-kicker">Distribuição organizacional</span><h4>Abertura de demandas por setor</h4></div><span class="chart-caption">Período selecionado no filtro geral</span></div>
+                        <canvas id="graficoDemandasSetor"></canvas>
                     </div>
                     
                     <div class="users-management-layout">
                         <div class="editor-form-box">
-                            <h4><i class="fa-solid fa-user-pen"></i> Configurar Vínculo</h4>
+                            <h4><i class="fa-solid fa-user-pen"></i> Configurar solicitante</h4>
                             <form id="formEditarUsuario">
                                 <input type="hidden" id="editUserIndex">
                                 <div class="form-item">
-                                    <label>Nome do Cliente:</label>
+                                    <label>Nome do solicitante:</label>
                                     <input type="text" id="editUserNome" readonly class="input-readonly">
                                 </div>
                                 <div class="form-item">
@@ -503,12 +523,12 @@
                         </div>
 
                         <div class="table-wrapper-box">
-                            <div class="table-header-title"><div><span class="section-kicker">Diretório</span><strong>Clientes cadastrados</strong></div><span class="table-count" id="clientTableCount">— registros</span></div>
+                            <div class="table-header-title"><div><span class="section-kicker">Diretório</span><strong>Solicitantes identificados</strong></div><span class="table-count" id="clientTableCount">— registros</span></div>
                             <div class="table-scroll-container">
                                 <table class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>Cliente</th>
+                                            <th>Solicitante</th>
                                             <th>Setor Atual</th>
                                             <th>Unidade</th>
                                             <th style="text-align: center;">Ações</th>
@@ -613,6 +633,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script type="module" src="js/auth-guard.js"></script>
     <script type="module" src="js/client-store.js"></script>
+    <script type="module" src="js/private-ticket-store.js"></script>
     <script type="module" src="js/access-admin.js"></script>
     <script src="js/dashboard.js"></script>
 </body>

@@ -188,18 +188,20 @@ let chartAging = null;
 let chartReabertosMes = null;
 let chartReabertosCliente = null;
 let chartDiaHora = null; // Nova instância global para o gráfico multidimensional
+let chartDemandasSetor = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     const descricoesGraficos = {
         graficoGeral: 'Gráfico de chamados criados e chamados urgentes por mês',
         graficoDiaHora: 'Gráfico de volumetria por dia da semana e hora de abertura',
         graficoReabertosMes: 'Gráfico da quantidade de chamados reabertos por mês',
-        graficoReabertosCliente: 'Ranking de clientes por quantidade de reaberturas',
+        graficoReabertosCliente: 'Ranking de solicitantes por quantidade de chamados',
         graficoLinhaResolucao: 'Gráfico da taxa de resolução mensal',
         graficoSlaMensal: 'Gráfico do cumprimento de SLA por mês',
         graficoBacklogEvolucao: 'Gráfico da evolução de conclusão do backlog',
         graficoBacklogDistribuicao: 'Gráfico da distribuição do backlog atual',
-        graficoAging: 'Gráfico de chamados abertos por faixa de aging'
+        graficoAging: 'Gráfico de chamados abertos por faixa de aging',
+        graficoDemandasSetor: 'Gráfico da quantidade de chamados abertos por setor'
     };
 
     Object.entries(descricoesGraficos).forEach(([id, descricao]) => {
@@ -542,7 +544,7 @@ function inicializarGraficoReabertosCliente(labels = [], dadosClientes = []) {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Reaberturas por Cliente',
+                label: 'Chamados por Solicitante',
                 data: dadosClientes,
                 backgroundColor: '#fb923c',
                 borderRadius: 2,
@@ -624,6 +626,49 @@ function contarDiasDaSemanaNoPeriodo(inicio, fim) {
         cursor.setDate(cursor.getDate() + 1);
     }
     return contagem;
+}
+
+function inicializarGraficoDemandasSetor(labels = [], valores = []) {
+    const ctx = document.getElementById('graficoDemandasSetor');
+    if (!ctx) return;
+    if (chartDemandasSetor) chartDemandasSetor.destroy();
+    const corTexto = obterCorTextoPorTema();
+    const corGrid = obterCorGridPorTema();
+    chartDemandasSetor = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: { labels, datasets: [{ label: 'Chamados por Setor', data: valores, backgroundColor: '#4ee1c1', borderRadius: 5 }] },
+        options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            scales: { x: { beginAtZero: true, ticks: { color: corTexto }, grid: { color: corGrid } }, y: { ticks: { color: corTexto }, grid: { display: false } } },
+            plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'right', color: corTexto, font: { weight: 'bold', size: 10 }, formatter: value => value } }
+        }
+    });
+}
+
+function renderizarTabelaAging(detalhes = []) {
+    const body = document.getElementById('agingTableBody');
+    const count = document.getElementById('agingTableCount');
+    if (!body) return;
+    const ordenados = [...detalhes].sort((a, b) => b.dias - a.dias);
+    if (count) count.textContent = `${ordenados.length.toLocaleString('pt-BR')} chamados`;
+    if (!ordenados.length) {
+        body.innerHTML = '<tr><td colspan="4" class="table-empty-state">Nenhum chamado aberto encontrado no período.</td></tr>';
+        return;
+    }
+    const possuiDetalhesPrivados = ordenados.some(item => item.protocolo || item.assunto);
+    if (!possuiDetalhesPrivados) {
+        body.innerHTML = '<tr><td colspan="4" class="table-empty-state">Aguardando a primeira sincronização da camada privada para exibir protocolo, título e solicitante.</td></tr>';
+        return;
+    }
+    body.innerHTML = ordenados.map(item => `
+        <tr>
+            <td><span class="table-badge">${escaparHTML(item.protocolo || '—')}</span></td>
+            <td class="aging-subject">${escaparHTML(item.assunto || 'Sem título')}</td>
+            <td>${escaparHTML(item.solicitante || 'Não identificado')}</td>
+            <td class="aging-days">${item.dias.toLocaleString('pt-BR')} dia(s)</td>
+        </tr>
+    `).join('');
 }
 
 function selecionarJanelasTranquilas(matrizDados, inicio, fim, limite = 2) {
@@ -738,11 +783,24 @@ async function carregarDadosAutomatizados() {
             throw new Error("Formato de dados desconhecido. Abra o console do navegador para inspecionar.");
         }
 
+        let usandoCamadaPrivada = false;
+        try {
+            const chamadosPrivados = window.privateTicketStoreReady ? await window.privateTicketStoreReady : [];
+            if (Array.isArray(chamadosPrivados) && chamadosPrivados.length > 0) {
+                listaChamados = chamadosPrivados;
+                usandoCamadaPrivada = true;
+            }
+        } catch (privateError) {
+            console.warn('Camada privada indisponível; usando somente indicadores sanitizados.', privateError);
+        }
+
         dadosBrutosAPI = listaChamados;
 
         // Mapeia as colunas exatas da API v2.0 do TomTicket
         dadosPlanilhaGlobal = listaChamados.map(chamado => {
-            const nomeCliente = chamado.customer?.organization?.name || "Sem organização";
+            const nomeCliente = chamado.customer?.name || "Não identificado";
+            const emailCliente = chamado.customer?.email || "";
+            const organizacaoCliente = chamado.customer?.organization?.name || "Sem organização";
             const statusReaberto = chamado.reopened === true ? "sim" : "Não";
 
             let termoPrioridade = "Normal";
@@ -763,10 +821,13 @@ async function carregarDadosAutomatizados() {
             }
 
             return {
-                'Protocolo': "",
-                'Assunto': "",
+                'Protocolo': chamado.protocol ?? "",
+                'Assunto': chamado.subject || "",
                 'Status': descStatus,
                 'Cliente': nomeCliente,
+                'ClienteEmail': emailCliente,
+                'Organização': organizacaoCliente,
+                'DadosPrivados': usandoCamadaPrivada,
                 'Prioridade': termoPrioridade,
                 'Data de Criação': chamado.creation_date || "",
                 'Data de Finalização': chamado.end_date || "",
@@ -776,7 +837,7 @@ async function carregarDadosAutomatizados() {
         });
 
         if (dadosPlanilhaGlobal.length > 0) {
-            await verificarECadastrarClientesNovos(dadosPlanilhaGlobal);
+        await verificarECadastrarClientesNovos(dadosPlanilhaGlobal.filter(chamado => chamado.DadosPrivados));
             processarIndicadoresEstrategicos();
             await renderizarTabelaUsuarios();
             
@@ -968,7 +1029,9 @@ function processarIndicadoresEstrategicos() {
 
         let totalReabertosPeriodo = 0;
         let reabertosPorMesAgrupado = {};
-        let reabertosPorClienteAgrupado = {};
+        let chamadosPorClienteAgrupado = {};
+        let demandasPorSetor = {};
+        let detalhesAging = [];
         let clientesPeriodo = new Set();
 
         // Variáveis de controle para as novas métricas operacionais
@@ -978,6 +1041,11 @@ function processarIndicadoresEstrategicos() {
 
         let bucketsAging = [0, 0, 0, 0, 0];
         const hoje = new Date();
+        const cadastroPorChave = new Map();
+        listaClientesCache.forEach(item => {
+            if (item.email) cadastroPorChave.set(item.email.toLowerCase(), item);
+            if (item.nome) cadastroPorChave.set(item.nome.toLocaleLowerCase('pt-BR'), item);
+        });
 
         dadosPlanilhaGlobal.forEach(chamado => {
             if (!chamado || Object.keys(chamado).length === 0) return;
@@ -988,6 +1056,9 @@ function processarIndicadoresEstrategicos() {
 
             const status = String(chamado['Status'] || '').toLowerCase();
             const clienteNome = String(chamado['Cliente'] || 'Desconhecido').trim();
+            const clienteEmail = String(chamado['ClienteEmail'] || '').trim().toLowerCase();
+            const cadastroSolicitante = cadastroPorChave.get(clienteEmail) || cadastroPorChave.get(clienteNome.toLocaleLowerCase('pt-BR'));
+            const setorSolicitante = cadastroSolicitante?.setorAtual || 'Não definido';
             const prioridade = String(chamado['Prioridade'] || '').toLowerCase().trim();
             const slaCumprido = String(chamado['SLA de Deadline Cumprido'] || '').toLowerCase().trim();
             
@@ -1042,6 +1113,13 @@ function processarIndicadoresEstrategicos() {
                 else if (idadeDias <= 15) bucketsAging[2]++;
                 else if (idadeDias <= 30) bucketsAging[3]++;
                 else bucketsAging[4]++;
+
+                detalhesAging.push({
+                    protocolo: chamado['Protocolo'],
+                    assunto: chamado['Assunto'],
+                    solicitante: clienteNome,
+                    dias: idadeDias
+                });
             }
 
             if (dataCriacao <= filtroFim) {
@@ -1055,6 +1133,8 @@ function processarIndicadoresEstrategicos() {
             if (dataCriacao >= filtroInicio && dataCriacao <= filtroFim) {
                 totalProtocolosPeriodo++;
                 clientesPeriodo.add(clienteNome);
+                chamadosPorClienteAgrupado[clienteNome] = (chamadosPorClienteAgrupado[clienteNome] || 0) + 1;
+                demandasPorSetor[setorSolicitante] = (demandasPorSetor[setorSolicitante] || 0) + 1;
                 const mesAnoLabel = `${String(dataCriacao.getMonth() + 1).padStart(2, '0')}/${dataCriacao.getFullYear()}`;
 
                 if (!mesesAgrupadosGeral[mesAnoLabel]) mesesAgrupadosGeral[mesAnoLabel] = { total: 0, urgente: 0 };
@@ -1071,8 +1151,6 @@ function processarIndicadoresEstrategicos() {
                     if (!reabertosPorMesAgrupado[mesAnoLabel]) reabertosPorMesAgrupado[mesAnoLabel] = 0;
                     reabertosPorMesAgrupado[mesAnoLabel]++;
 
-                    if (!reabertosPorClienteAgrupado[clienteNome]) reabertosPorClienteAgrupado[clienteNome] = 0;
-                    reabertosPorClienteAgrupado[clienteNome]++;
                 }
 
                 if (isFinalizado) {
@@ -1268,17 +1346,26 @@ function processarIndicadoresEstrategicos() {
         }
 
         inicializarGraficoAging(bucketsAging);
+        renderizarTabelaAging(detalhesAging);
 
         const dadosReabertosMes = labelsOrdenadas.map(lbl => reabertosPorMesAgrupado[lbl] || 0);
         inicializarGraficoReabertosMes(labelsOrdenadas, dadosReabertosMes);
 
-        const clientesOrdenadosRanking = Object.keys(reabertosPorClienteAgrupado).sort((a, b) => {
-            return reabertosPorClienteAgrupado[b] - reabertosPorClienteAgrupado[a];
+        const clientesOrdenadosRanking = Object.keys(chamadosPorClienteAgrupado).sort((a, b) => {
+            return chamadosPorClienteAgrupado[b] - chamadosPorClienteAgrupado[a];
         });
         const topClientesLabels = clientesOrdenadosRanking.slice(0, 8);
-        const topClientesValores = topClientesLabels.map(cl => reabertosPorClienteAgrupado[cl]);
+        const topClientesValores = topClientesLabels.map(cl => chamadosPorClienteAgrupado[cl]);
         
         inicializarGraficoReabertosCliente(topClientesLabels, topClientesValores);
+
+        const setoresOrdenados = Object.keys(demandasPorSetor).sort((a, b) => demandasPorSetor[b] - demandasPorSetor[a]);
+        inicializarGraficoDemandasSetor(setoresOrdenados, setoresOrdenados.map(setor => demandasPorSetor[setor]));
+        const classificados = listaClientesCache.filter(item => item.setorAtual && item.setorAtual.toLocaleLowerCase('pt-BR') !== 'não definido');
+        const setoresDefinidos = new Set(classificados.map(item => item.setorAtual.toLocaleLowerCase('pt-BR')));
+        const requesterClassified = document.getElementById('requestersClassified'); if (requesterClassified) requesterClassified.textContent = classificados.length.toLocaleString('pt-BR');
+        const requesterUnclassified = document.getElementById('requestersUnclassified'); if (requesterUnclassified) requesterUnclassified.textContent = (listaClientesCache.length - classificados.length).toLocaleString('pt-BR');
+        const requesterDepartments = document.getElementById('requestersDepartments'); if (requesterDepartments) requesterDepartments.textContent = setoresDefinidos.size.toLocaleString('pt-BR');
 
     } catch (erroCritico) {
         console.error("Erro interno detectado no motor analítico:", erroCritico);
@@ -1370,13 +1457,18 @@ async function obterClientStore() {
 
 async function verificarECadastrarClientesNovos(linhasPlanilha) {
     try {
-        const nomes = [...new Set(linhasPlanilha
-            .map(chamado => String(chamado?.Cliente || '').trim())
-            .filter(nome => nome && nome !== 'Sem organização'))];
+        const porChave = new Map();
+        linhasPlanilha.forEach(chamado => {
+            const nome = String(chamado?.Cliente || '').trim();
+            const email = String(chamado?.ClienteEmail || '').trim().toLowerCase();
+            if (!nome || nome === 'Não identificado') return;
+            const chave = email || nome.toLocaleLowerCase('pt-BR');
+            porChave.set(chave, { nome, email, organizacao: String(chamado?.['Organização'] || 'Sem organização') });
+        });
         const store = await obterClientStore();
-        listaClientesCache = await store.seedOrganizations(nomes);
+        listaClientesCache = await store.seedRequesters([...porChave.values()]);
     } catch (erroCadastro) {
-        console.error('Falha segura ao verificar novas organizações:', erroCadastro);
+        console.error('Falha segura ao verificar novos solicitantes:', erroCadastro);
     }
 }
 
@@ -1388,8 +1480,8 @@ async function renderizarTabelaUsuarios() {
         const store = await obterClientStore();
         listaClientesCache = await store.list();
     } catch (error) {
-        console.error('Falha ao carregar organizações:', error);
-        corpoTabela.innerHTML = '<tr><td colspan="4" class="table-empty-state">Não foi possível carregar a base organizacional.</td></tr>';
+        console.error('Falha ao carregar solicitantes:', error);
+        corpoTabela.innerHTML = '<tr><td colspan="4" class="table-empty-state">Não foi possível carregar a base de solicitantes.</td></tr>';
         return;
     }
 
@@ -1397,7 +1489,7 @@ async function renderizarTabelaUsuarios() {
     if (clientTableCount) clientTableCount.textContent = `${listaClientesCache.length.toLocaleString('pt-BR')} registros`;
 
     if (listaClientesCache.length === 0) {
-        corpoTabela.innerHTML = '<tr><td colspan="4" class="table-empty-state">Nenhuma organização cadastrada.</td></tr>';
+        corpoTabela.innerHTML = '<tr><td colspan="4" class="table-empty-state">Nenhum solicitante cadastrado.</td></tr>';
         return;
     }
 
@@ -1405,7 +1497,7 @@ async function renderizarTabelaUsuarios() {
     listaClientesCache.forEach((cliente, index) => {
         htmlHTML += `
             <tr>
-                <td class="client-name">${escaparHTML(cliente.nome)}</td>
+                <td class="client-name"><div class="access-user-cell"><strong>${escaparHTML(cliente.nome)}</strong><small>${escaparHTML(cliente.email || cliente.organizacao)}</small></div></td>
                 <td><span class="table-badge">${escaparHTML(cliente.setorAtual)}</span></td>
                 <td><span class="table-badge table-badge-muted">${escaparHTML(cliente.unidade)}</span></td>
                 <td class="table-actions">
@@ -1452,13 +1544,13 @@ if (formEditar) {
 
         const index = document.getElementById('editUserIndex').value;
         if (index === "") {
-            alert("Selecione um cliente na tabela antes de salvar!");
+            alert("Selecione um solicitante na tabela antes de salvar!");
             return;
         }
 
         let cliente = listaClientesCache[Number(index)];
         if (!cliente) {
-            alert('A organização selecionada não está mais disponível.');
+            alert('O solicitante selecionado não está mais disponível.');
             return;
         }
 
@@ -1506,7 +1598,7 @@ if (formEditar) {
                 const store = await obterClientStore();
                 const clienteAtualizado = await store.update(cliente);
                 listaClientesCache[Number(index)] = clienteAtualizado;
-                alert("Vínculo organizacional atualizado e gravado na linha do tempo histórica!");
+                alert("Setor do solicitante atualizado e gravado na linha do tempo histórica!");
             } catch (error) {
                 console.error('Falha ao salvar vínculo organizacional:', error);
                 alert('Não foi possível salvar a alteração. Verifique sua conexão e tente novamente.');
@@ -1521,6 +1613,7 @@ if (formEditar) {
         document.getElementById('listaHistoricoSetores').innerHTML = `<li style="color:#94a3b8; list-style:none;">Selecione um cliente para auditar o histórico.</li>`;
         
         await renderizarTabelaUsuarios();
+        processarIndicadoresEstrategicos();
     });
 }
 

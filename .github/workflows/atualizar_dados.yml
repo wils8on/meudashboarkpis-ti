@@ -32,6 +32,7 @@ jobs:
       - name: Coletar e sanitizar chamados
         env:
           TOMTICKET_TOKEN: ${{ secrets.TOMTICKET_TOKEN }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: node scripts/sync-tomticket.mjs
 
       - name: Publicar somente a base sanitizada

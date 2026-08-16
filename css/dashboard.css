@@ -467,6 +467,11 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .history-timeline-box h5 { margin: 0 0 10px; color: var(--ink-muted); }
 .history-timeline-box ul { padding-left: 20px; color: var(--ink-muted); font-size: 11px; line-height: 1.7; }
 .history-timeline-box li { margin-bottom: 6px; }
+.history-group > ul { margin-top: 6px; padding-left: 14px; }
+.history-entry { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 7px 9px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-strong); list-style: none; }
+.history-entry span { min-width: 0; overflow-wrap: anywhere; }
+.history-delete-btn { flex: 0 0 auto; min-height: 26px; padding: 0 8px; color: #fda4af; border: 1px solid rgba(244,63,94,.28); border-radius: 7px; background: rgba(244,63,94,.08); font-size: 9px; font-weight: 700; }
+.history-delete-btn:hover { color: #fff; background: rgba(244,63,94,.45); }
 .history-empty { color: var(--ink-muted); list-style: none; }
 .table-wrapper-box { overflow: hidden; }
 .table-header-title { padding: 15px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--ink); border-bottom: 1px solid var(--border); background: var(--surface-strong); font-size: 13px; }

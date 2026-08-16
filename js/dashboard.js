@@ -1530,12 +1530,59 @@ function exibirHistoricoLogs(historico) {
     if (!containerHistorico) return;
 
     let htmlHTML = "";
-    [...(historico || [])].reverse().forEach(item => {
-        const logsUnificados = (item.logs || []).map(escaparHTML).join(" | ");
-        htmlHTML += `<li><strong>${escaparHTML(item.data)}:</strong> ${logsUnificados}</li>`;
+    [...(historico || [])].map((item, grupoIndex) => ({ item, grupoIndex })).reverse().forEach(({ item, grupoIndex }) => {
+        const logs = Array.isArray(item.logs) ? item.logs : [];
+        htmlHTML += `<li class="history-group"><strong>${escaparHTML(item.data)}:</strong><ul>`;
+        logs.forEach((log, logIndex) => {
+            htmlHTML += `
+                <li class="history-entry">
+                    <span>${escaparHTML(log)}</span>
+                    <button type="button" class="history-delete-btn" onclick="excluirHistoricoSolicitante(${grupoIndex}, ${logIndex})" title="Excluir esta alteração" aria-label="Excluir alteração do histórico">
+                        <i class="fa-solid fa-trash-can"></i> Excluir
+                    </button>
+                </li>`;
+        });
+        htmlHTML += '</ul></li>';
     });
     containerHistorico.innerHTML = htmlHTML || '<li class="history-empty">Nenhuma alteração registrada.</li>';
 }
+
+window.excluirHistoricoSolicitante = async function(grupoIndex, logIndex) {
+    if (window.dashboardAuthorization?.role !== 'admin') {
+        alert('Somente administradores podem excluir registros do histórico.');
+        return;
+    }
+
+    const requesterIndex = Number(document.getElementById('editUserIndex')?.value);
+    const cliente = listaClientesCache[requesterIndex];
+    const grupo = cliente?.historicoSetores?.[grupoIndex];
+    const log = grupo?.logs?.[logIndex];
+    if (!cliente || !grupo || typeof log !== 'string') {
+        alert('Este registro não está mais disponível. Selecione novamente o solicitante.');
+        return;
+    }
+
+    const confirmado = confirm(`Excluir permanentemente esta alteração do histórico?\n\n${grupo.data}: ${log}\n\nO setor e a unidade atuais não serão modificados.`);
+    if (!confirmado) return;
+
+    const historicoAtualizado = cliente.historicoSetores.map(item => ({
+        ...item,
+        logs: [...(item.logs || [])]
+    }));
+    historicoAtualizado[grupoIndex].logs.splice(logIndex, 1);
+    if (historicoAtualizado[grupoIndex].logs.length === 0) historicoAtualizado.splice(grupoIndex, 1);
+
+    try {
+        const store = await obterClientStore();
+        const clienteAtualizado = await store.update({ ...cliente, historicoSetores: historicoAtualizado });
+        listaClientesCache[requesterIndex] = clienteAtualizado;
+        exibirHistoricoLogs(clienteAtualizado.historicoSetores);
+        alert('Registro removido do histórico.');
+    } catch (error) {
+        console.error('Falha ao excluir registro do histórico:', error);
+        alert('Não foi possível excluir o registro. Verifique sua conexão e tente novamente.');
+    }
+};
 
 const formEditar = document.getElementById('formEditarUsuario');
 if (formEditar) {

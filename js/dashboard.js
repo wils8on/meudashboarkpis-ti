@@ -626,9 +626,7 @@ function contarDiasDaSemanaNoPeriodo(inicio, fim) {
     return contagem;
 }
 
-function atualizarJanelasTranquilas(matrizDados, inicio, fim) {
-    const container = document.getElementById('quietHoursSuggestions');
-    if (!container) return;
+function selecionarJanelasTranquilas(matrizDados, inicio, fim, limite = 2) {
     const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
     const horasElegiveis = [9, 10, 11, 14, 15, 16];
     const ocorrencias = contarDiasDaSemanaNoPeriodo(inicio, fim);
@@ -647,20 +645,67 @@ function atualizarJanelasTranquilas(matrizDados, inicio, fim) {
     for (const candidato of candidatos) {
         const adjacente = selecionados.some(item => item.dia === candidato.dia && Math.abs(item.hora - candidato.hora) <= 1);
         if (!adjacente) selecionados.push(candidato);
-        if (selecionados.length === 3) break;
+        if (selecionados.length === limite) break;
     }
 
-    if (!selecionados.length) {
-        container.innerHTML = '<span class="quiet-hours-empty">Não há dias úteis suficientes no período para recomendar uma janela.</span>';
-        return;
-    }
+    return selecionados.map(item => ({ ...item, diaLabel: dias[item.dia] }));
+}
 
-    container.innerHTML = selecionados.map((item, indice) => `
-        <div class="quiet-slot">
-            <strong>${indice + 1}. ${dias[item.dia]}, ${String(item.hora).padStart(2, '0')}h–${String(item.hora + 1).padStart(2, '0')}h</strong>
-            <span>Média de ${item.media.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} chamado(s)</span>
-        </div>
-    `).join('');
+function subtrairMeses(dataFinal, quantidade) {
+    const diaOriginal = dataFinal.getDate();
+    const resultado = new Date(dataFinal);
+    resultado.setDate(1);
+    resultado.setMonth(resultado.getMonth() - quantidade);
+    const ultimoDia = new Date(resultado.getFullYear(), resultado.getMonth() + 1, 0).getDate();
+    resultado.setDate(Math.min(diaOriginal, ultimoDia));
+    resultado.setHours(0, 0, 0, 0);
+    return resultado;
+}
+
+function montarMatrizDiaHora(linhas, inicio, fim) {
+    const matriz = {};
+    linhas.forEach(chamado => {
+        const data = tratarFormatoDataExcel(chamado?.['Data de Criação']);
+        if (!data || data < inicio || data > fim) return;
+        const dia = data.getDay();
+        const hora = data.getHours();
+        if (!matriz[dia]) matriz[dia] = {};
+        matriz[dia][hora] = (matriz[dia][hora] || 0) + 1;
+    });
+    return matriz;
+}
+
+function atualizarJanelasTranquilas(linhas, dataAtual = new Date()) {
+    const fim = new Date(dataAtual);
+    fim.setHours(23, 59, 59, 999);
+    const periodos = [
+        { meses: 1, container: 'quietHoursMonth', range: 'quietRangeMonth' },
+        { meses: 3, container: 'quietHoursQuarter', range: 'quietRangeQuarter' },
+        { meses: 6, container: 'quietHoursSemester', range: 'quietRangeSemester' }
+    ];
+    const formatarData = data => new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }).format(data);
+
+    periodos.forEach(periodo => {
+        const inicio = subtrairMeses(fim, periodo.meses);
+        const container = document.getElementById(periodo.container);
+        const range = document.getElementById(periodo.range);
+        if (!container) return;
+        if (range) range.textContent = `${formatarData(inicio)}–${formatarData(fim)}`;
+        const matriz = montarMatrizDiaHora(linhas, inicio, fim);
+        const selecionados = selecionarJanelasTranquilas(matriz, inicio, fim);
+
+        if (!selecionados.length) {
+            container.innerHTML = '<span class="quiet-hours-empty">Sem dados suficientes.</span>';
+            return;
+        }
+
+        container.innerHTML = selecionados.map((item, indice) => `
+            <div class="quiet-slot">
+                <strong>${indice + 1}. ${item.diaLabel}, ${String(item.hora).padStart(2, '0')}h–${String(item.hora + 1).padStart(2, '0')}h</strong>
+                <span>Média de ${item.media.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} chamado(s)</span>
+            </div>
+        `).join('');
+    });
 }
 
 async function carregarDadosAutomatizados() {
@@ -1072,7 +1117,7 @@ function processarIndicadoresEstrategicos() {
 
         // Renderiza o novo gráfico multidimensional de ocupação semanal
         inicializarGraficoDiaHora(matrizDiaHora);
-        atualizarJanelasTranquilas(matrizDiaHora, filtroInicio, filtroFim);
+        atualizarJanelasTranquilas(dadosPlanilhaGlobal);
 
         let arrayTaxasResolucao = [];
         let arrayIndicesSla = [];

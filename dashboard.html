@@ -329,12 +329,23 @@
                     <div class="quiet-hours-panel" aria-live="polite">
                         <div class="quiet-hours-heading">
                             <span class="quiet-hours-icon"><i class="fa-solid fa-calendar-check"></i></span>
-                            <div><span class="section-kicker">Planejamento da equipe</span><h4>Melhores janelas para reunião</h4><p>Períodos úteis com menor média de abertura de chamados.</p></div>
+                            <div><span class="section-kicker">Planejamento da equipe</span><h4>Melhores janelas para reunião</h4><p>Análise móvel, independente do filtro geral, sempre encerrada na data atual.</p></div>
                         </div>
-                        <div id="quietHoursSuggestions" class="quiet-hours-suggestions">
-                            <span class="quiet-hours-empty">Aguardando análise do período selecionado.</span>
+                        <div class="quiet-periods-grid">
+                            <article class="quiet-period-card">
+                                <div class="quiet-period-header"><strong>Último mês</strong><span id="quietRangeMonth">—</span></div>
+                                <div id="quietHoursMonth" class="quiet-hours-suggestions"><span class="quiet-hours-empty">Aguardando análise.</span></div>
+                            </article>
+                            <article class="quiet-period-card">
+                                <div class="quiet-period-header"><strong>Último trimestre</strong><span id="quietRangeQuarter">—</span></div>
+                                <div id="quietHoursQuarter" class="quiet-hours-suggestions"><span class="quiet-hours-empty">Aguardando análise.</span></div>
+                            </article>
+                            <article class="quiet-period-card">
+                                <div class="quiet-period-header"><strong>Último semestre</strong><span id="quietRangeSemester">—</span></div>
+                                <div id="quietHoursSemester" class="quiet-hours-suggestions"><span class="quiet-hours-empty">Aguardando análise.</span></div>
+                            </article>
                         </div>
-                        <small>A recomendação considera novos chamados entre 9h e 17h e desconsidera o intervalo de almoço.</small>
+                        <small>A recomendação considera novos chamados entre 9h e 17h, desconsidera o almoço e normaliza o volume pela quantidade de cada dia da semana.</small>
                     </div>
 
                     <div class="charts-split-grid overview-secondary-charts">

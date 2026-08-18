@@ -44,7 +44,7 @@ export function createServiceAccountAssertion(serviceAccount, now = Math.floor(D
     return `${unsigned}.${signer.sign(serviceAccount.private_key, 'base64url')}`;
 }
 
-async function getAccessToken(serviceAccount) {
+export async function getAccessToken(serviceAccount) {
     const assertion = createServiceAccountAssertion(serviceAccount);
     const response = await fetch(serviceAccount.token_uri || 'https://oauth2.googleapis.com/token', {
         method: 'POST',

@@ -1,0 +1,24 @@
+name: Importar soluções no Firebase
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Importar soluções na coleção protegida
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          SOLUTIONS_IMPORT_GZIP_BASE64: ${{ secrets.SOLUTIONS_IMPORT_GZIP_BASE64 }}
+        run: node scripts/import-solutions-firestore.mjs

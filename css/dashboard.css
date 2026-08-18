@@ -495,6 +495,18 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .solutions-import-status.is-loading { color: var(--primary-2); }
 .solutions-import-status.is-success { color: var(--success); }
 .solutions-import-status.is-error { color: var(--danger); }
+.solutions-period-filter { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-soft); }
+.solutions-period-label { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+.solutions-period-label .module-icon { width: 34px; height: 34px; font-size: 13px; }
+.solutions-period-label strong, .solutions-period-label small { display: block; }
+.solutions-period-label strong { color: var(--ink); font-size: 12px; }
+.solutions-period-label small { margin-top: 3px; color: var(--ink-faint); font-size: 9px; }
+.solutions-period-presets { display: flex; gap: 5px; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-solid); }
+.solutions-period-presets button { padding: 7px 9px; color: var(--ink-muted); border: 0; border-radius: 6px; background: transparent; font: 600 9px var(--font-sans); cursor: pointer; }
+.solutions-period-presets button:hover, .solutions-period-presets button.is-active { color: var(--primary-2); background: var(--primary-soft); }
+.solutions-period-filter label span { display: block; margin-bottom: 5px; color: var(--ink-faint); font: 600 8px var(--font-mono); text-transform: uppercase; letter-spacing: .08em; }
+.solutions-period-filter input { min-height: 36px; padding: 0 9px; color: var(--ink); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-solid); color-scheme: dark; }
+.solutions-period-arrow { color: var(--ink-faint); margin-top: 14px; }
 .solutions-kpi-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .solutions-charts-grid { margin-bottom: 20px; }
 .solutions-charts-grid .chart-container { min-height: 350px; }
@@ -584,6 +596,8 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 
 @media (max-width: 1400px) {
     .solutions-kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .solutions-period-filter { flex-wrap: wrap; }
+    .solutions-period-label { width: 100%; }
     .overview-kpi-grid { grid-template-columns: repeat(3, minmax(170px, 1fr)) !important; }
     .aging-kpi-grid { grid-template-columns: repeat(3, minmax(160px, 1fr)) !important; }
     .requester-kpi-grid { grid-template-columns: repeat(3, minmax(160px, 1fr)) !important; }
@@ -607,6 +621,9 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 @media (max-width: 760px) {
     .solutions-import-area { width: 100%; max-width: none; margin-left: 0; justify-items: stretch; }
     .solutions-import-status { text-align: left; }
+    .solutions-period-presets { width: 100%; overflow-x: auto; }
+    .solutions-period-presets button { flex: 1 0 auto; }
+    .solutions-period-filter label { flex: 1; }
     .solutions-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .solutions-filter-bar { grid-template-columns: 1fr; }
     .solutions-search { grid-column: auto; }

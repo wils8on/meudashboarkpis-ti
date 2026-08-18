@@ -73,6 +73,12 @@ function countBy(field, records = solutions) {
     return records.reduce((acc, item) => { const key = item[field] || 'Não informado'; acc[key] = (acc[key] || 0) + 1; return acc; }, {});
 }
 
+function temporalSolutions() {
+    const start = document.getElementById('solutionsStartDate')?.value || '';
+    const end = document.getElementById('solutionsEndDate')?.value || '';
+    return solutions.filter(item => item.data && (!start || item.data >= start) && (!end || item.data <= end));
+}
+
 function fillSelect(id, values) {
     const select = document.getElementById(id);
     if (!select) return;
@@ -82,15 +88,16 @@ function fillSelect(id, values) {
 }
 
 function renderKpis() {
-    const finished = solutions.filter(item => normalizeText(item.status) === 'finalizado').length;
-    const development = solutions.filter(item => normalizeText(item.status).includes('desenvolvimento')).length;
+    const records = temporalSolutions();
+    const finished = records.filter(item => normalizeText(item.status) === 'finalizado').length;
+    const development = records.filter(item => normalizeText(item.status).includes('desenvolvimento')).length;
     const values = {
-        solutionTotal: solutions.length,
+        solutionTotal: records.length,
         solutionFinished: finished,
         solutionDevelopment: development,
-        solutionCompletion: solutions.length ? `${Math.round((finished / solutions.length) * 100)}%` : '0%',
-        solutionSectors: new Set(solutions.map(item => item.setor).filter(Boolean)).size,
-        solutionWithSql: solutions.filter(item => item.querySql).length,
+        solutionCompletion: records.length ? `${Math.round((finished / records.length) * 100)}%` : '0%',
+        solutionSectors: new Set(records.map(item => item.setor).filter(Boolean)).size,
+        solutionWithSql: records.filter(item => item.querySql).length,
     };
     Object.entries(values).forEach(([id, value]) => { const element = document.getElementById(id); if (element) element.textContent = Number.isInteger(value) ? value.toLocaleString('pt-BR') : value; });
 }
@@ -98,13 +105,14 @@ function renderKpis() {
 function renderCharts() {
     if (!window.Chart) return;
     const chartOptions = { responsive: true, maintainAspectRatio: false, plugins: { datalabels: { display: false }, legend: { position: 'bottom' } } };
-    const types = Object.entries(countBy('tipo')).sort((a, b) => b[1] - a[1]);
-    const sectors = Object.entries(countBy('setor')).sort((a, b) => b[1] - a[1]);
+    const records = temporalSolutions();
+    const types = Object.entries(countBy('tipo', records)).sort((a, b) => b[1] - a[1]);
+    const sectors = Object.entries(countBy('setor', records)).sort((a, b) => b[1] - a[1]);
     if (typeChart) typeChart.destroy();
     if (sectorChart) sectorChart.destroy();
     const typeCanvas = document.getElementById('solutionsTypeChart');
     const sectorCanvas = document.getElementById('solutionsSectorChart');
-    if (typeCanvas) typeChart = new Chart(typeCanvas, { type: 'doughnut', data: { labels: types.map(item => item[0]), datasets: [{ data: types.map(item => item[1]), backgroundColor: ['#8b5cf6','#34d399','#60a5fa','#fbbf24','#f472b6','#fb7185','#22d3ee','#a78bfa'] }] }, options: chartOptions });
+    if (typeCanvas) typeChart = new Chart(typeCanvas, { type: 'bar', data: { labels: types.map(item => item[0]), datasets: [{ label: 'Soluções', data: types.map(item => item[1]), backgroundColor: ['#8b5cf6','#34d399','#60a5fa','#fbbf24','#f472b6','#fb7185','#22d3ee','#a78bfa'], borderRadius: 6 }] }, options: { ...chartOptions, plugins: { ...chartOptions.plugins, legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } } });
     if (sectorCanvas) sectorChart = new Chart(sectorCanvas, { type: 'bar', data: { labels: sectors.map(item => item[0]), datasets: [{ label: 'Soluções', data: sectors.map(item => item[1]), backgroundColor: '#8b5cf6', borderRadius: 6 }] }, options: { ...chartOptions, indexAxis: 'y', plugins: { ...chartOptions.plugins, legend: { display: false } } } });
 }
 
@@ -113,8 +121,26 @@ function applyFilters() {
     const status = document.getElementById('solutionsStatusFilter')?.value || '';
     const type = document.getElementById('solutionsTypeFilter')?.value || '';
     const sector = document.getElementById('solutionsSectorFilter')?.value || '';
-    filteredSolutions = solutions.filter(item => (!search || [item.nome,item.setor,item.responsavelNome,item.objetivo].some(value => normalizeText(value).includes(search))) && (!status || item.status === status) && (!type || item.tipo === type) && (!sector || item.setor === sector));
+    const temporal = temporalSolutions();
+    filteredSolutions = temporal.filter(item => (!search || [item.nome,item.setor,item.responsavelNome,item.objetivo].some(value => normalizeText(value).includes(search))) && (!status || item.status === status) && (!type || item.tipo === type) && (!sector || item.setor === sector));
     renderTable();
+}
+
+function refreshTemporalView() {
+    renderKpis(); renderCharts(); applyFilters();
+}
+
+function setPeriodPreset(period) {
+    const startInput = document.getElementById('solutionsStartDate');
+    const endInput = document.getElementById('solutionsEndDate');
+    const today = new Date();
+    let start = '';
+    let end = '';
+    if (period === 'year') { start = `${today.getFullYear()}-01-01`; end = today.toISOString().slice(0, 10); }
+    if (period === '12m') { const prior = new Date(today); prior.setFullYear(prior.getFullYear() - 1); start = prior.toISOString().slice(0, 10); end = today.toISOString().slice(0, 10); }
+    startInput.value = start; endInput.value = end;
+    document.querySelectorAll('[data-solutions-period]').forEach(button => button.classList.toggle('is-active', button.dataset.solutionsPeriod === period));
+    refreshTemporalView();
 }
 
 function renderTable() {
@@ -190,6 +216,8 @@ function setup() {
         } finally { fileInput.value = ''; }
     });
     ['solutionsSearch','solutionsStatusFilter','solutionsTypeFilter','solutionsSectorFilter'].forEach(id => document.getElementById(id)?.addEventListener(id === 'solutionsSearch' ? 'input' : 'change', applyFilters));
+    ['solutionsStartDate','solutionsEndDate'].forEach(id => document.getElementById(id)?.addEventListener('change', () => { document.querySelectorAll('[data-solutions-period]').forEach(button => button.classList.remove('is-active')); refreshTemporalView(); }));
+    document.querySelectorAll('[data-solutions-period]').forEach(button => button.addEventListener('click', () => setPeriodPreset(button.dataset.solutionsPeriod)));
     document.getElementById('solutionsTableBody')?.addEventListener('click', event => { const button = event.target.closest('[data-solution-id]'); if (button) openEditor(button.dataset.solutionId); });
     document.getElementById('solutionDialogClose')?.addEventListener('click', () => document.getElementById('solutionDialog').close());
     document.getElementById('solutionEditForm')?.addEventListener('submit', async event => {

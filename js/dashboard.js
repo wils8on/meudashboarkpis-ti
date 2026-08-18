@@ -128,6 +128,9 @@ menuItems.forEach(item => {
             if (targetSectionId === 'aba-usuarios') {
                 renderizarTabelaUsuarios();
             }
+            if (targetSectionId === 'aba-solucoes' && typeof window.renderSolutionsDashboard === 'function') {
+                window.renderSolutionsDashboard();
+            }
         }
     });
 });

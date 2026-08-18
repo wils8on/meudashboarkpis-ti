@@ -60,6 +60,11 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    match /solucoes_desenvolvidas/{solutionId} {
+      allow read: if isAuthorized();
+      allow create, update, delete: if isAdmin();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

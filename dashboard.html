@@ -198,6 +198,11 @@
                         <i class="fa-solid fa-headset"></i> <span>Suporte/Atendimento</span>
                     </a>
                 </li>
+                <li>
+                    <a href="#" class="nav-item" data-target="aba-solucoes">
+                        <i class="fa-solid fa-lightbulb"></i> <span>Soluções</span>
+                    </a>
+                </li>
                 <li id="adminAccessNav" hidden>
                     <a href="#" class="nav-item" data-target="aba-acessos">
                         <i class="fa-solid fa-user-shield"></i> <span>Controle de Acesso</span>
@@ -562,6 +567,48 @@
                     </div>
                 </section>
 
+                <section id="aba-solucoes" class="tab-content" aria-labelledby="solutionsTitle">
+                    <div class="module-header" data-accent="violet">
+                        <span class="module-icon"><i class="fa-solid fa-lightbulb"></i></span>
+                        <div><span class="section-kicker">Portfólio de inovação</span><h3 id="solutionsTitle">Soluções desenvolvidas</h3><p>Importe o relatório, acompanhe o portfólio e preserve cada atualização em uma linha do tempo auditável.</p></div>
+                        <div class="solutions-import-area">
+                            <button id="solutionsImportButton" class="action-btn action-btn-primary" type="button"><i class="fa-solid fa-file-arrow-up"></i><span>Importar XLSX</span></button>
+                            <input id="solutionsFileInput" type="file" accept=".xlsx,.xls" hidden>
+                            <span id="solutionsImportStatus" class="solutions-import-status" role="status" aria-live="polite">O mesmo arquivo pode ser reenviado sem duplicar registros.</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-grid solutions-kpi-grid">
+                        <div class="kpi-card roxo"><div class="kpi-info"><p>Total de soluções</p><h3 id="solutionTotal">0</h3><span class="kpi-context">Registros históricos consolidados</span></div><i class="fa-solid fa-layer-group icon"></i></div>
+                        <div class="kpi-card verde"><div class="kpi-info"><p>Finalizadas</p><h3 id="solutionFinished">0</h3><span class="kpi-context">Entregas concluídas</span></div><i class="fa-solid fa-circle-check icon"></i></div>
+                        <div class="kpi-card orange"><div class="kpi-info"><p>Em desenvolvimento</p><h3 id="solutionDevelopment">0</h3><span class="kpi-context">Soluções em andamento</span></div><i class="fa-solid fa-code-branch icon"></i></div>
+                        <div class="kpi-card azul"><div class="kpi-info"><p>Taxa de conclusão</p><h3 id="solutionCompletion">0%</h3><span class="kpi-context">Finalizadas sobre o total</span></div><i class="fa-solid fa-chart-line icon"></i></div>
+                        <div class="kpi-card rosa"><div class="kpi-info"><p>Setores atendidos</p><h3 id="solutionSectors">0</h3><span class="kpi-context">Áreas com solução registrada</span></div><i class="fa-solid fa-building icon"></i></div>
+                        <div class="kpi-card cyan"><div class="kpi-info"><p>Com Query SQL</p><h3 id="solutionWithSql">0</h3><span class="kpi-context">Soluções com código documentado</span></div><i class="fa-solid fa-database icon"></i></div>
+                    </div>
+
+                    <div class="charts-split-grid solutions-charts-grid">
+                        <div class="chart-container"><div class="chart-heading"><div><span class="section-kicker">Composição</span><h4>Soluções por tipo</h4></div></div><canvas id="solutionsTypeChart"></canvas></div>
+                        <div class="chart-container"><div class="chart-heading"><div><span class="section-kicker">Cobertura</span><h4>Soluções por setor</h4></div></div><canvas id="solutionsSectorChart"></canvas></div>
+                    </div>
+
+                    <div class="solutions-directory table-wrapper-box">
+                        <div class="solutions-filter-bar">
+                            <div class="solutions-search"><i class="fa-solid fa-magnifying-glass"></i><input id="solutionsSearch" type="search" placeholder="Buscar solução, responsável, setor ou objetivo…"></div>
+                            <select id="solutionsStatusFilter" aria-label="Filtrar por status"><option value="">Todos os status</option></select>
+                            <select id="solutionsTypeFilter" aria-label="Filtrar por tipo"><option value="">Todos os tipos</option></select>
+                            <select id="solutionsSectorFilter" aria-label="Filtrar por setor"><option value="">Todos os setores</option></select>
+                        </div>
+                        <div class="table-header-title"><div><span class="section-kicker">Base consolidada</span><strong>Catálogo de soluções</strong></div><span class="table-count" id="solutionsTableCount">0 de 0</span></div>
+                        <div class="table-scroll-container solutions-table-scroll">
+                            <table class="data-table solutions-table">
+                                <thead><tr><th>ID interno</th><th>Solução</th><th>Setor</th><th>Responsável</th><th>Tipo</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead>
+                                <tbody id="solutionsTableBody"><tr><td colspan="7" class="table-empty-state">Importe o primeiro arquivo XLSX para começar.</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
                 <section id="aba-acessos" class="tab-content" aria-labelledby="accessManagementTitle">
                     <div class="module-header" data-accent="plum">
                         <span class="module-icon"><i class="fa-solid fa-user-shield"></i></span>
@@ -602,6 +649,25 @@
         </main>
     </div>
 
+    <dialog id="solutionDialog" class="solution-dialog">
+        <div class="solution-dialog-header"><div><span class="section-kicker">Registro <code id="solutionInternalId"></code></span><h3>Detalhes da solução</h3></div><button id="solutionDialogClose" type="button" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button></div>
+        <form id="solutionEditForm" class="solution-edit-form">
+            <div class="form-item solution-field-wide"><label>Nome da solução</label><input name="nome" required></div>
+            <div class="form-item"><label>Setor</label><input name="setor"></div>
+            <div class="form-item"><label>Responsável</label><input name="responsavelNome"></div>
+            <div class="form-item"><label>ID do responsável</label><input name="responsavelId"></div>
+            <div class="form-item"><label>Tipo</label><input name="tipo"></div>
+            <div class="form-item"><label>Status</label><select name="status"><option>Finalizado</option><option>Em Desenvolvimento</option></select></div>
+            <div class="form-item"><label>Data</label><input name="data" type="date"></div>
+            <div class="form-item"><label>Número do comunicado</label><input name="numeroComunicado"></div>
+            <div class="form-item solution-field-wide"><label>Motivo</label><textarea name="motivo" rows="3"></textarea></div>
+            <div class="form-item solution-field-wide"><label>Objetivo</label><textarea name="objetivo" rows="3"></textarea></div>
+            <div class="form-item solution-field-wide"><label>Query SQL</label><textarea name="querySql" rows="7" class="solution-sql-field"></textarea></div>
+            <button type="submit" class="btn-submit-form solution-field-wide"><i class="fa-solid fa-floppy-disk"></i> Salvar alterações</button>
+        </form>
+        <div class="solution-history"><h4><i class="fa-solid fa-clock-rotate-left"></i> Histórico do registro</h4><ul id="solutionHistoryList"><li class="history-empty">Nenhuma alteração registrada.</li></ul></div>
+    </dialog>
+
     <!-- MODAL DE INSPEÇÃO DE DADOS DA API -->
     <div id="modalInspeção" role="dialog" aria-modal="true" aria-labelledby="modalInspecaoTitulo" aria-hidden="true" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
         <div tabindex="-1" style="background: #1e293b; width: 100%; max-width: 800px; border-radius: 8px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column; max-height: 90vh; border: 1px solid #334155;">
@@ -634,6 +700,8 @@
     <script type="module" src="js/auth-guard.js"></script>
     <script type="module" src="js/client-store.js"></script>
     <script type="module" src="js/private-ticket-store.js"></script>
+    <script type="module" src="js/solutions-store.js"></script>
+    <script type="module" src="js/solutions-dashboard.js"></script>
     <script type="module" src="js/access-admin.js"></script>
     <script src="js/dashboard.js"></script>
 </body>

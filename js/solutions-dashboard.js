@@ -126,8 +126,28 @@ function applyFilters() {
     renderTable();
 }
 
+function renderTypeDirectory() {
+    const grid = document.getElementById('solutionsTypeDirectoryGrid');
+    const count = document.getElementById('solutionsTypeDirectoryCount');
+    if (!grid) return;
+    const groups = Object.entries(temporalSolutions().reduce((acc, item) => {
+        const type = item.tipo || 'Não informado';
+        (acc[type] ||= []).push(item);
+        return acc;
+    }, {})).sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0], 'pt-BR'));
+    if (count) count.textContent = `${groups.length.toLocaleString('pt-BR')} ${groups.length === 1 ? 'tipo' : 'tipos'}`;
+    if (!groups.length) { grid.innerHTML = '<div class="solution-type-empty">Nenhuma solução encontrada no período selecionado.</div>'; return; }
+    grid.innerHTML = groups.map(([type, records], index) => `<details class="solution-type-group" ${index < 3 ? 'open' : ''}>
+        <summary><i class="fa-solid fa-layer-group"></i><strong title="${escapeHtml(type)}">${escapeHtml(type)}</strong><span class="solution-type-count">${records.length}</span></summary>
+        <ul class="solution-type-items">${records.sort((a, b) => (a.setor || '').localeCompare(b.setor || '', 'pt-BR') || a.nome.localeCompare(b.nome, 'pt-BR')).map(item => `<li class="solution-type-item">
+            <strong>${escapeHtml(item.nome)}</strong>
+            <div class="solution-type-meta"><span><i class="fa-regular fa-building"></i> ${escapeHtml(item.setor || 'Setor não informado')}</span><span><i class="fa-regular fa-user"></i> ${escapeHtml(item.responsavelNome || 'Responsável não informado')}</span></div>
+        </li>`).join('')}</ul>
+    </details>`).join('');
+}
+
 function refreshTemporalView() {
-    renderKpis(); renderCharts(); applyFilters();
+    renderKpis(); renderCharts(); renderTypeDirectory(); applyFilters();
 }
 
 function setPeriodPreset(period) {
@@ -185,7 +205,7 @@ async function loadSolutions() {
         fillSelect('solutionsStatusFilter', solutions.map(item => item.status));
         fillSelect('solutionsTypeFilter', solutions.map(item => item.tipo));
         fillSelect('solutionsSectorFilter', solutions.map(item => item.setor));
-        renderKpis(); renderCharts(); applyFilters();
+        renderKpis(); renderCharts(); renderTypeDirectory(); applyFilters();
     } catch (error) {
         console.error('Falha ao carregar soluções:', error);
         if (body) body.innerHTML = '<tr><td colspan="7" class="table-empty-state">Não foi possível carregar as soluções.</td></tr>';

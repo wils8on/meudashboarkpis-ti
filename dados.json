@@ -1,13 +1,32 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-19T18:56:58.147Z",
-    "total_records": 1423,
+    "updated_at": "2026-08-19T19:19:54.202Z",
+    "total_records": 1424,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-08-19T18:17:24.000Z"
+    "newest_creation_date": "2026-08-19T18:59:29.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 4,
+      "creation_date": "2026-08-19 15:59:29-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Em análise"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -35,7 +54,7 @@
       },
       "priority": 3,
       "creation_date": "2026-08-19 12:07:37-03:00",
-      "end_date": null,
+      "end_date": "2026-08-19 16:10:03-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -43,7 +62,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando cliente"
+        "description": "Finalizado"
       }
     },
     {
@@ -100,7 +119,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Respondido, aguardando resposta do cliente"
       }
     },
     {

@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-20T11:17:58.634Z",
+    "updated_at": "2026-08-20T11:46:12.381Z",
     "total_records": 1424,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
@@ -410,7 +410,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -999,7 +999,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -3165,7 +3165,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -3792,7 +3792,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -4115,7 +4115,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -4533,7 +4533,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -5312,7 +5312,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 1,
@@ -6110,7 +6110,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 3,
@@ -7155,7 +7155,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -7687,7 +7687,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 1,
@@ -8238,7 +8238,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -8333,7 +8333,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -8884,7 +8884,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -9074,7 +9074,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -9302,7 +9302,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -9568,7 +9568,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -10385,7 +10385,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -10480,7 +10480,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -10556,7 +10556,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -11183,7 +11183,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -11772,7 +11772,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -11848,7 +11848,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -11867,7 +11867,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -12152,7 +12152,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -12475,7 +12475,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 1,
@@ -12627,7 +12627,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -12779,7 +12779,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -12912,7 +12912,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -12950,7 +12950,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -12969,7 +12969,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -13349,7 +13349,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -13596,7 +13596,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -13672,7 +13672,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -13786,7 +13786,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 3,
@@ -13976,7 +13976,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -13995,7 +13995,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,
@@ -14071,7 +14071,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Financeiro"
         }
       },
       "priority": 2,

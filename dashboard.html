@@ -267,7 +267,8 @@
                         </div>
                         <div class="sync-meta">
                             <div><span>Registros</span><strong id="syncRecordCount">—</strong></div>
-                            <div><span>Atualizado</span><strong id="syncLastUpdate">—</strong></div>
+                            <div><span>Dados até</span><strong id="syncLastUpdate">—</strong></div>
+                            <div><span>Última sincronização</span><strong id="syncLastRun">—</strong></div>
                             <label for="excelFile" class="import-trigger" title="Importar uma base manualmente">
                                 <i class="fa-solid fa-file-arrow-up"></i><span>Importar Excel</span>
                                 <input type="file" id="excelFile" accept=".xlsx, .xls" hidden>
@@ -387,6 +388,9 @@
                             <div class="kpi-info"><p>Melhor eficiência mensal</p><h3 id="perfCard4">Nenhum</h3><span class="kpi-context">Destaque do período</span></div>
                             <i class="fa-solid fa-award icon"></i>
                         </div>
+                        <div class="kpi-card cyan"><div class="kpi-info"><p>Velocidade de saída</p><h3 id="perfVelocity">0/dia</h3><span class="kpi-context">Conclusões por dia no período</span></div><i class="fa-solid fa-gauge icon"></i></div>
+                        <div class="kpi-card azul"><div class="kpi-info"><p>Entrada × saída</p><h3 id="perfFlowRatio">0 × 0</h3><span class="kpi-context" id="perfFlowContext">Equilíbrio do fluxo</span></div><i class="fa-solid fa-right-left icon"></i></div>
+                        <div class="kpi-card comparativo"><div class="kpi-info"><p>Variação do backlog</p><h3 id="perfBacklogDelta">0</h3><span class="kpi-context">Crescimento ou redução no período</span></div><i class="fa-solid fa-arrow-trend-up icon"></i></div>
                     </div>
 
                     <div class="charts-split-grid">
@@ -421,6 +425,15 @@
                         </div>
                     </div>
 
+                    <div class="section-heading backlog-intelligence-heading"><div><span class="section-kicker">Backlog inteligente</span><h3>Responsabilidade do estoque atual</h3></div><p>Separa o volume acionável pela TI das dependências externas</p></div>
+                    <div class="backlog-intelligence-grid">
+                        <article class="backlog-intelligence-card is-total"><span>Backlog total</span><strong id="smartBacklogTotal">0</strong><small>Demandas abertas até o fim do período</small></article>
+                        <article class="backlog-intelligence-card is-actionable"><span>Ação da TI</span><strong id="smartBacklogIT">0</strong><small id="smartBacklogITRate">0% do backlog · acionável</small></article>
+                        <article class="backlog-intelligence-card"><span>Aguardando cliente</span><strong id="smartBacklogCustomer">0</strong><small>Dependência de retorno do usuário</small></article>
+                        <article class="backlog-intelligence-card"><span>Em espera</span><strong id="smartBacklogWaiting">0</strong><small>Pausados ou programados</small></article>
+                        <article class="backlog-intelligence-card"><span>Outros</span><strong id="smartBacklogOther">0</strong><small>Status não enquadrados</small></article>
+                    </div>
+
                     <div class="charts-split-grid">
                         <div class="chart-container">
                             <div class="chart-heading"><div><span class="section-kicker">Movimentação</span><h4>Evolução da conclusão</h4></div><span class="chart-caption">Estoque inicial × finalizados</span></div>
@@ -430,6 +443,10 @@
                             <div class="chart-heading"><div><span class="section-kicker">Composição</span><h4>Distribuição do backlog atual</h4></div><span class="chart-caption">Situação do volume acumulado</span></div>
                             <canvas id="graficoBacklogDistribuicao"></canvas>
                         </div>
+                    </div>
+                    <div class="charts-split-grid backlog-flow-charts">
+                        <div class="chart-container"><div class="chart-heading"><div><span class="section-kicker">Fluxo operacional</span><h4>Entrada × saída por dia</h4></div><span class="chart-caption">Novos chamados e conclusões</span></div><canvas id="graficoEntradaSaida"></canvas></div>
+                        <div class="chart-container"><div class="chart-heading"><div><span class="section-kicker">Saldo acumulado</span><h4>Crescimento/redução do backlog</h4></div><span class="chart-caption">Variação durante o período filtrado</span></div><canvas id="graficoVariacaoBacklog"></canvas></div>
                     </div>
                 </section>
 
@@ -561,10 +578,11 @@
                         <div class="kpi-card verde"><div class="kpi-info"><p>Cobertura de SLA</p><h3 id="supportSla">0,00%</h3><span class="kpi-context">Chamados dentro do deadline</span></div><i class="fa-solid fa-shield-halved icon"></i></div>
                         <div class="kpi-card roxo"><div class="kpi-info"><p>Clientes no período</p><h3 id="supportCustomers">0</h3><span class="kpi-context">Pessoas atendidas</span></div><i class="fa-solid fa-users icon"></i></div>
                     </div>
-                    <div class="support-empty-state">
-                        <span><i class="fa-solid fa-chart-line"></i></span>
-                        <div><strong>Visão analítica preparada para evolução</strong><p>Os indicadores essenciais já utilizam a base atual. Na próxima camada, este espaço poderá receber canais, satisfação, primeira resposta e distribuição por atendente.</p></div>
+                    <div class="charts-split-grid support-volume-charts">
+                        <div class="chart-container"><div class="chart-heading"><div><span class="section-kicker">Situação operacional</span><h4>Chamados por status</h4></div></div><canvas id="graficoChamadosStatus"></canvas></div>
+                        <div class="chart-container"><div class="chart-heading"><div><span class="section-kicker">Tendência diária</span><h4>Chamados por dia</h4></div><span class="chart-caption" id="dailyTrendCaption">—</span></div><canvas id="graficoChamadosDia"></canvas></div>
                     </div>
+                    <div class="chart-container chart-featured"><div class="chart-heading"><div><span class="section-kicker">Tendência semanal</span><h4>Chamados por semana</h4></div><span class="chart-caption" id="weeklyTrendCaption">—</span></div><canvas id="graficoChamadosSemana"></canvas></div>
                 </section>
 
                 <section id="aba-solucoes" class="tab-content" aria-labelledby="solutionsTitle">

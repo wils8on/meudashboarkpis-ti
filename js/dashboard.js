@@ -192,6 +192,13 @@ let chartReabertosMes = null;
 let chartReabertosCliente = null;
 let chartDiaHora = null; // Nova instância global para o gráfico multidimensional
 let chartDemandasSetor = null;
+let chartEntradaSaida = null;
+let chartVariacaoBacklog = null;
+let chartChamadosStatus = null;
+let chartChamadosDia = null;
+let chartChamadosSemana = null;
+const CACHE_DADOS_KEY = 'tomticket:last-valid-dashboard-data:v1';
+const CACHE_META_KEY = 'tomticket:last-valid-dashboard-meta:v1';
 
 document.addEventListener('DOMContentLoaded', () => {
     const descricoesGraficos = {
@@ -205,6 +212,11 @@ document.addEventListener('DOMContentLoaded', () => {
         graficoBacklogDistribuicao: 'Gráfico da distribuição do backlog atual',
         graficoAging: 'Gráfico de chamados abertos por faixa de aging',
         graficoDemandasSetor: 'Gráfico da quantidade de chamados abertos por setor'
+        ,graficoEntradaSaida: 'Gráfico comparativo de entrada e saída de chamados por dia'
+        ,graficoVariacaoBacklog: 'Gráfico da variação acumulada do backlog'
+        ,graficoChamadosStatus: 'Gráfico da quantidade de chamados por status'
+        ,graficoChamadosDia: 'Gráfico de chamados criados por dia'
+        ,graficoChamadosSemana: 'Gráfico de chamados criados por semana'
     };
 
     Object.entries(descricoesGraficos).forEach(([id, descricao]) => {
@@ -574,6 +586,111 @@ function inicializarGraficoReabertosCliente(labels = [], dadosClientes = []) {
     });
 }
 
+function normalizarStatusOperacional(status) {
+    return String(status || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+function classificarResponsabilidadeBacklog(status) {
+    const value = normalizarStatusOperacional(status);
+    if (/aguardando (resposta|retorno|interacao) (do|da) (cliente|usuario|solicitante)|aguardando cliente|pendente.*cliente/.test(value)) return 'cliente';
+    if (/espera|pausad|suspens|agendad|programad/.test(value)) return 'espera';
+    if (/atendimento|aberto|novo|triagem|respondido pelo cliente|aguardando resposta|andamento|analise/.test(value)) return 'ti';
+    return 'outros';
+}
+
+function chaveDia(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function chaveSemana(date) {
+    const copy = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const day = copy.getDay() || 7;
+    copy.setDate(copy.getDate() - day + 1);
+    return chaveDia(copy);
+}
+
+function criarOuAtualizarGrafico(ref, canvasId, config) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || typeof Chart === 'undefined') return ref;
+    if (ref) ref.destroy();
+    return new Chart(canvas.getContext('2d'), config);
+}
+
+function tendenciaPercentual(values) {
+    if (values.length < 2) return null;
+    const midpoint = Math.ceil(values.length / 2);
+    const average = items => items.reduce((sum, value) => sum + value, 0) / Math.max(items.length, 1);
+    const first = average(values.slice(0, midpoint));
+    const last = average(values.slice(midpoint));
+    if (!first) return last ? 100 : 0;
+    return ((last - first) / first) * 100;
+}
+
+function renderizarInteligenciaOperacional(inicio, fim) {
+    const diasPeriodo = Math.max(1, Math.round((fim - inicio) / 86400000) + 1);
+    const entradas = new Map();
+    const saidas = new Map();
+    const status = new Map();
+    const backlog = { ti: 0, cliente: 0, espera: 0, outros: 0 };
+    let totalEntradas = 0;
+    let totalSaidas = 0;
+
+    dadosPlanilhaGlobal.forEach(chamado => {
+        const criada = tratarFormatoDataExcel(chamado['Data de Criação']);
+        const fechada = tratarFormatoDataExcel(chamado['Data de Finalização']);
+        if (criada && criada >= inicio && criada <= fim) {
+            const key = chaveDia(criada);
+            entradas.set(key, (entradas.get(key) || 0) + 1);
+            totalEntradas++;
+            const label = chamado['Status'] || 'Não informado';
+            status.set(label, (status.get(label) || 0) + 1);
+        }
+        if (fechada && fechada >= inicio && fechada <= fim) {
+            const key = chaveDia(fechada);
+            saidas.set(key, (saidas.get(key) || 0) + 1);
+            totalSaidas++;
+        }
+        if (criada && criada <= fim && (!fechada || fechada > fim)) backlog[classificarResponsabilidadeBacklog(chamado['Status'])]++;
+    });
+
+    const totalBacklog = Object.values(backlog).reduce((sum, value) => sum + value, 0);
+    const setText = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value; };
+    setText('perfVelocity', `${(totalSaidas / diasPeriodo).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}/dia`);
+    setText('perfFlowRatio', `${totalEntradas.toLocaleString('pt-BR')} × ${totalSaidas.toLocaleString('pt-BR')}`);
+    const saldo = totalEntradas - totalSaidas;
+    setText('perfBacklogDelta', `${saldo > 0 ? '+' : ''}${saldo.toLocaleString('pt-BR')}`);
+    setText('perfFlowContext', saldo > 0 ? `Entraram ${saldo} chamados além das saídas` : saldo < 0 ? `Backlog reduzido em ${Math.abs(saldo)} chamados` : 'Entradas e saídas equilibradas');
+    setText('smartBacklogTotal', totalBacklog.toLocaleString('pt-BR'));
+    setText('smartBacklogIT', backlog.ti.toLocaleString('pt-BR'));
+    setText('smartBacklogCustomer', backlog.cliente.toLocaleString('pt-BR'));
+    setText('smartBacklogWaiting', backlog.espera.toLocaleString('pt-BR'));
+    setText('smartBacklogOther', backlog.outros.toLocaleString('pt-BR'));
+    setText('smartBacklogITRate', `${totalBacklog ? Math.round(backlog.ti / totalBacklog * 100) : 0}% do backlog · acionável`);
+
+    const allDays = [...new Set([...entradas.keys(), ...saidas.keys()])].sort();
+    const visibleDays = allDays.slice(-90);
+    const inputValues = visibleDays.map(day => entradas.get(day) || 0);
+    const outputValues = visibleDays.map(day => saidas.get(day) || 0);
+    let accumulated = 0;
+    const balanceValues = visibleDays.map((day, index) => accumulated += inputValues[index] - outputValues[index]);
+    const baseOptions = { responsive: true, maintainAspectRatio: false, plugins: { datalabels: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } };
+    chartEntradaSaida = criarOuAtualizarGrafico(chartEntradaSaida, 'graficoEntradaSaida', { type: 'bar', data: { labels: visibleDays.map(day => day.split('-').reverse().slice(0, 2).join('/')), datasets: [{ label: 'Entradas', data: inputValues, backgroundColor: '#60a5fa', borderRadius: 3 }, { label: 'Saídas', data: outputValues, backgroundColor: '#34d399', borderRadius: 3 }] }, options: baseOptions });
+    chartVariacaoBacklog = criarOuAtualizarGrafico(chartVariacaoBacklog, 'graficoVariacaoBacklog', { type: 'line', data: { labels: visibleDays.map(day => day.split('-').reverse().slice(0, 2).join('/')), datasets: [{ label: 'Saldo acumulado', data: balanceValues, borderColor: saldo > 0 ? '#f59e0b' : '#34d399', backgroundColor: saldo > 0 ? 'rgba(245,158,11,.12)' : 'rgba(52,211,153,.12)', fill: true, tension: .25 }] }, options: { ...baseOptions, scales: { y: { ticks: { precision: 0 } } } } });
+
+    const statusSorted = [...status.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
+    chartChamadosStatus = criarOuAtualizarGrafico(chartChamadosStatus, 'graficoChamadosStatus', { type: 'bar', data: { labels: statusSorted.map(item => item[0]), datasets: [{ label: 'Chamados', data: statusSorted.map(item => item[1]), backgroundColor: '#8b5cf6', borderRadius: 5 }] }, options: { ...baseOptions, indexAxis: 'y', plugins: { ...baseOptions.plugins, legend: { display: false } } } });
+    chartChamadosDia = criarOuAtualizarGrafico(chartChamadosDia, 'graficoChamadosDia', { type: 'line', data: { labels: visibleDays.map(day => day.split('-').reverse().slice(0, 2).join('/')), datasets: [{ label: 'Chamados', data: inputValues, borderColor: '#60a5fa', backgroundColor: 'rgba(96,165,250,.12)', fill: true, tension: .25 }] }, options: baseOptions });
+
+    const weeks = new Map();
+    entradas.forEach((value, day) => { const week = chaveSemana(new Date(`${day}T12:00:00`)); weeks.set(week, (weeks.get(week) || 0) + value); });
+    const weekEntries = [...weeks.entries()].sort((a, b) => a[0].localeCompare(b[0])).slice(-52);
+    chartChamadosSemana = criarOuAtualizarGrafico(chartChamadosSemana, 'graficoChamadosSemana', { type: 'bar', data: { labels: weekEntries.map(item => `Sem. ${item[0].split('-').reverse().slice(0, 2).join('/')}`), datasets: [{ label: 'Chamados', data: weekEntries.map(item => item[1]), backgroundColor: '#22d3ee', borderRadius: 4 }] }, options: baseOptions });
+    const dailyTrend = tendenciaPercentual(inputValues);
+    const weeklyTrend = tendenciaPercentual(weekEntries.map(item => item[1]));
+    setText('dailyTrendCaption', dailyTrend == null ? 'Dados insuficientes' : `${dailyTrend >= 0 ? 'Alta' : 'Queda'} de ${Math.abs(dailyTrend).toFixed(1).replace('.', ',')}%`);
+    setText('weeklyTrendCaption', weeklyTrend == null ? 'Dados insuficientes' : `${weeklyTrend >= 0 ? 'Alta' : 'Queda'} de ${Math.abs(weeklyTrend).toFixed(1).replace('.', ',')}%`);
+}
+
 // ==========================================
 // 5. CONEXÃO SEGURA AUTOMÁTICA VIA JSON ATUALIZADO
 // ==========================================
@@ -756,6 +873,51 @@ function atualizarJanelasTranquilas(linhas, dataAtual = new Date()) {
     });
 }
 
+function salvarUltimaBaseValida(linhas, meta) {
+    try {
+        localStorage.setItem(CACHE_DADOS_KEY, JSON.stringify(linhas));
+        localStorage.setItem(CACHE_META_KEY, JSON.stringify(meta || {}));
+    } catch (error) {
+        console.warn('Não foi possível atualizar o cache local da base operacional.', error);
+    }
+}
+
+function recuperarUltimaBaseValida() {
+    try {
+        const linhas = JSON.parse(localStorage.getItem(CACHE_DADOS_KEY) || '[]');
+        const meta = JSON.parse(localStorage.getItem(CACHE_META_KEY) || '{}');
+        return Array.isArray(linhas) && linhas.length ? { linhas, meta } : null;
+    } catch (error) {
+        console.warn('Cache local inválido.', error);
+        return null;
+    }
+}
+
+function atualizarPainelSincronizacao(meta = {}, total = 0, modoCache = false) {
+    const count = document.getElementById('syncRecordCount');
+    const data = document.getElementById('syncLastUpdate');
+    const run = document.getElementById('syncLastRun');
+    const dataSincronizacao = meta.updated_at ? new Date(meta.updated_at) : null;
+    const dataMaisRecente = meta.newest_creation_date ? new Date(meta.newest_creation_date) : null;
+    if (count) count.textContent = Number(total).toLocaleString('pt-BR');
+    if (data) data.textContent = dataMaisRecente && !Number.isNaN(dataMaisRecente.getTime()) ? new Intl.DateTimeFormat('pt-BR').format(dataMaisRecente) : 'Não informada';
+    if (run) {
+        run.textContent = dataSincronizacao && !Number.isNaN(dataSincronizacao.getTime())
+            ? new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(dataSincronizacao)
+            : 'Não informada';
+        run.title = modoCache ? 'Última base válida preservada neste dispositivo.' : 'Data e hora em que a sincronização foi concluída.';
+    }
+}
+
+async function ativarBaseNormalizada(linhas, meta, modoCache = false) {
+    dadosPlanilhaGlobal = linhas;
+    if (modoCache) dadosBrutosAPI = linhas;
+    await verificarECadastrarClientesNovos(dadosPlanilhaGlobal.filter(chamado => chamado.DadosPrivados));
+    processarIndicadoresEstrategicos();
+    await renderizarTabelaUsuarios();
+    atualizarPainelSincronizacao(meta, linhas.length, modoCache);
+}
+
 async function carregarDadosAutomatizados() {
     const uploadStatus = document.getElementById('uploadStatus');
     if (uploadStatus) {
@@ -840,37 +1002,23 @@ async function carregarDadosAutomatizados() {
         });
 
         if (dadosPlanilhaGlobal.length > 0) {
-        await verificarECadastrarClientesNovos(dadosPlanilhaGlobal.filter(chamado => chamado.DadosPrivados));
-            processarIndicadoresEstrategicos();
-            await renderizarTabelaUsuarios();
+            const metaCache = { ...(jsonResponse.meta || {}), updated_at: jsonResponse.meta?.updated_at || new Date().toISOString() };
+            salvarUltimaBaseValida(dadosPlanilhaGlobal, metaCache);
+            await ativarBaseNormalizada(dadosPlanilhaGlobal, metaCache);
             
             if (uploadStatus) {
                 uploadStatus.innerHTML = `<span class="sync-success"><i class="fa-solid fa-circle-check"></i> Base sincronizada com sucesso</span>`;
-            }
-            const syncRecordCount = document.getElementById('syncRecordCount');
-            const syncLastUpdate = document.getElementById('syncLastUpdate');
-            if (syncRecordCount) syncRecordCount.textContent = listaChamados.length.toLocaleString('pt-BR');
-            if (syncLastUpdate) {
-                const dataSincronizacao = jsonResponse.meta?.updated_at ? new Date(jsonResponse.meta.updated_at) : new Date();
-                const dataMaisRecente = jsonResponse.meta?.newest_creation_date
-                    ? new Date(jsonResponse.meta.newest_creation_date)
-                    : listaChamados.reduce((maisRecente, chamado) => {
-                        const data = chamado.creation_date ? new Date(chamado.creation_date) : null;
-                        return data && !Number.isNaN(data.getTime()) && (!maisRecente || data > maisRecente) ? data : maisRecente;
-                    }, null);
-                syncLastUpdate.textContent = dataMaisRecente
-                    ? `Dados até ${new Intl.DateTimeFormat('pt-BR').format(dataMaisRecente)}`
-                    : new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(dataSincronizacao);
-                syncLastUpdate.title = `Coleta executada em ${dataSincronizacao.toLocaleString('pt-BR')}${dataMaisRecente ? `; chamado mais recente em ${dataMaisRecente.toLocaleString('pt-BR')}` : ''}`;
             }
         } else {
             throw new Error("A lista de chamados retornou vazia.");
         }
     } catch (erro) {
         console.error("Erro na leitura automática de dados:", erro);
-        if (uploadStatus) {
-            uploadStatus.innerHTML = `<span class="sync-error"><i class="fa-solid fa-triangle-exclamation"></i> Erro de sincronização: ${erro.message}</span>`;
-        }
+        const cache = recuperarUltimaBaseValida();
+        if (cache) {
+            await ativarBaseNormalizada(cache.linhas, cache.meta, true);
+            if (uploadStatus) uploadStatus.innerHTML = '<span class="sync-warning"><i class="fa-solid fa-database"></i> API indisponível · exibindo a última base válida preservada</span>';
+        } else if (uploadStatus) uploadStatus.innerHTML = `<span class="sync-error"><i class="fa-solid fa-triangle-exclamation"></i> Erro de sincronização: ${erro.message}</span>`;
     }
 }
 
@@ -1369,6 +1517,7 @@ function processarIndicadoresEstrategicos() {
         const requesterClassified = document.getElementById('requestersClassified'); if (requesterClassified) requesterClassified.textContent = classificados.length.toLocaleString('pt-BR');
         const requesterUnclassified = document.getElementById('requestersUnclassified'); if (requesterUnclassified) requesterUnclassified.textContent = (listaClientesCache.length - classificados.length).toLocaleString('pt-BR');
         const requesterDepartments = document.getElementById('requestersDepartments'); if (requesterDepartments) requesterDepartments.textContent = setoresDefinidos.size.toLocaleString('pt-BR');
+        renderizarInteligenciaOperacional(filtroInicio, filtroFim);
 
     } catch (erroCritico) {
         console.error("Erro interno detectado no motor analítico:", erroCritico);

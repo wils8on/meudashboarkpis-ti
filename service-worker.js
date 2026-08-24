@@ -1,4 +1,4 @@
-const CACHE_NAME = 'painel-kpi-v6';
+const CACHE_NAME = 'painel-kpi-v7';
 const APP_SHELL = [
     './',
     './index.html',
@@ -36,7 +36,13 @@ self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
     if (url.pathname.endsWith('/dados.json')) {
-        event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
+        const stableRequest = new Request(new URL('./dados.json', self.location.href), { method: 'GET' });
+        event.respondWith(
+            fetch(event.request).then(response => {
+                if (response.ok) caches.open(CACHE_NAME).then(cache => cache.put(stableRequest, response.clone()));
+                return response;
+            }).catch(() => caches.match(stableRequest))
+        );
         return;
     }
 

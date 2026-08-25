@@ -52,6 +52,14 @@ export async function createIncrementalStore(secretValue) {
         saveMetricState(state, updatedAt) {
             return put('tomticket_sync_state', 'metrics', { payload: stringField(JSON.stringify(state)), enriched_records: integerField(Object.keys(state).length), updated_at: timestampField(updatedAt) });
         },
+        async loadMetricHistory() {
+            const document = await get('tomticket_sync_state', 'metric_history');
+            try { return JSON.parse(document?.fields?.payload?.stringValue || '[]'); }
+            catch { return []; }
+        },
+        saveMetricHistory(history, updatedAt) {
+            return put('tomticket_sync_state', 'metric_history', { payload: stringField(JSON.stringify(history)), days: integerField(history.length), updated_at: timestampField(updatedAt) });
+        },
         saveMetrics(metrics) {
             return put('tomticket_private', 'metrics', { payload: stringField(JSON.stringify(metrics)), generated_at: timestampField(metrics.generated_at), enriched_records: integerField(metrics.coverage?.enriched), total_records: integerField(metrics.coverage?.total), coverage_rate: { doubleValue: Number(metrics.coverage?.rate || 0) } });
         },

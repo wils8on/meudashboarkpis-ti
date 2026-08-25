@@ -6,6 +6,7 @@ import { buildSnapshot, diffRelevantState } from './ticket-diff.mjs';
 import { extractDimensions } from './ticket-dimensions.mjs';
 import { inspectDetailQuality, inspectListingQuality } from './ticket-quality.mjs';
 import { buildMetricFact, calculateEnrichedMetrics } from './enriched-metrics.mjs';
+import { appendTrendAlerts, calculateMetricTrends, updateMetricHistory } from './metric-history.mjs';
 
 const DETAIL_LIMIT = 20;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -92,7 +93,12 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     const finished = new Date();
     await store.saveState(state, finished.toISOString());
     await store.saveMetricState(metricState, finished.toISOString());
-    const metrics = calculateEnrichedMetrics(metricState, tickets.length, finished.toISOString(), await loadAlertConfig());
+    const alertConfig = await loadAlertConfig();
+    const metrics = calculateEnrichedMetrics(metricState, tickets.length, finished.toISOString(), alertConfig);
+    const history = updateMetricHistory(await store.loadMetricHistory(), metrics, tickets, finished.toISOString());
+    metrics.trends = calculateMetricTrends(history);
+    metrics.alerts = appendTrendAlerts(metrics.alerts, metrics.trends, alertConfig);
+    await store.saveMetricHistory(history, finished.toISOString());
     await store.saveMetrics(metrics);
     const run = {
         id: runId, started_at: started.toISOString(), finished_at: finished.toISOString(), duration_ms: finished - started,

@@ -29,6 +29,9 @@ function render(metrics) {
     set('enrichedCsatContext', `${format(metrics?.evaluation?.count || 0)} de ${format(metrics?.evaluation?.eligible_concluded || 0)} concluídos · resolvido ${metrics?.evaluation?.problem_solved_rate == null ? '—' : `${format(metrics.evaluation.problem_solved_rate)}%`}`);
     set('enrichedWorkRatio', metrics?.work_time?.effective_ratio == null ? '—' : `${format(metrics.work_time.effective_ratio)}%`);
     set('enrichedWorkRatioContext', `${format(metrics?.work_time?.elapsed_sample || 0)} chamados · ${format(metrics?.work_time?.elapsed_hours || 0)}h decorridas`);
+    const backlogTrend = metrics?.trends?.backlog; const historyDays = metrics?.trends?.daily?.length || 0;
+    set('smartBacklogDailyDelta', backlogTrend?.delta == null ? '—' : `${backlogTrend.delta > 0 ? '+' : ''}${format(backlogTrend.delta)}`);
+    set('smartBacklogDailyContext', historyDays < 2 ? `${historyDays} dia consolidado · aguardando comparação` : `${historyDays} dias consolidados · versus o dia anterior`);
     renderAlerts(metrics?.alerts, coverage);
     renderDimension(currentDimension);
     renderStaleness(metrics?.staleness);

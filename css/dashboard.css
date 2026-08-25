@@ -292,7 +292,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .operational-alert-empty { grid-column: 1 / -1; padding: 12px; display: flex; align-items: center; gap: 8px; color: var(--ink-muted); border: 1px dashed var(--border); border-radius: 11px; font-size: 9px; }
 .operational-alert-empty.is-ok i { color: var(--teal); }
 .backlog-intelligence-heading { margin-top: 22px; }
-.backlog-intelligence-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+.backlog-intelligence-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
 .backlog-intelligence-card { min-width: 0; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-soft); }
 .backlog-intelligence-card span, .backlog-intelligence-card small { display: block; }
 .backlog-intelligence-card span { color: var(--ink-muted); font-size: 10px; font-weight: 700; }
@@ -301,6 +301,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .backlog-intelligence-card.is-total { border-color: rgba(96,165,250,.35); }
 .backlog-intelligence-card.is-actionable { border-color: rgba(245,158,11,.5); background: linear-gradient(135deg, rgba(245,158,11,.12), var(--surface)); }
 .backlog-intelligence-card.is-actionable strong { color: #fbbf24; }
+.backlog-intelligence-card.is-trend strong { color: var(--blue); }
 .backlog-flow-charts, .support-volume-charts { margin-top: 18px; }
 .aging-kpi-grid { grid-template-columns: repeat(5, minmax(150px, 1fr)) !important; }
 .requester-kpi-grid { grid-template-columns: repeat(3, minmax(180px, 1fr)) !important; }

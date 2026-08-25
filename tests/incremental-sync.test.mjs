@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { listingFingerprint, selectDetailCandidates } from '../scripts/incremental-sync.mjs';
+import { listingFingerprint, selectDetailCandidates, summarizeListingChanges } from '../scripts/incremental-sync.mjs';
 
 const ticket = (id, status = 'Aberto') => ({ id, priority: 2, reopened: false, end_date: null, status: { description: status }, sla: { deadline: { accomplished: true } } });
 
@@ -27,6 +27,12 @@ test('não consulta detalhe de chamado estável e já enriquecido', () => {
 test('reprocessa fato métrico de versão anterior', () => {
     const current = ticket('versao-antiga'); const state = { 'versao-antiga': { list_hash: listingFingerprint(current), detail_hash: 'hash' } };
     assert.equal(selectDetailCandidates([current], state, 20, { 'versao-antiga': { id: 'versao-antiga' } }).length, 1);
+});
+
+test('resume novos e alterados em toda a listagem antes do limite de detalhes', () => {
+    const tickets = [ticket('novo'), ticket('alterado', 'Finalizado'), ticket('estavel')];
+    const state = { alterado: { list_hash: listingFingerprint(ticket('alterado')) }, estavel: { list_hash: listingFingerprint(ticket('estavel')) } };
+    assert.deepEqual(summarizeListingChanges(tickets, state), { new_tickets: 1, changed_tickets: 1 });
 });
 
 test('reprocessa detalhe antigo que ainda não possui fato métrico', () => {

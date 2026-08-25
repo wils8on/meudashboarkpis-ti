@@ -244,6 +244,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     background: var(--surface-strong);
 }
 .period-separator { align-self: center; margin-top: 13px; color: var(--ink-faint); font-size: 10px; }
+.sync-run-error { color: var(--rust) !important; }
 
 .content-body { padding: 24px 42px 46px; }
 .tab-content { display: none; animation: view-in .28s ease; }

@@ -35,6 +35,15 @@ export function selectDetailCandidates(tickets, state = {}, limit = DETAIL_LIMIT
         .slice(0, Math.max(0, limit));
 }
 
+export function summarizeListingChanges(tickets, state = {}) {
+    return tickets.filter(ticket => ticket?.id).reduce((summary, ticket) => {
+        const previous = state[ticket.id];
+        if (!previous) summary.new_tickets++;
+        else if (previous.list_hash !== listingFingerprint(ticket)) summary.changed_tickets++;
+        return summary;
+    }, { new_tickets: 0, changed_tickets: 0 });
+}
+
 async function fetchDetail(ticketId, token) {
     const url = new URL('https://api.tomticket.com/v2.0/ticket/detail');
     url.searchParams.set('ticket_id', String(ticketId));
@@ -54,6 +63,7 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     const store = await createIncrementalStore(firebaseSecret);
     const state = await store.loadState();
     const metricState = await store.loadMetricState();
+    const listingChanges = summarizeListingChanges(tickets, state);
     const candidates = selectDetailCandidates(tickets, state, detailLimit, metricState);
     const counters = { snapshots: 0, errors: 0, details: 0 };
     const quality = inspectListingQuality(tickets, started.toISOString());
@@ -99,14 +109,15 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     metrics.trends = calculateMetricTrends(history);
     metrics.alerts = appendTrendAlerts(metrics.alerts, metrics.trends, alertConfig);
     await store.saveMetricHistory(history, finished.toISOString());
-    await store.saveMetrics(metrics);
     const run = {
         id: runId, started_at: started.toISOString(), finished_at: finished.toISOString(), duration_ms: finished - started,
-        listed: tickets.length, new_tickets: candidates.filter(item => item.isNew).length,
-        changed_tickets: candidates.filter(item => item.changed).length, detail_requests: counters.details,
+        listed: tickets.length, new_tickets: listingChanges.new_tickets,
+        changed_tickets: listingChanges.changed_tickets, detail_requests: counters.details,
         snapshots: counters.snapshots, dimensions: dimensionsWritten.size, enriched_records: metrics.coverage.enriched, errors: counters.errors,
         quality_issues: quality.total_issues, success: counters.errors === 0
     };
+    metrics.sync = run;
+    await store.saveMetrics(metrics);
     await store.saveQualityReport(runId, quality);
     await store.saveRun(run);
     return run;

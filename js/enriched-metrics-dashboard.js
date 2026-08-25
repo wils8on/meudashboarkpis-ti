@@ -33,9 +33,18 @@ function render(metrics) {
     const backlogTrend = metrics?.trends?.backlog; const historyDays = metrics?.trends?.daily?.length || 0;
     set('smartBacklogDailyDelta', backlogTrend?.delta == null ? '—' : `${backlogTrend.delta > 0 ? '+' : ''}${format(backlogTrend.delta)}`);
     set('smartBacklogDailyContext', historyDays < 2 ? `${historyDays} dia consolidado · aguardando comparação` : `${historyDays} dias consolidados · versus o dia anterior`);
+    renderSyncSummary(metrics?.sync);
     renderAlerts(metrics?.alerts, coverage);
     renderDimension(currentDimension);
     renderStaleness(metrics?.staleness);
+}
+
+function renderSyncSummary(sync = {}) {
+    const element = document.getElementById('syncIncrementalRun'); if (!element) return;
+    if (!sync.finished_at) { element.textContent = 'Aguardando execução'; return; }
+    element.textContent = `${format(sync.detail_requests)} detalhes · ${format(sync.errors)} erros`;
+    element.title = `${format(sync.new_tickets)} novos · ${format(sync.changed_tickets)} alterados · ${format(sync.snapshots)} snapshots · ${(Number(sync.duration_ms || 0) / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}s`;
+    element.classList.toggle('sync-run-error', Number(sync.errors) > 0);
 }
 
 function renderAlerts(alerts = {}, coverage = {}) {

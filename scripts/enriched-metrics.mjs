@@ -18,10 +18,29 @@ function groupMetrics(facts, field) {
     facts.forEach(item => {
         const entity = item[field]; if (!entity?.id && !entity?.name) return;
         const key = entity.id || entity.name;
-        const group = groups.get(key) || { id: entity.id || null, name: entity.name || 'Não informado', volume: 0, concluded: 0, reopened: 0, sla: [] };
-        group.volume++; if (item.end_date) group.concluded++; if (item.reopened) group.reopened++; if (typeof item.sla_deadline === 'boolean') group.sla.push(item.sla_deadline); groups.set(key, group);
+        const group = groups.get(key) || { id: entity.id || null, name: entity.name || 'Não informado', volume: 0, concluded: 0, backlog: 0, reopened: 0, sla: [], initialization: [], resolution: [], response: [], work: [] };
+        group.volume++;
+        if (item.end_date) group.concluded++; else group.backlog++;
+        if (item.reopened) group.reopened++;
+        if (typeof item.sla_deadline === 'boolean') group.sla.push(item.sla_deadline);
+        if (typeof item.sla_initialization === 'boolean') group.initialization.push(item.sla_initialization);
+        const created = validDate(item.creation_date); const ended = validDate(item.end_date); const replied = validDate(item.first_reply_date);
+        if (created && ended && ended >= created) group.resolution.push((ended - created) / 3600000);
+        if (created && replied && replied >= created) group.response.push((replied - created) / 3600000);
+        const worked = Number(item.work_time_seconds); if (Number.isFinite(worked) && worked >= 0) group.work.push(worked / 3600);
+        groups.set(key, group);
     });
-    return [...groups.values()].map(group => ({ id: group.id, name: group.name, volume: group.volume, concluded: group.concluded, reopened: group.reopened, sla_deadline_rate: group.sla.length ? round(group.sla.filter(Boolean).length / group.sla.length * 100) : null })).sort((a, b) => b.volume - a.volume);
+    return [...groups.values()].map(group => ({
+        id: group.id, name: group.name, volume: group.volume, concluded: group.concluded, backlog: group.backlog, reopened: group.reopened,
+        completion_rate: group.volume ? round(group.concluded / group.volume * 100) : null,
+        reopen_rate: group.volume ? round(group.reopened / group.volume * 100) : null,
+        sla_deadline_rate: group.sla.length ? round(group.sla.filter(Boolean).length / group.sla.length * 100) : null,
+        sla_initialization_rate: group.initialization.length ? round(group.initialization.filter(Boolean).length / group.initialization.length * 100) : null,
+        mean_resolution_hours: group.resolution.length ? round(average(group.resolution)) : null,
+        mean_first_response_hours: group.response.length ? round(average(group.response)) : null,
+        total_work_hours: round(group.work.reduce((sum, value) => sum + value, 0)),
+        mean_work_hours: group.work.length ? round(average(group.work)) : null
+    })).sort((a, b) => b.volume - a.volume);
 }
 
 export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, generatedAt = new Date().toISOString()) {

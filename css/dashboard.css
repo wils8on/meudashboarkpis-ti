@@ -264,6 +264,19 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .backlog-kpi-grid { grid-template-columns: repeat(3, minmax(190px, 1fr)) !important; }
 .enriched-metrics-heading { margin-top: 22px; }
 .enriched-metrics-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 20px; }
+.operational-analysis { margin-bottom: 20px; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-soft); }
+.operational-analysis-header { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 17px 18px; border-bottom: 1px solid var(--border); }
+.operational-analysis-header h3 { margin-top: 4px; color: var(--ink); font-size: 15px; }
+.operational-analysis-header p { margin-top: 4px; color: var(--ink-muted); font-size: 9px; }
+.operational-analysis-tabs { display: flex; gap: 5px; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-solid); }
+.operational-analysis-tabs button { min-height: 30px; padding: 0 10px; color: var(--ink-muted); border: 0; border-radius: 7px; background: transparent; font-size: 9px; font-weight: 700; }
+.operational-analysis-tabs button:hover, .operational-analysis-tabs button.is-active { color: var(--primary-2); background: var(--primary-soft); }
+.operational-analysis-layout { display: grid; grid-template-columns: minmax(300px, .85fr) minmax(540px, 1.6fr); min-height: 330px; }
+.operational-analysis-chart { min-width: 0; padding: 16px; border-right: 1px solid var(--border); }
+.operational-analysis-chart canvas { width: 100% !important; height: 295px !important; }
+.operational-analysis-table-scroll { max-height: 330px; }
+.operational-analysis-table { min-width: 760px; }
+.operational-analysis-table td { font-size: 9px; }
 .backlog-intelligence-heading { margin-top: 22px; }
 .backlog-intelligence-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
 .backlog-intelligence-card { min-width: 0; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-soft); }
@@ -655,6 +668,8 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     .executive-brief { grid-template-columns: 1fr; }
     .module-kpi-grid, .support-kpi-grid { grid-template-columns: repeat(2, minmax(180px, 1fr)) !important; }
     .enriched-metrics-grid { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
+    .operational-analysis-layout { grid-template-columns: 1fr; }
+    .operational-analysis-chart { border-right: 0; border-bottom: 1px solid var(--border); }
     .aging-kpi-grid { grid-template-columns: repeat(3, minmax(160px, 1fr)) !important; }
     .quiet-periods-grid { grid-template-columns: 1fr; }
     .backlog-intelligence-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -715,6 +730,9 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     .kpi-card { min-height: 105px; padding: 14px 13px; }
     .kpi-card .icon { display: none; }
     .backlog-intelligence-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .operational-analysis-header { align-items: stretch; flex-direction: column; }
+    .operational-analysis-tabs { overflow-x: auto; }
+    .operational-analysis-tabs button { flex: 1 0 auto; }
     .chart-container { height: 330px !important; padding: 15px; border-radius: var(--radius-md); }
     .quiet-hours-panel { padding: 15px; }
     .access-summary-grid { grid-template-columns: 1fr; }

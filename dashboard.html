@@ -401,6 +401,26 @@
                         <div class="kpi-card rosa"><div class="kpi-info"><p>Avaliação média</p><h3 id="enrichedEvaluation">—</h3><span class="kpi-context" id="enrichedEvaluationContext">Sem avaliações</span></div><i class="fa-solid fa-star icon"></i></div>
                     </div>
 
+                    <section class="operational-analysis" aria-labelledby="operationalAnalysisTitle">
+                        <div class="operational-analysis-header">
+                            <div><span class="section-kicker">Distribuição de capacidade</span><h3 id="operationalAnalysisTitle">Análise operacional por dimensão</h3><p>Compare carga, conclusão e SLA sem transformar a leitura em competição individual.</p></div>
+                            <div class="operational-analysis-tabs" role="tablist" aria-label="Dimensão da análise">
+                                <button type="button" class="is-active" data-operational-dimension="operators">Atendentes</button>
+                                <button type="button" data-operational-dimension="categories">Categorias</button>
+                                <button type="button" data-operational-dimension="departments">Departamentos</button>
+                            </div>
+                        </div>
+                        <div class="operational-analysis-layout">
+                            <div class="operational-analysis-chart"><canvas id="enrichedDimensionChart" role="img" aria-label="Distribuição operacional por dimensão"></canvas></div>
+                            <div class="table-scroll-container operational-analysis-table-scroll">
+                                <table class="data-table operational-analysis-table">
+                                    <thead><tr><th id="operationalDimensionHeading">Atendente</th><th>Volume</th><th>Concluídos</th><th>Backlog</th><th>SLA</th><th>1ª resposta</th><th>Trabalho</th></tr></thead>
+                                    <tbody id="operationalAnalysisBody"><tr><td colspan="7" class="table-empty-state">Aguardando dados enriquecidos.</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
                     <div class="charts-split-grid">
                         <div class="chart-container">
                             <div class="chart-heading"><div><span class="section-kicker">Velocidade</span><h4>Taxa de resolução mensal</h4></div><span class="chart-caption">Percentual concluído no mês de abertura</span></div>

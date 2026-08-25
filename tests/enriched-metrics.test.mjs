@@ -8,7 +8,9 @@ test('calcula SLA, resposta, trabalho, avaliação e cobertura', () => {
         b: buildMetricFact({ id: 'b', creation_date: '2026-08-25T10:00:00Z', first_reply_date: '2026-08-25T14:00:00Z', work_time_seconds: 7200, sla: { initialization: { accomplished: false }, deadline: { accomplished: true } }, evaluation: { grade: '3' }, department: { id: 'd', name: 'TI' } })
     };
     const metrics = calculateEnrichedMetrics(facts, 4);
-    assert.equal(metrics.coverage.rate, 50); assert.equal(metrics.sla.initialization.rate, 50); assert.equal(metrics.first_response.mean_hours, 3); assert.equal(metrics.first_response.median_hours, 3); assert.equal(metrics.work_time.mean_hours, 1.5); assert.equal(metrics.evaluation.mean_grade, 4); assert.equal(metrics.breakdowns.departments[0].volume, 2);
+    assert.equal(metrics.coverage.rate, 50); assert.equal(metrics.sla.initialization.rate, 50); assert.equal(metrics.first_response.mean_hours, 3); assert.equal(metrics.first_response.median_hours, 3); assert.equal(metrics.work_time.mean_hours, 1.5); assert.equal(metrics.evaluation.mean_grade, 4);
+    const department = metrics.breakdowns.departments[0];
+    assert.equal(department.volume, 2); assert.equal(department.backlog, 2); assert.equal(department.sla_deadline_rate, 100); assert.equal(department.sla_initialization_rate, 50); assert.equal(department.mean_first_response_hours, 3); assert.equal(department.total_work_hours, 3);
 });
 
 test('não inventa valores sem amostra elegível', () => {

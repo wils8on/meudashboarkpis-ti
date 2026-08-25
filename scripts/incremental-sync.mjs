@@ -20,11 +20,11 @@ export function listingFingerprint(ticket = {}) {
     return createHash('sha256').update(JSON.stringify(relevant)).digest('hex');
 }
 
-export function selectDetailCandidates(tickets, state = {}, limit = DETAIL_LIMIT) {
+export function selectDetailCandidates(tickets, state = {}, limit = DETAIL_LIMIT, metricState = {}) {
     const classified = tickets.filter(ticket => ticket?.id).map(ticket => {
         const previous = state[ticket.id];
         const fingerprint = listingFingerprint(ticket);
-        return { ticket, fingerprint, previous, isNew: !previous, changed: Boolean(previous && previous.list_hash !== fingerprint), unenriched: !previous?.detail_hash };
+        return { ticket, fingerprint, previous, isNew: !previous, changed: Boolean(previous && previous.list_hash !== fingerprint), unenriched: !previous?.detail_hash || !metricState[ticket.id] };
     });
     return classified
         .filter(item => item.isNew || item.changed || item.unenriched)
@@ -51,7 +51,7 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     const store = await createIncrementalStore(firebaseSecret);
     const state = await store.loadState();
     const metricState = await store.loadMetricState();
-    const candidates = selectDetailCandidates(tickets, state, detailLimit);
+    const candidates = selectDetailCandidates(tickets, state, detailLimit, metricState);
     const counters = { snapshots: 0, errors: 0, details: 0 };
     const quality = inspectListingQuality(tickets, started.toISOString());
     const dimensionsWritten = new Set();

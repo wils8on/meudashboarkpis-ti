@@ -21,5 +21,11 @@ test('prioriza alterados, depois novos e limita detalhes', () => {
 test('não consulta detalhe de chamado estável e já enriquecido', () => {
     const current = ticket('estavel');
     const state = { estavel: { list_hash: listingFingerprint(current), detail_hash: 'hash' } };
-    assert.equal(selectDetailCandidates([current], state, 20).length, 0);
+    assert.equal(selectDetailCandidates([current], state, 20, { estavel: { id: 'estavel' } }).length, 0);
+});
+
+test('reprocessa detalhe antigo que ainda não possui fato métrico', () => {
+    const current = ticket('legado');
+    const state = { legado: { list_hash: listingFingerprint(current), detail_hash: 'hash' } };
+    assert.equal(selectDetailCandidates([current], state, 20, {}).length, 1);
 });

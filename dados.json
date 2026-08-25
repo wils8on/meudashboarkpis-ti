@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-25T13:31:43.340Z",
+    "updated_at": "2026-08-25T14:24:24.874Z",
     "total_records": 1436,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
@@ -157,7 +157,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Em análise"
       }
     },
     {
@@ -505,7 +505,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -700,7 +700,7 @@
       },
       "priority": 2,
       "creation_date": "2026-08-05 08:21:03-03:00",
-      "end_date": null,
+      "end_date": "2026-08-25 10:41:49-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -708,7 +708,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando terceiro"
+        "description": "Finalizado"
       }
     },
     {
@@ -2253,7 +2253,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -2348,7 +2348,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -2842,7 +2842,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -2880,7 +2880,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -3431,7 +3431,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Coordenação Logistica"
         }
       },
       "priority": 2,
@@ -3545,7 +3545,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Coordenação Logistica"
         }
       },
       "priority": 2,
@@ -3621,7 +3621,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Coordenação Logistica"
         }
       },
       "priority": 2,
@@ -3735,7 +3735,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Coordenação Logistica"
         }
       },
       "priority": 2,
@@ -3754,7 +3754,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Coordenação Logistica"
         }
       },
       "priority": 1,
@@ -4552,7 +4552,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -4571,7 +4571,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -5103,7 +5103,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -5160,7 +5160,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 3,
@@ -5255,7 +5255,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -5958,7 +5958,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 2,
@@ -6946,7 +6946,7 @@
     {
       "customer": {
         "organization": {
-          "name": "Gerência Fin / Fis"
+          "name": "Diálise"
         }
       },
       "priority": 3,

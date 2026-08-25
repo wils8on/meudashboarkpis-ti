@@ -1,0 +1,32 @@
+name: Inspecionar estrutura do detalhe TomTicket
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validar inspetor seguro
+        run: node --test tests/*.test.mjs
+      - name: Inspecionar somente nomes e tipos dos campos
+        env:
+          TOMTICKET_TOKEN: ${{ secrets.TOMTICKET_TOKEN }}
+        run: node scripts/inspect-tomticket-detail.mjs tomticket-detail-schema.json
+      - name: Disponibilizar relatório estrutural
+        uses: actions/upload-artifact@v4
+        with:
+          name: tomticket-detail-schema
+          path: tomticket-detail-schema.json
+          retention-days: 1
+          if-no-files-found: error

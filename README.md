@@ -25,7 +25,7 @@ Nunca salve tokens ou credenciais no repositório. A automação utiliza os segr
 ## Configuração
 
 - Classificação gerencial do backlog: [`config/backlog-status-map.json`](config/backlog-status-map.json)
-- Limites dos alertas: [`config/operational-alerts.json`](config/operational-alerts.json)
+- Limites dos alertas: menu administrativo **Metas e Alertas**, persistido no Firestore; [`config/operational-alerts.json`](config/operational-alerts.json) é o fallback seguro
 - Automação: [`.github/workflows/atualizar_dados.yml`](.github/workflows/atualizar_dados.yml)
 
 O manual completo de arquitetura, indicadores e recuperação está em [`docs/OPERACAO_TOMTICKET.md`](docs/OPERACAO_TOMTICKET.md).

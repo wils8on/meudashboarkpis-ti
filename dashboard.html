@@ -49,6 +49,7 @@
             td button,
             #btnInspecionarAPI,
             #aba-acessos,
+            #aba-metas,
             #modalInspeção {
                 display: none !important;
             }
@@ -206,6 +207,11 @@
                 <li id="adminAccessNav" hidden>
                     <a href="#" class="nav-item" data-target="aba-acessos">
                         <i class="fa-solid fa-user-shield"></i> <span>Controle de Acesso</span>
+                    </a>
+                </li>
+                <li id="adminGoalsNav" hidden>
+                    <a href="#" class="nav-item" data-target="aba-metas">
+                        <i class="fa-solid fa-bullseye"></i> <span>Metas e Alertas</span>
                     </a>
                 </li>
             </ul>
@@ -742,6 +748,54 @@
                     </div>
                 </section>
 
+                <section id="aba-metas" class="tab-content" aria-labelledby="goalsManagementTitle">
+                    <div class="module-header" data-accent="violet">
+                        <span class="module-icon"><i class="fa-solid fa-bullseye"></i></span>
+                        <div><span class="section-kicker">Administração protegida</span><h3 id="goalsManagementTitle">Metas e alertas operacionais</h3><p>Defina os limites gerenciais usados na próxima sincronização e acompanhe cada alteração.</p></div>
+                    </div>
+
+                    <div class="goals-notice"><i class="fa-solid fa-circle-info"></i><div><strong>Aplicação das metas</strong><span>As mudanças são salvas imediatamente e entram nos indicadores enriquecidos após a próxima sincronização automática. Desativar uma regra interrompe somente aquele alerta.</span></div></div>
+
+                    <form id="operationalGoalsForm" class="goals-form">
+                        <article class="goal-rule-card">
+                            <label class="goal-toggle"><input name="sla_deadline.enabled" type="checkbox"><span></span> Regra ativa</label>
+                            <div class="goal-rule-heading"><i class="fa-solid fa-shield-halved"></i><div><strong>SLA de conclusão</strong><small>Alerta quando o cumprimento fica abaixo da meta.</small></div></div>
+                            <div class="goal-fields"><label>Meta mínima (%)<input name="sla_deadline.minimum_rate" type="number" min="0" max="100" step="0.1" required></label><label>Amostra mínima<input name="sla_deadline.minimum_sample" type="number" min="0" step="1" required></label></div>
+                        </article>
+                        <article class="goal-rule-card">
+                            <label class="goal-toggle"><input name="enriched_backlog.enabled" type="checkbox"><span></span> Regra ativa</label>
+                            <div class="goal-rule-heading"><i class="fa-solid fa-boxes-stacked"></i><div><strong>Backlog enriquecido</strong><small>Alerta quando os chamados abertos ultrapassam o limite.</small></div></div>
+                            <div class="goal-fields"><label>Limite máximo<input name="enriched_backlog.maximum_count" type="number" min="0" step="1" required></label><label>Cobertura mínima (%)<input name="enriched_backlog.minimum_coverage_rate" type="number" min="0" max="100" step="0.1" required></label></div>
+                        </article>
+                        <article class="goal-rule-card">
+                            <label class="goal-toggle"><input name="reopen_rate.enabled" type="checkbox"><span></span> Regra ativa</label>
+                            <div class="goal-rule-heading"><i class="fa-solid fa-rotate-left"></i><div><strong>Taxa de reabertura</strong><small>Alerta quando a reincidência supera o limite.</small></div></div>
+                            <div class="goal-fields"><label>Taxa máxima (%)<input name="reopen_rate.maximum_rate" type="number" min="0" max="100" step="0.1" required></label><label>Amostra mínima<input name="reopen_rate.minimum_sample" type="number" min="0" step="1" required></label></div>
+                        </article>
+                        <article class="goal-rule-card">
+                            <label class="goal-toggle"><input name="critical_staleness.enabled" type="checkbox"><span></span> Regra ativa</label>
+                            <div class="goal-rule-heading"><i class="fa-solid fa-clock"></i><div><strong>Sem movimentação</strong><small>Alerta para chamados parados além do tempo aceito.</small></div></div>
+                            <div class="goal-fields"><label>Tempo máximo (horas)<input name="critical_staleness.hours" type="number" min="1" step="1" required></label><label>Quantidade tolerada<input name="critical_staleness.maximum_count" type="number" min="0" step="1" required></label></div>
+                        </article>
+                        <article class="goal-rule-card">
+                            <label class="goal-toggle"><input name="continuous_backlog_growth.enabled" type="checkbox"><span></span> Regra ativa</label>
+                            <div class="goal-rule-heading"><i class="fa-solid fa-arrow-trend-up"></i><div><strong>Crescimento contínuo</strong><small>Alerta após vários dias seguidos de aumento do backlog.</small></div></div>
+                            <div class="goal-fields goal-fields-single"><label>Dias consecutivos<input name="continuous_backlog_growth.consecutive_days" type="number" min="2" max="30" step="1" required></label></div>
+                        </article>
+                        <article class="goal-rule-card">
+                            <label class="goal-toggle"><input name="department_volume_anomaly.enabled" type="checkbox"><span></span> Regra ativa</label>
+                            <div class="goal-rule-heading"><i class="fa-solid fa-building-circle-exclamation"></i><div><strong>Anomalia por departamento</strong><small>Compara os últimos 30 dias com os 30 anteriores.</small></div></div>
+                            <div class="goal-fields goal-fields-three"><label>Crescimento máximo (%)<input name="department_volume_anomaly.maximum_growth_rate" type="number" min="0" step="0.1" required></label><label>Volume anterior mínimo<input name="department_volume_anomaly.minimum_previous_volume" type="number" min="0" step="1" required></label><label>Cobertura mínima (%)<input name="department_volume_anomaly.minimum_coverage_rate" type="number" min="0" max="100" step="0.1" required></label></div>
+                        </article>
+                        <div class="goals-form-footer"><div id="operationalGoalsStatus" class="access-form-status" role="status" aria-live="polite"></div><button id="operationalGoalsSave" class="btn-submit-form" type="submit"><i class="fa-solid fa-floppy-disk"></i> Salvar metas</button></div>
+                    </form>
+
+                    <div class="table-wrapper-box goals-history-box">
+                        <div class="table-header-title"><div><span class="section-kicker">Auditoria</span><strong>Histórico de alterações</strong></div><button id="operationalGoalsRefresh" class="table-edit-btn" type="button"><i class="fa-solid fa-rotate"></i> Atualizar</button></div>
+                        <div class="table-scroll-container goals-history-scroll"><table class="data-table"><thead><tr><th>Data e hora</th><th>Administrador</th><th>Versão</th><th>Alterações</th></tr></thead><tbody id="operationalGoalsHistory"><tr><td colspan="4" class="table-empty-state">Carregando histórico...</td></tr></tbody></table></div>
+                    </div>
+                </section>
+
             </div>
         </main>
     </div>
@@ -801,6 +855,7 @@
     <script type="module" src="js/solutions-store.js"></script>
     <script type="module" src="js/solutions-dashboard.js"></script>
     <script type="module" src="js/access-admin.js"></script>
+    <script type="module" src="js/goals-admin.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
 </html>

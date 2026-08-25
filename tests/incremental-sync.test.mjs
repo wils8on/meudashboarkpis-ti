@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchDetailWithRetry, listingFingerprint, selectDetailCandidates, summarizeListingChanges } from '../scripts/incremental-sync.mjs';
+import { fetchDetailWithRetry, listingFingerprint, resolveAlertConfig, selectDetailCandidates, summarizeListingChanges } from '../scripts/incremental-sync.mjs';
 
 const ticket = (id, status = 'Aberto') => ({ id, priority: 2, reopened: false, end_date: null, status: { description: status }, sla: { deadline: { accomplished: true } } });
 
@@ -57,4 +57,18 @@ test('reprocessa detalhe antigo que ainda não possui fato métrico', () => {
     const current = ticket('legado');
     const state = { legado: { list_hash: listingFingerprint(current), detail_hash: 'hash' } };
     assert.equal(selectDetailCandidates([current], state, 20, {}).length, 1);
+});
+
+test('metas administrativas sobrescrevem o padrão sem apagar regras ausentes', () => {
+    const defaults = { version: 1, rules: { sla_deadline: { enabled: true, minimum_rate: 90, minimum_sample: 10 }, reopen_rate: { enabled: true, maximum_rate: 10 } } };
+    const remote = { version: 4, rules: { sla_deadline: { minimum_rate: 95 } } };
+    const result = resolveAlertConfig(defaults, remote);
+    assert.equal(result.version, 4);
+    assert.deepEqual(result.rules.sla_deadline, { enabled: true, minimum_rate: 95, minimum_sample: 10 });
+    assert.deepEqual(result.rules.reopen_rate, defaults.rules.reopen_rate);
+});
+
+test('configuração local permanece como fallback quando a remota não existe', () => {
+    const defaults = { version: 1, rules: { sla_deadline: { enabled: true, minimum_rate: 90 } } };
+    assert.equal(resolveAlertConfig(defaults, null), defaults);
 });

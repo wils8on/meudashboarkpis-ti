@@ -65,6 +65,17 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    match /tomticket_config/{configId} {
+      allow read: if isAuthorized();
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+
+    match /tomticket_config_history/{historyId} {
+      allow read, create: if isAdmin();
+      allow update, delete: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

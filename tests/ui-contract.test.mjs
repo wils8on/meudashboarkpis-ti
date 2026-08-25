@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 
 const html = readFileSync(new URL('../dashboard.html', import.meta.url), 'utf8');
 const enrichedJs = readFileSync(new URL('../js/enriched-metrics-dashboard.js', import.meta.url), 'utf8');
+const goalsJs = readFileSync(new URL('../js/goals-admin.js', import.meta.url), 'utf8');
 const attributes = (name, source = html) => [...source.matchAll(new RegExp(`\\b${name}="([^"]+)"`, 'g'))].map(match => match[1]);
 const ids = attributes('id'); const idSet = new Set(ids);
 
@@ -23,6 +24,12 @@ test('referências aria-labelledby apontam para elementos existentes', () => {
 test('elementos consumidos pelo painel enriquecido existem no HTML', () => {
     const used = [...enrichedJs.matchAll(/getElementById\(['"]([^'"]+)['"]\)/g)].map(match => match[1]);
     used.forEach(target => assert.ok(idSet.has(target), `Elemento do painel enriquecido ausente: ${target}`));
+});
+
+test('elementos consumidos pela administração de metas existem no HTML', () => {
+    const used = [...goalsJs.matchAll(/getElementById\(['"]([^'"]+)['"]\)/g)].map(match => match[1]);
+    used.forEach(target => assert.ok(idSet.has(target), `Elemento administrativo de metas ausente: ${target}`));
+    assert.match(html, /id="adminGoalsNav" hidden/);
 });
 
 test('abas dimensionais e filtros de inatividade possuem nomes acessíveis', () => {

@@ -6,6 +6,17 @@ function stringField(value) { return { stringValue: String(value ?? '') }; }
 function integerField(value) { return { integerValue: String(Number(value) || 0) }; }
 function booleanField(value) { return { booleanValue: value === true }; }
 function timestampField(value) { return value ? { timestampValue: new Date(value).toISOString() } : { nullValue: null }; }
+function decodeFirestoreValue(value = {}) {
+    if ('nullValue' in value) return null;
+    if ('booleanValue' in value) return value.booleanValue;
+    if ('integerValue' in value) return Number(value.integerValue);
+    if ('doubleValue' in value) return Number(value.doubleValue);
+    if ('stringValue' in value) return value.stringValue;
+    if ('timestampValue' in value) return value.timestampValue;
+    if (value.arrayValue) return (value.arrayValue.values || []).map(decodeFirestoreValue);
+    if (value.mapValue) return Object.fromEntries(Object.entries(value.mapValue.fields || {}).map(([key, field]) => [key, decodeFirestoreValue(field)]));
+    return null;
+}
 
 export async function createIncrementalStore(secretValue) {
     if (!secretValue) throw new Error('O segredo FIREBASE_SERVICE_ACCOUNT não está configurado.');
@@ -56,6 +67,18 @@ export async function createIncrementalStore(secretValue) {
             const document = await get('tomticket_sync_state', 'metric_history');
             try { return JSON.parse(document?.fields?.payload?.stringValue || '[]'); }
             catch { return []; }
+        },
+        async loadOperationalAlertConfig() {
+            const document = await get('tomticket_config', 'operational_alerts');
+            try {
+                if (!document?.fields?.rules?.mapValue) return null;
+                return {
+                    version: decodeFirestoreValue(document.fields.version) || null,
+                    rules: decodeFirestoreValue(document.fields.rules),
+                    prepared_rules: decodeFirestoreValue(document.fields.prepared_rules) || []
+                };
+            }
+            catch { return null; }
         },
         saveMetricHistory(history, updatedAt) {
             return put('tomticket_sync_state', 'metric_history', { payload: stringField(JSON.stringify(history)), days: integerField(history.length), updated_at: timestampField(updatedAt) });

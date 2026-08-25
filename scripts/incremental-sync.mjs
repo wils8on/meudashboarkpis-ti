@@ -10,7 +10,14 @@ import { appendTrendAlerts, calculateMetricTrends, updateMetricHistory } from '.
 
 const DETAIL_LIMIT = 20;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-async function loadAlertConfig() { try { return JSON.parse(await readFile(new URL('../config/operational-alerts.json', import.meta.url), 'utf8')); } catch { return {}; } }
+async function loadDefaultAlertConfig() { try { return JSON.parse(await readFile(new URL('../config/operational-alerts.json', import.meta.url), 'utf8')); } catch { return {}; } }
+
+export function resolveAlertConfig(defaultConfig = {}, remoteConfig = null) {
+    if (!remoteConfig?.rules || typeof remoteConfig.rules !== 'object') return defaultConfig;
+    const rules = Object.fromEntries(Object.entries(defaultConfig.rules || {}).map(([key, value]) => [key, { ...value, ...(remoteConfig.rules[key] || {}) }]));
+    Object.entries(remoteConfig.rules).forEach(([key, value]) => { if (!rules[key]) rules[key] = value; });
+    return { ...defaultConfig, ...remoteConfig, rules, prepared_rules: remoteConfig.prepared_rules || defaultConfig.prepared_rules || [] };
+}
 
 export function listingFingerprint(ticket = {}) {
     const relevant = {
@@ -123,7 +130,7 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     const finished = new Date();
     await store.saveState(state, finished.toISOString());
     await store.saveMetricState(metricState, finished.toISOString());
-    const alertConfig = await loadAlertConfig();
+    const alertConfig = resolveAlertConfig(await loadDefaultAlertConfig(), await store.loadOperationalAlertConfig());
     const metrics = calculateEnrichedMetrics(metricState, tickets.length, finished.toISOString(), alertConfig);
     const history = updateMetricHistory(await store.loadMetricHistory(), metrics, tickets, finished.toISOString());
     metrics.trends = calculateMetricTrends(history);

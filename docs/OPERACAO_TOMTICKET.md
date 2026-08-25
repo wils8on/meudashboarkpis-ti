@@ -51,6 +51,8 @@ Uma métrica de detalhe não deve ser interpretada como representativa de toda a
 
 Os limites e regras de alertas ficam em `config/operational-alerts.json`. Ajustes devem ser revisados com o responsável da operação e validados por `npm test`.
 
+Administradores podem alterar esses limites no menu **Metas e Alertas**. A tela grava a configuração ativa em `tomticket_config/operational_alerts` e cada mudança em `tomticket_config_history`. A sincronização prioriza a configuração administrativa remota e conserva `config/operational-alerts.json` como fallback. As alterações passam a valer no cálculo realizado pela sincronização seguinte.
+
 ## Qualidade, observabilidade e recuperação
 
 Antes de confiar em um indicador, confira no painel:

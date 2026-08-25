@@ -30,3 +30,11 @@ test('calcula chamados sem movimentação somente quando há data real', () => {
     assert.equal(metrics.staleness.records[0].subject, 'Parado');
     assert.equal(metrics.staleness.records[0].idle_hours, 28);
 });
+
+test('gera alertas somente quando amostra e limites configurados permitem', () => {
+    const facts = {}; for (let index = 0; index < 10; index++) facts[index] = buildMetricFact({ id: String(index), reopened: index < 2, situation: { apply_date: '2026-08-20T10:00:00Z' }, sla: { deadline: { accomplished: index < 8 } } });
+    const config = { version: 1, rules: { sla_deadline: { enabled: true, minimum_rate: 90, minimum_sample: 10 }, reopen_rate: { enabled: true, maximum_rate: 10, minimum_sample: 10 }, critical_staleness: { enabled: true, hours: 72, maximum_count: 0 } } };
+    const metrics = calculateEnrichedMetrics(facts, 100, '2026-08-25T12:00:00Z', config);
+    assert.deepEqual(metrics.alerts.active.map(item => item.id), ['sla_deadline', 'reopen_rate', 'critical_staleness']);
+    assert.equal(metrics.alerts.config_version, 1);
+});

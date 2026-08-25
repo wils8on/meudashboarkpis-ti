@@ -277,6 +277,20 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .operational-analysis-table-scroll { max-height: 330px; }
 .operational-analysis-table { min-width: 760px; }
 .operational-analysis-table td { font-size: 9px; }
+.operational-alerts-panel { margin: 18px 0; padding: 17px 18px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-soft); }
+.operational-alerts-heading, .operational-alerts-heading > div { display: flex; align-items: center; justify-content: space-between; gap: 11px; }
+.operational-alerts-icon { width: 34px; height: 34px; display: grid; place-items: center; color: var(--amber); border-radius: 10px; background: var(--amber-soft); }
+.operational-alerts-heading h3 { margin-top: 3px; color: var(--ink); font-size: 15px; }
+.operational-alerts-count { color: var(--ink-muted); font: 600 9px var(--font-mono); }
+.operational-alerts-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin: 14px 0 10px; }
+.operational-alert { min-width: 0; padding: 12px; display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--border); border-radius: 11px; background: var(--surface-strong); }
+.operational-alert.is-critical { color: var(--rust); border-color: rgba(251,113,133,.3); }
+.operational-alert.is-warning { color: var(--amber); border-color: rgba(245,185,66,.3); }
+.operational-alert div { display: grid; gap: 4px; }
+.operational-alert strong { color: var(--ink); font-size: 10px; }
+.operational-alert span, .operational-alerts-panel > small { color: var(--ink-muted); font-size: 9px; line-height: 1.45; }
+.operational-alert-empty { grid-column: 1 / -1; padding: 12px; display: flex; align-items: center; gap: 8px; color: var(--ink-muted); border: 1px dashed var(--border); border-radius: 11px; font-size: 9px; }
+.operational-alert-empty.is-ok i { color: var(--teal); }
 .backlog-intelligence-heading { margin-top: 22px; }
 .backlog-intelligence-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
 .backlog-intelligence-card { min-width: 0; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-soft); }
@@ -685,6 +699,8 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 }
 
 @media (max-width: 760px) {
+    .operational-alerts-list { grid-template-columns: 1fr; }
+    .operational-alerts-heading { align-items: flex-start; flex-direction: column; }
     .staleness-kpis, .staleness-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .solutions-import-area { width: 100%; max-width: none; margin-left: 0; justify-items: stretch; }
     .solutions-import-status { text-align: left; }

@@ -18,6 +18,20 @@ function stalenessMetrics(facts, generatedAt) {
     return { eligible: records.length, thresholds: { over_4h: countOver(4), over_8h: countOver(8), over_24h: countOver(24), over_72h: countOver(72) }, records };
 }
 
+function operationalAlerts(facts, metrics, config = {}) {
+    const rules = config.rules || {}; const alerts = [];
+    const add = (id, severity, title, message, value, target) => alerts.push({ id, severity, title, message, value, target });
+    const sla = rules.sla_deadline;
+    if (sla?.enabled && metrics.sla.deadline.eligible >= Number(sla.minimum_sample || 0) && metrics.sla.deadline.rate < Number(sla.minimum_rate)) add('sla_deadline', 'critical', 'SLA de deadline abaixo da meta', `${metrics.sla.deadline.rate}% de cumprimento em ${metrics.sla.deadline.eligible} chamados elegíveis.`, metrics.sla.deadline.rate, sla.minimum_rate);
+    const backlog = facts.filter(item => !item.end_date).length; const backlogRule = rules.enriched_backlog;
+    if (backlogRule?.enabled && metrics.coverage.rate >= Number(backlogRule.minimum_coverage_rate || 0) && backlog > Number(backlogRule.maximum_count)) add('enriched_backlog', 'warning', 'Backlog enriquecido acima do limite', `${backlog} chamados abertos na amostra enriquecida.`, backlog, backlogRule.maximum_count);
+    const reopenRule = rules.reopen_rate; const reopenRate = facts.length ? round(facts.filter(item => item.reopened).length / facts.length * 100) : 0;
+    if (reopenRule?.enabled && facts.length >= Number(reopenRule.minimum_sample || 0) && reopenRate > Number(reopenRule.maximum_rate)) add('reopen_rate', 'warning', 'Taxa de reabertura elevada', `${reopenRate}% dos chamados enriquecidos foram reabertos.`, reopenRate, reopenRule.maximum_rate);
+    const staleRule = rules.critical_staleness; const staleHours = Number(staleRule?.hours || 72); const staleCount = metrics.staleness.records.filter(item => item.idle_hours > staleHours).length;
+    if (staleRule?.enabled && staleCount > Number(staleRule.maximum_count || 0)) add('critical_staleness', 'critical', 'Chamados críticos sem movimentação', `${staleCount} chamado(s) estão parados há mais de ${staleHours / 24} dia(s).`, staleCount, staleRule.maximum_count);
+    return { active: alerts, active_count: alerts.length, config_version: config.version || null, prepared_rules: config.prepared_rules || [] };
+}
+
 function slaMetric(facts, field) {
     const eligible = facts.filter(item => typeof item[field] === 'boolean');
     const compliant = eligible.filter(item => item[field]).length;
@@ -54,12 +68,12 @@ function groupMetrics(facts, field) {
     })).sort((a, b) => b.volume - a.volume);
 }
 
-export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, generatedAt = new Date().toISOString()) {
+export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, generatedAt = new Date().toISOString(), alertConfig = {}) {
     const facts = Object.values(metricState).filter(item => item?.id);
     const responseHours = facts.map(item => { const created = validDate(item.creation_date); const replied = validDate(item.first_reply_date); return created && replied && replied >= created ? (replied - created) / 3600000 : null; }).filter(value => value != null);
     const workHours = facts.map(item => Number(item.work_time_seconds)).filter(value => Number.isFinite(value) && value >= 0).map(value => value / 3600);
     const grades = facts.map(item => Number(item.evaluation_grade)).filter(value => Number.isFinite(value) && value >= 1 && value <= 5);
-    return {
+    const metrics = {
         generated_at: generatedAt,
         coverage: { enriched: facts.length, total: totalListed, rate: totalListed ? round(facts.length / totalListed * 100) : 0 },
         sla: { initialization: slaMetric(facts, 'sla_initialization'), deadline: slaMetric(facts, 'sla_deadline') },
@@ -69,4 +83,6 @@ export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, gene
         staleness: stalenessMetrics(facts, generatedAt),
         breakdowns: { departments: groupMetrics(facts, 'department'), categories: groupMetrics(facts, 'category'), operators: groupMetrics(facts, 'responsible_agent') }
     };
+    metrics.alerts = operationalAlerts(facts, metrics, alertConfig);
+    return metrics;
 }

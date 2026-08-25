@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 import { createIncrementalStore } from './incremental-firestore.mjs';
 import { normalizeTicketDetail } from './ticket-normalizer.mjs';
 import { buildSnapshot, diffRelevantState } from './ticket-diff.mjs';
@@ -8,6 +9,7 @@ import { buildMetricFact, calculateEnrichedMetrics } from './enriched-metrics.mj
 
 const DETAIL_LIMIT = 20;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+async function loadAlertConfig() { try { return JSON.parse(await readFile(new URL('../config/operational-alerts.json', import.meta.url), 'utf8')); } catch { return {}; } }
 
 export function listingFingerprint(ticket = {}) {
     const relevant = {
@@ -90,7 +92,7 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     const finished = new Date();
     await store.saveState(state, finished.toISOString());
     await store.saveMetricState(metricState, finished.toISOString());
-    const metrics = calculateEnrichedMetrics(metricState, tickets.length, finished.toISOString());
+    const metrics = calculateEnrichedMetrics(metricState, tickets.length, finished.toISOString(), await loadAlertConfig());
     await store.saveMetrics(metrics);
     const run = {
         id: runId, started_at: started.toISOString(), finished_at: finished.toISOString(), duration_ms: finished - started,

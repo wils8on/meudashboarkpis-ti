@@ -23,8 +23,17 @@ function render(metrics) {
     set('enrichedWorkContext', `${format(metrics?.work_time?.total_hours)}h registradas em ${format(metrics?.work_time?.count)} chamados`);
     set('enrichedEvaluation', metrics?.evaluation?.mean_grade == null ? '—' : `${format(metrics.evaluation.mean_grade)}/5`);
     set('enrichedEvaluationContext', `${format(metrics?.evaluation?.count)} avaliação(ões)`);
+    renderAlerts(metrics?.alerts, coverage);
     renderDimension(currentDimension);
     renderStaleness(metrics?.staleness);
+}
+
+function renderAlerts(alerts = {}, coverage = {}) {
+    const active = alerts.active || []; const list = document.getElementById('operationalAlertsList');
+    set('operationalAlertsCount', active.length ? `${active.length} alerta(s) ativo(s)` : 'Operação dentro das metas avaliadas');
+    set('operationalAlertsCoverage', `Avaliação sobre ${format(coverage.enriched || 0)} de ${format(coverage.total || 0)} chamados enriquecidos (${format(coverage.rate || 0)}%).`);
+    if (!list) return;
+    list.innerHTML = active.length ? active.map(item => `<article class="operational-alert is-${item.severity === 'critical' ? 'critical' : 'warning'}"><i class="fa-solid ${item.severity === 'critical' ? 'fa-triangle-exclamation' : 'fa-circle-exclamation'}"></i><div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.message)}</span></div></article>`).join('') : '<div class="operational-alert-empty is-ok"><i class="fa-solid fa-circle-check"></i><span>Nenhuma regra atingiu o limite de alerta nesta amostra.</span></div>';
 }
 
 const idleLabel = hours => hours >= 24 ? `${format(hours / 24)} dia(s)` : `${format(hours)}h`;

@@ -658,7 +658,9 @@ function renderizarInteligenciaOperacional(inicio, fim) {
     setText('perfVelocity', `${(totalSaidas / diasPeriodo).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}/dia`);
     setText('perfFlowRatio', `${totalEntradas.toLocaleString('pt-BR')} × ${totalSaidas.toLocaleString('pt-BR')}`);
     const saldo = totalEntradas - totalSaidas;
-    setText('perfBacklogDelta', `${saldo > 0 ? '+' : ''}${saldo.toLocaleString('pt-BR')}`);
+    const saldoFormatado = `${saldo > 0 ? '+' : ''}${saldo.toLocaleString('pt-BR')}`;
+    setText('perfBacklogDelta', saldoFormatado);
+    setText('backlogVariationCaption', `Saldo do período: ${saldoFormatado}`);
     setText('perfFlowContext', saldo > 0 ? `Entraram ${saldo} chamados além das saídas` : saldo < 0 ? `Backlog reduzido em ${Math.abs(saldo)} chamados` : 'Entradas e saídas equilibradas');
     setText('smartBacklogTotal', totalBacklog.toLocaleString('pt-BR'));
     setText('smartBacklogIT', backlog.ti.toLocaleString('pt-BR'));
@@ -668,14 +670,16 @@ function renderizarInteligenciaOperacional(inicio, fim) {
     setText('smartBacklogITRate', `${totalBacklog ? Math.round(backlog.ti / totalBacklog * 100) : 0}% do backlog · acionável`);
 
     const allDays = [...new Set([...entradas.keys(), ...saidas.keys()])].sort();
+    let accumulated = 0;
+    const fullBalance = allDays.map(day => accumulated += (entradas.get(day) || 0) - (saidas.get(day) || 0));
+    const visibleStart = Math.max(0, allDays.length - 90);
     const visibleDays = allDays.slice(-90);
     const inputValues = visibleDays.map(day => entradas.get(day) || 0);
     const outputValues = visibleDays.map(day => saidas.get(day) || 0);
-    let accumulated = 0;
-    const balanceValues = visibleDays.map((day, index) => accumulated += inputValues[index] - outputValues[index]);
+    const balanceValues = fullBalance.slice(visibleStart);
     const baseOptions = { responsive: true, maintainAspectRatio: false, plugins: { datalabels: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } };
     chartEntradaSaida = criarOuAtualizarGrafico(chartEntradaSaida, 'graficoEntradaSaida', { type: 'bar', data: { labels: visibleDays.map(day => day.split('-').reverse().slice(0, 2).join('/')), datasets: [{ label: 'Entradas', data: inputValues, backgroundColor: '#60a5fa', borderRadius: 3 }, { label: 'Saídas', data: outputValues, backgroundColor: '#34d399', borderRadius: 3 }] }, options: baseOptions });
-    chartVariacaoBacklog = criarOuAtualizarGrafico(chartVariacaoBacklog, 'graficoVariacaoBacklog', { type: 'line', data: { labels: visibleDays.map(day => day.split('-').reverse().slice(0, 2).join('/')), datasets: [{ label: 'Saldo acumulado', data: balanceValues, borderColor: saldo > 0 ? '#f59e0b' : '#34d399', backgroundColor: saldo > 0 ? 'rgba(245,158,11,.12)' : 'rgba(52,211,153,.12)', fill: true, tension: .25 }] }, options: { ...baseOptions, scales: { y: { ticks: { precision: 0 } } } } });
+    chartVariacaoBacklog = criarOuAtualizarGrafico(chartVariacaoBacklog, 'graficoVariacaoBacklog', { type: 'line', data: { labels: visibleDays.map(day => day.split('-').reverse().slice(0, 2).join('/')), datasets: [{ label: 'Variação do backlog', data: balanceValues, borderColor: saldo > 0 ? '#f59e0b' : '#34d399', backgroundColor: saldo > 0 ? 'rgba(245,158,11,.12)' : 'rgba(52,211,153,.12)', fill: true, tension: .25 }] }, options: { ...baseOptions, scales: { y: { ticks: { precision: 0 } } } } });
 
     const statusSorted = [...status.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
     chartChamadosStatus = criarOuAtualizarGrafico(chartChamadosStatus, 'graficoChamadosStatus', { type: 'bar', data: { labels: statusSorted.map(item => item[0]), datasets: [{ label: 'Chamados', data: statusSorted.map(item => item[1]), backgroundColor: '#8b5cf6', borderRadius: 5 }] }, options: { ...baseOptions, indexAxis: 'y', plugins: { ...baseOptions.plugins, legend: { display: false } } } });

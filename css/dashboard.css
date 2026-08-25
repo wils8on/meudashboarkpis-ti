@@ -277,6 +277,9 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .operational-analysis-table-scroll { max-height: 330px; }
 .operational-analysis-table { min-width: 760px; }
 .operational-analysis-table td { font-size: 9px; }
+.dimension-trend small { display: block; margin-top: 3px; color: var(--ink-faint); font: 500 8px var(--font-mono); }
+.dimension-trend.is-up { color: var(--rust); }
+.dimension-trend.is-down { color: var(--teal); }
 .operational-alerts-panel { margin: 18px 0; padding: 17px 18px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-soft); }
 .operational-alerts-heading, .operational-alerts-heading > div { display: flex; align-items: center; justify-content: space-between; gap: 11px; }
 .operational-alerts-icon { width: 34px; height: 34px; display: grid; place-items: center; color: var(--amber); border-radius: 10px; background: var(--amber-soft); }

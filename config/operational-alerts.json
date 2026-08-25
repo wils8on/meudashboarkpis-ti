@@ -5,7 +5,8 @@
     "enriched_backlog": { "enabled": true, "maximum_count": 20, "minimum_coverage_rate": 10 },
     "reopen_rate": { "enabled": true, "maximum_rate": 10, "minimum_sample": 10 },
     "critical_staleness": { "enabled": true, "hours": 72, "maximum_count": 0 },
-    "continuous_backlog_growth": { "enabled": true, "consecutive_days": 3 }
+    "continuous_backlog_growth": { "enabled": true, "consecutive_days": 3 },
+    "department_volume_anomaly": { "enabled": true, "maximum_growth_rate": 100, "minimum_previous_volume": 10, "minimum_coverage_rate": 50 }
   },
-  "prepared_rules": ["department_volume_anomaly"]
+  "prepared_rules": []
 }

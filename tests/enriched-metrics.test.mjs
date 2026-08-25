@@ -40,3 +40,10 @@ test('gera alertas somente quando amostra e limites configurados permitem', () =
     assert.deepEqual(metrics.alerts.active.map(item => item.id), ['sla_deadline', 'reopen_rate', 'critical_staleness']);
     assert.equal(metrics.alerts.config_version, 1);
 });
+
+test('compara volume dimensional dos últimos 30 dias com período anterior', () => {
+    const category = { id: 'c', name: 'Acesso' }; const facts = {};
+    ['2026-08-24', '2026-08-20', '2026-07-30', '2026-07-10'].forEach((date, index) => { facts[index] = buildMetricFact({ id: String(index), creation_date: `${date}T10:00:00Z`, category }); });
+    const result = calculateEnrichedMetrics(facts, 4, '2026-08-25T12:00:00Z').breakdowns.categories[0];
+    assert.equal(result.volume_current_30d, 3); assert.equal(result.volume_previous_30d, 1); assert.equal(result.volume_growth_30d, 200);
+});

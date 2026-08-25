@@ -29,6 +29,10 @@ function operationalAlerts(facts, metrics, config = {}) {
     if (reopenRule?.enabled && facts.length >= Number(reopenRule.minimum_sample || 0) && reopenRate > Number(reopenRule.maximum_rate)) add('reopen_rate', 'warning', 'Taxa de reabertura elevada', `${reopenRate}% dos chamados enriquecidos foram reabertos.`, reopenRate, reopenRule.maximum_rate);
     const staleRule = rules.critical_staleness; const staleHours = Number(staleRule?.hours || 72); const staleCount = metrics.staleness.records.filter(item => item.idle_hours > staleHours).length;
     if (staleRule?.enabled && staleCount > Number(staleRule.maximum_count || 0)) add('critical_staleness', 'critical', 'Chamados críticos sem movimentação', `${staleCount} chamado(s) estão parados há mais de ${staleHours / 24} dia(s).`, staleCount, staleRule.maximum_count);
+    const anomalyRule = rules.department_volume_anomaly;
+    if (anomalyRule?.enabled && metrics.coverage.rate >= Number(anomalyRule.minimum_coverage_rate || 0)) {
+        metrics.breakdowns.departments.filter(item => item.volume_previous_30d >= Number(anomalyRule.minimum_previous_volume || 0) && item.volume_growth_30d > Number(anomalyRule.maximum_growth_rate || 0)).forEach(item => add(`department_anomaly_${item.id || item.name}`, 'warning', `Aumento anormal em ${item.name}`, `O volume cresceu ${item.volume_growth_30d}% nos últimos 30 dias.`, item.volume_growth_30d, anomalyRule.maximum_growth_rate));
+    }
     return { active: alerts, active_count: alerts.length, config_version: config.version || null, prepared_rules: config.prepared_rules || [] };
 }
 
@@ -38,18 +42,20 @@ function slaMetric(facts, field) {
     return { eligible: eligible.length, compliant, rate: eligible.length ? round(compliant / eligible.length * 100) : null };
 }
 
-function groupMetrics(facts, field) {
+function groupMetrics(facts, field, generatedAt = new Date().toISOString()) {
+    const reference = validDate(generatedAt) || new Date(); const currentStart = new Date(reference); currentStart.setUTCDate(currentStart.getUTCDate() - 30); const previousStart = new Date(reference); previousStart.setUTCDate(previousStart.getUTCDate() - 60);
     const groups = new Map();
     facts.forEach(item => {
         const entity = item[field]; if (!entity?.id && !entity?.name) return;
         const key = entity.id || entity.name;
-        const group = groups.get(key) || { id: entity.id || null, name: entity.name || 'Não informado', volume: 0, concluded: 0, backlog: 0, reopened: 0, sla: [], initialization: [], resolution: [], response: [], work: [], workElapsed: [], interactions: [], grades: [] };
+        const group = groups.get(key) || { id: entity.id || null, name: entity.name || 'Não informado', volume: 0, current30: 0, previous30: 0, concluded: 0, backlog: 0, reopened: 0, sla: [], initialization: [], resolution: [], response: [], work: [], workElapsed: [], interactions: [], grades: [] };
         group.volume++;
         if (item.end_date) group.concluded++; else group.backlog++;
         if (item.reopened) group.reopened++;
         if (typeof item.sla_deadline === 'boolean') group.sla.push(item.sla_deadline);
         if (typeof item.sla_initialization === 'boolean') group.initialization.push(item.sla_initialization);
         const created = validDate(item.creation_date); const ended = validDate(item.end_date); const replied = validDate(item.first_reply_date);
+        if (created && created <= reference && created >= currentStart) group.current30++; else if (created && created < currentStart && created >= previousStart) group.previous30++;
         if (created && ended && ended >= created) group.resolution.push((ended - created) / 3600000);
         if (created && replied && replied >= created) group.response.push((replied - created) / 3600000);
         const worked = Number(item.work_time_seconds); if (Number.isFinite(worked) && worked >= 0) { group.work.push(worked / 3600); if (created && ended && ended > created) group.workElapsed.push({ worked: worked / 3600, elapsed: (ended - created) / 3600000 }); }
@@ -60,6 +66,7 @@ function groupMetrics(facts, field) {
     return [...groups.values()].map(group => ({
         id: group.id, name: group.name, volume: group.volume, concluded: group.concluded, backlog: group.backlog, reopened: group.reopened,
         completion_rate: group.volume ? round(group.concluded / group.volume * 100) : null,
+        volume_current_30d: group.current30, volume_previous_30d: group.previous30, volume_growth_30d: group.previous30 ? round((group.current30 - group.previous30) / group.previous30 * 100) : null,
         reopen_rate: group.volume ? round(group.reopened / group.volume * 100) : null,
         sla_deadline_rate: group.sla.length ? round(group.sla.filter(Boolean).length / group.sla.length * 100) : null,
         sla_initialization_rate: group.initialization.length ? round(group.initialization.filter(Boolean).length / group.initialization.length * 100) : null,
@@ -73,10 +80,10 @@ function groupMetrics(facts, field) {
     })).sort((a, b) => b.volume - a.volume);
 }
 
-function priorityMetrics(facts) {
+function priorityMetrics(facts, generatedAt) {
     const labels = { 1: 'Baixa', 2: 'Normal', 3: 'Alta', 4: 'Urgente' };
     const withDimension = facts.filter(item => item.priority != null).map(item => ({ ...item, priority_dimension: { id: String(item.priority), name: labels[Number(item.priority)] || `Prioridade ${item.priority}` } }));
-    return groupMetrics(withDimension, 'priority_dimension');
+    return groupMetrics(withDimension, 'priority_dimension', generatedAt);
 }
 
 export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, generatedAt = new Date().toISOString(), alertConfig = {}) {
@@ -98,7 +105,7 @@ export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, gene
         interactions: { count: interactionCounts.length, total: interactionCounts.reduce((sum, value) => sum + value, 0), mean: interactionCounts.length ? round(average(interactionCounts)) : null, high_touch: interactionCounts.filter(value => value > 10).length },
         evaluation: { count: grades.length, mean_grade: grades.length ? round(average(grades)) : null, response_rate: concluded.length ? round(evaluatedConcluded.length / concluded.length * 100) : null, eligible_concluded: concluded.length, problem_solved_count: solved.length, problem_solved_rate: solved.length ? round(solved.filter(item => item.evaluation_problem_solved).length / solved.length * 100) : null },
         staleness: stalenessMetrics(facts, generatedAt),
-        breakdowns: { departments: groupMetrics(facts, 'department'), categories: groupMetrics(facts, 'category'), operators: groupMetrics(facts, 'responsible_agent'), priorities: priorityMetrics(facts) }
+        breakdowns: { departments: groupMetrics(facts, 'department', generatedAt), categories: groupMetrics(facts, 'category', generatedAt), operators: groupMetrics(facts, 'responsible_agent', generatedAt), priorities: priorityMetrics(facts, generatedAt) }
     };
     metrics.alerts = operationalAlerts(facts, metrics, alertConfig);
     return metrics;

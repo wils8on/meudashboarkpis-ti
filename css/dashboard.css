@@ -262,6 +262,8 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .module-header p { color: var(--ink-muted); font-size: 11px; line-height: 1.5; }
 .module-kpi-grid { grid-template-columns: repeat(4, minmax(180px, 1fr)) !important; }
 .backlog-kpi-grid { grid-template-columns: repeat(3, minmax(190px, 1fr)) !important; }
+.enriched-metrics-heading { margin-top: 22px; }
+.enriched-metrics-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 20px; }
 .backlog-intelligence-heading { margin-top: 22px; }
 .backlog-intelligence-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
 .backlog-intelligence-card { min-width: 0; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-soft); }
@@ -652,6 +654,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     .overview-kpi-grid { grid-template-columns: repeat(3, minmax(160px, 1fr)) !important; }
     .executive-brief { grid-template-columns: 1fr; }
     .module-kpi-grid, .support-kpi-grid { grid-template-columns: repeat(2, minmax(180px, 1fr)) !important; }
+    .enriched-metrics-grid { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
     .aging-kpi-grid { grid-template-columns: repeat(3, minmax(160px, 1fr)) !important; }
     .quiet-periods-grid { grid-template-columns: 1fr; }
     .backlog-intelligence-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }

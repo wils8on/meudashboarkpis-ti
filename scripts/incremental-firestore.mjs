@@ -44,6 +44,17 @@ export async function createIncrementalStore(secretValue) {
                 updated_at: timestampField(updatedAt)
             });
         },
+        async loadMetricState() {
+            const document = await get('tomticket_sync_state', 'metrics');
+            try { return JSON.parse(document?.fields?.payload?.stringValue || '{}'); }
+            catch { return {}; }
+        },
+        saveMetricState(state, updatedAt) {
+            return put('tomticket_sync_state', 'metrics', { payload: stringField(JSON.stringify(state)), enriched_records: integerField(Object.keys(state).length), updated_at: timestampField(updatedAt) });
+        },
+        saveMetrics(metrics) {
+            return put('tomticket_metrics', 'current', { payload: stringField(JSON.stringify(metrics)), generated_at: timestampField(metrics.generated_at), enriched_records: integerField(metrics.coverage?.enriched), total_records: integerField(metrics.coverage?.total), coverage_rate: { doubleValue: Number(metrics.coverage?.rate || 0) } });
+        },
         async loadTicket(id) {
             const document = await get('tomticket_tickets', id);
             try { return JSON.parse(document?.fields?.payload?.stringValue || 'null'); }
@@ -87,6 +98,7 @@ export async function createIncrementalStore(secretValue) {
                 detail_requests: integerField(run.detail_requests),
                 snapshots: integerField(run.snapshots),
                 dimensions: integerField(run.dimensions),
+                enriched_records: integerField(run.enriched_records),
                 errors: integerField(run.errors),
                 success: booleanField(run.success),
                 quality_issues: integerField(run.quality_issues)

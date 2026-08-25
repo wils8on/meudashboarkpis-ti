@@ -4,6 +4,7 @@ import { normalizeTicketDetail } from './ticket-normalizer.mjs';
 import { buildSnapshot, diffRelevantState } from './ticket-diff.mjs';
 import { extractDimensions } from './ticket-dimensions.mjs';
 import { inspectDetailQuality, inspectListingQuality } from './ticket-quality.mjs';
+import { buildMetricFact, calculateEnrichedMetrics } from './enriched-metrics.mjs';
 
 const DETAIL_LIMIT = 20;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -49,6 +50,7 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     const runId = started.toISOString().replace(/[.:]/g, '-');
     const store = await createIncrementalStore(firebaseSecret);
     const state = await store.loadState();
+    const metricState = await store.loadMetricState();
     const candidates = selectDetailCandidates(tickets, state, detailLimit);
     const counters = { snapshots: 0, errors: 0, details: 0 };
     const quality = inspectListingQuality(tickets, started.toISOString());
@@ -58,6 +60,7 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
         try {
             const detail = await fetchDetail(candidate.ticket.id, token);
             const normalized = normalizeTicketDetail(detail);
+            metricState[normalized.id] = buildMetricFact(normalized);
             inspectDetailQuality(normalized, quality);
             const previous = await store.loadTicket(normalized.id);
             const diff = diffRelevantState(previous, normalized);
@@ -86,11 +89,14 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     });
     const finished = new Date();
     await store.saveState(state, finished.toISOString());
+    await store.saveMetricState(metricState, finished.toISOString());
+    const metrics = calculateEnrichedMetrics(metricState, tickets.length, finished.toISOString());
+    await store.saveMetrics(metrics);
     const run = {
         id: runId, started_at: started.toISOString(), finished_at: finished.toISOString(), duration_ms: finished - started,
         listed: tickets.length, new_tickets: candidates.filter(item => item.isNew).length,
         changed_tickets: candidates.filter(item => item.changed).length, detail_requests: counters.details,
-        snapshots: counters.snapshots, dimensions: dimensionsWritten.size, errors: counters.errors,
+        snapshots: counters.snapshots, dimensions: dimensionsWritten.size, enriched_records: metrics.coverage.enriched, errors: counters.errors,
         quality_issues: quality.total_issues, success: counters.errors === 0
     };
     await store.saveQualityReport(runId, quality);

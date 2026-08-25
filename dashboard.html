@@ -393,6 +393,14 @@
                         <div class="kpi-card comparativo"><div class="kpi-info"><p>Variação do backlog</p><h3 id="perfBacklogDelta">0</h3><span class="kpi-context">Crescimento ou redução no período</span></div><i class="fa-solid fa-arrow-trend-up icon"></i></div>
                     </div>
 
+                    <div class="section-heading enriched-metrics-heading"><div><span class="section-kicker">Dados enriquecidos</span><h3>SLA, resposta e trabalho efetivo</h3></div><p id="enrichedCoverage">Aguardando enriquecimento incremental</p></div>
+                    <div class="kpi-grid enriched-metrics-grid">
+                        <div class="kpi-card verde"><div class="kpi-info"><p>SLA de inicialização</p><h3 id="enrichedSlaInitialization">—</h3><span class="kpi-context" id="enrichedSlaContext">Sem amostra elegível</span></div><i class="fa-solid fa-hourglass-start icon"></i></div>
+                        <div class="kpi-card azul"><div class="kpi-info"><p>Primeira resposta média</p><h3 id="enrichedFirstResponse">—</h3><span class="kpi-context" id="enrichedFirstResponseContext">Sem respostas registradas</span></div><i class="fa-solid fa-reply icon"></i></div>
+                        <div class="kpi-card roxo"><div class="kpi-info"><p>Trabalho efetivo médio</p><h3 id="enrichedWorkTime">—</h3><span class="kpi-context" id="enrichedWorkContext">Sem cronômetros registrados</span></div><i class="fa-solid fa-stopwatch icon"></i></div>
+                        <div class="kpi-card rosa"><div class="kpi-info"><p>Avaliação média</p><h3 id="enrichedEvaluation">—</h3><span class="kpi-context" id="enrichedEvaluationContext">Sem avaliações</span></div><i class="fa-solid fa-star icon"></i></div>
+                    </div>
+
                     <div class="charts-split-grid">
                         <div class="chart-container">
                             <div class="chart-heading"><div><span class="section-kicker">Velocidade</span><h4>Taxa de resolução mensal</h4></div><span class="chart-caption">Percentual concluído no mês de abertura</span></div>
@@ -741,6 +749,7 @@
     <script type="module" src="js/auth-guard.js"></script>
     <script type="module" src="js/client-store.js"></script>
     <script type="module" src="js/private-ticket-store.js"></script>
+    <script type="module" src="js/enriched-metrics-dashboard.js"></script>
     <script type="module" src="js/solutions-store.js"></script>
     <script type="module" src="js/solutions-dashboard.js"></script>
     <script type="module" src="js/access-admin.js"></script>

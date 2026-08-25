@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "default": "outros",
+  "groups": {
+    "finalizado": ["Finalizado"],
+    "aguardando_ti": [
+      "Aguardando interação do atendente",
+      "Respondido pelo cliente, aguardando resposta",
+      "Em Analise Técnica",
+      "Em análise",
+      "Analise para Desenvolvimento"
+    ],
+    "aguardando_cliente": ["Aguardando cliente"],
+    "em_espera": ["Em pausa", "Aguardando terceiro", "Aguardando Retorno do Setor Responsável"],
+    "em_execucao": []
+  }
+}

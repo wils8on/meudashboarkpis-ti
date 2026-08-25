@@ -4,6 +4,6 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check js/dashboard.js && node --check js/auth-guard.js && node --check js/client-store.js && node --check js/private-ticket-store.js && node --check js/solutions-store.js && node --check js/solutions-dashboard.js && node --check scripts/sanitize-tomticket.mjs && node --check scripts/private-firestore.mjs && node --check scripts/import-solutions-firestore.mjs && node --check scripts/inspect-tomticket-detail.mjs && node --check scripts/sync-tomticket.mjs"
+    "check": "node --check js/dashboard.js && node --check js/auth-guard.js && node --check js/client-store.js && node --check js/private-ticket-store.js && node --check js/solutions-store.js && node --check js/solutions-dashboard.js && node --check scripts/sanitize-tomticket.mjs && node --check scripts/private-firestore.mjs && node --check scripts/import-solutions-firestore.mjs && node --check scripts/inspect-tomticket-detail.mjs && node --check scripts/ticket-normalizer.mjs && node --check scripts/ticket-diff.mjs && node --check scripts/sync-tomticket.mjs"
   }
 }

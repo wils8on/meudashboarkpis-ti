@@ -22,7 +22,7 @@ function render(metrics) {
 async function load() {
     if (local) { render({ coverage: { enriched: 0, total: 3, rate: 0 } }); return; }
     const app = getApps()[0] || initializeApp(firebaseConfig); const auth = getAuth(app); await waitForUser(auth);
-    const snapshot = await getDoc(doc(getFirestore(app), 'tomticket_metrics', 'current')); if (!snapshot.exists()) return;
+    const snapshot = await getDoc(doc(getFirestore(app), 'tomticket_private', 'metrics')); if (!snapshot.exists()) return;
     render(JSON.parse(snapshot.data().payload || '{}'));
 }
 document.addEventListener('DOMContentLoaded', () => load().catch(error => console.warn('Métricas enriquecidas indisponíveis.', error)));

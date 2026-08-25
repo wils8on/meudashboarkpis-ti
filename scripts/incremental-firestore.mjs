@@ -53,7 +53,7 @@ export async function createIncrementalStore(secretValue) {
             return put('tomticket_sync_state', 'metrics', { payload: stringField(JSON.stringify(state)), enriched_records: integerField(Object.keys(state).length), updated_at: timestampField(updatedAt) });
         },
         saveMetrics(metrics) {
-            return put('tomticket_metrics', 'current', { payload: stringField(JSON.stringify(metrics)), generated_at: timestampField(metrics.generated_at), enriched_records: integerField(metrics.coverage?.enriched), total_records: integerField(metrics.coverage?.total), coverage_rate: { doubleValue: Number(metrics.coverage?.rate || 0) } });
+            return put('tomticket_private', 'metrics', { payload: stringField(JSON.stringify(metrics)), generated_at: timestampField(metrics.generated_at), enriched_records: integerField(metrics.coverage?.enriched), total_records: integerField(metrics.coverage?.total), coverage_rate: { doubleValue: Number(metrics.coverage?.rate || 0) } });
         },
         async loadTicket(id) {
             const document = await get('tomticket_tickets', id);

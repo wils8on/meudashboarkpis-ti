@@ -43,7 +43,7 @@ function renderSyncSummary(sync = {}) {
     const element = document.getElementById('syncIncrementalRun'); if (!element) return;
     if (!sync.finished_at) { element.textContent = 'Aguardando execução'; return; }
     element.textContent = `${format(sync.detail_requests)} detalhes · ${format(sync.errors)} erros`;
-    element.title = `${format(sync.new_tickets)} novos · ${format(sync.changed_tickets)} alterados · ${format(sync.snapshots)} snapshots · ${(Number(sync.duration_ms || 0) / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}s`;
+    element.title = `${format(sync.new_tickets)} novos · ${format(sync.changed_tickets)} alterados · ${format(sync.snapshots)} snapshots · ${format(sync.retries || 0)} retentativas · ${(Number(sync.duration_ms || 0) / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 })}s`;
     element.classList.toggle('sync-run-error', Number(sync.errors) > 0);
 }
 

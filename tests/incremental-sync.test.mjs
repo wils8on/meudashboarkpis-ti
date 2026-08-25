@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { listingFingerprint, selectDetailCandidates, summarizeListingChanges } from '../scripts/incremental-sync.mjs';
+import { fetchDetailWithRetry, listingFingerprint, selectDetailCandidates, summarizeListingChanges } from '../scripts/incremental-sync.mjs';
 
 const ticket = (id, status = 'Aberto') => ({ id, priority: 2, reopened: false, end_date: null, status: { description: status }, sla: { deadline: { accomplished: true } } });
 
@@ -33,6 +33,24 @@ test('resume novos e alterados em toda a listagem antes do limite de detalhes', 
     const tickets = [ticket('novo'), ticket('alterado', 'Finalizado'), ticket('estavel')];
     const state = { alterado: { list_hash: listingFingerprint(ticket('alterado')) }, estavel: { list_hash: listingFingerprint(ticket('estavel')) } };
     assert.deepEqual(summarizeListingChanges(tickets, state), { new_tickets: 1, changed_tickets: 1 });
+});
+
+test('repete erro temporário e respeita retry-after sem expor token', async () => {
+    const waits = []; let calls = 0;
+    const fetchImpl = async () => { calls++; return calls === 1 ? { ok: false, status: 429, headers: { get: () => '2' } } : { ok: true, json: async () => ({ data: { id: 'x' } }) }; };
+    const result = await fetchDetailWithRetry('x', 'segredo', { fetchImpl, wait: async ms => waits.push(ms) });
+    assert.equal(result.retries, 1); assert.deepEqual(waits, [2000]); assert.equal(result.data.id, 'x');
+});
+
+test('não repete erro definitivo da API', async () => {
+    let calls = 0; const fetchImpl = async () => { calls++; return { ok: false, status: 404, headers: { get: () => null } }; };
+    await assert.rejects(fetchDetailWithRetry('x', 'segredo', { fetchImpl, wait: async () => {} }), /HTTP 404/); assert.equal(calls, 1);
+});
+
+test('repete falha temporária de rede', async () => {
+    let calls = 0; const waits = []; const fetchImpl = async () => { calls++; if (calls === 1) throw new Error('timeout'); return { ok: true, json: async () => ({ data: { id: 'ok' } }) }; };
+    const result = await fetchDetailWithRetry('x', 'segredo', { fetchImpl, wait: async ms => waits.push(ms) });
+    assert.equal(result.retries, 1); assert.deepEqual(waits, [1000]);
 });
 
 test('reprocessa detalhe antigo que ainda não possui fato métrico', () => {

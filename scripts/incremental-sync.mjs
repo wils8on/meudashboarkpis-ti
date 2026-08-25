@@ -44,17 +44,36 @@ export function summarizeListingChanges(tickets, state = {}) {
     }, { new_tickets: 0, changed_tickets: 0 });
 }
 
-async function fetchDetail(ticketId, token) {
+export async function fetchDetailWithRetry(ticketId, token, { fetchImpl = fetch, maxAttempts = 3, wait = delay } = {}) {
     const url = new URL('https://api.tomticket.com/v2.0/ticket/detail');
     url.searchParams.set('ticket_id', String(ticketId));
     url.searchParams.set('show_stopwatch', '1');
     url.searchParams.set('show_staggered_tickets', '1');
     url.searchParams.set('show_tags', '1');
-    const response = await fetch(url, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } });
-    if (!response.ok) throw new Error(`Detalhe TomTicket HTTP ${response.status}.`);
-    const payload = await response.json();
-    if (payload?.error === true || !payload?.data) throw new Error('Detalhe TomTicket sem objeto data.');
-    return payload.data;
+    let lastError; const attempts = Math.max(1, Number(maxAttempts) || 1);
+    for (let attempt = 1; attempt <= attempts; attempt++) {
+        let response;
+        try { response = await fetchImpl(url, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } }); }
+        catch (error) {
+            lastError = new Error(`Falha de rede ao consultar detalhe TomTicket: ${error.message}`);
+            if (attempt === attempts) break;
+            console.warn(`Falha temporária de rede no detalhe TomTicket; nova tentativa ${attempt + 1}/${attempts}.`);
+            await wait(Math.min(1000 * 2 ** (attempt - 1), 10000)); continue;
+        }
+        if (response.ok) {
+            const payload = await response.json();
+            if (payload?.error === true || !payload?.data) throw new Error('Detalhe TomTicket sem objeto data.');
+            return { data: payload.data, retries: attempt - 1 };
+        }
+        lastError = new Error(`Detalhe TomTicket HTTP ${response.status}.`);
+        const transient = response.status === 429 || response.status >= 500;
+        if (!transient || attempt === attempts) break;
+        const retryAfter = Number(response.headers?.get?.('retry-after'));
+        const waitMs = Number.isFinite(retryAfter) && retryAfter >= 0 ? Math.min(retryAfter * 1000, 10000) : Math.min(1000 * 2 ** (attempt - 1), 10000);
+        console.warn(`Detalhe TomTicket temporariamente indisponível (HTTP ${response.status}); nova tentativa ${attempt + 1}/${attempts}.`);
+        await wait(waitMs);
+    }
+    throw lastError;
 }
 
 export async function syncIncrementalTickets(tickets, { token, firebaseSecret, detailLimit = Number(process.env.TOMTICKET_DETAIL_LIMIT || DETAIL_LIMIT) } = {}) {
@@ -65,13 +84,14 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     const metricState = await store.loadMetricState();
     const listingChanges = summarizeListingChanges(tickets, state);
     const candidates = selectDetailCandidates(tickets, state, detailLimit, metricState);
-    const counters = { snapshots: 0, errors: 0, details: 0 };
+    const counters = { snapshots: 0, errors: 0, details: 0, retries: 0 };
     const quality = inspectListingQuality(tickets, started.toISOString());
     const dimensionsWritten = new Set();
 
     for (const candidate of candidates) {
         try {
-            const detail = await fetchDetail(candidate.ticket.id, token);
+            const detailResult = await fetchDetailWithRetry(candidate.ticket.id, token);
+            const detail = detailResult.data; counters.retries += detailResult.retries;
             const normalized = normalizeTicketDetail(detail);
             metricState[normalized.id] = buildMetricFact(normalized);
             inspectDetailQuality(normalized, quality);
@@ -112,7 +132,7 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     const run = {
         id: runId, started_at: started.toISOString(), finished_at: finished.toISOString(), duration_ms: finished - started,
         listed: tickets.length, new_tickets: listingChanges.new_tickets,
-        changed_tickets: listingChanges.changed_tickets, detail_requests: counters.details,
+        changed_tickets: listingChanges.changed_tickets, detail_requests: counters.details, retries: counters.retries,
         snapshots: counters.snapshots, dimensions: dimensionsWritten.size, enriched_records: metrics.coverage.enriched, errors: counters.errors,
         quality_issues: quality.total_issues, success: counters.errors === 0
     };

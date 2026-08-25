@@ -104,6 +104,7 @@ export async function createIncrementalStore(secretValue) {
                 new_tickets: integerField(run.new_tickets),
                 changed_tickets: integerField(run.changed_tickets),
                 detail_requests: integerField(run.detail_requests),
+                retries: integerField(run.retries),
                 snapshots: integerField(run.snapshots),
                 dimensions: integerField(run.dimensions),
                 enriched_records: integerField(run.enriched_records),

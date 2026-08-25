@@ -92,7 +92,7 @@ async function sync() {
 
     try {
         const incremental = await syncIncrementalTickets(allTickets, { token, firebaseSecret: process.env.FIREBASE_SERVICE_ACCOUNT });
-        console.log(`Camada incremental: ${incremental.detail_requests} detalhe(s), ${incremental.snapshots} snapshot(s), ${incremental.errors} erro(s), duração ${incremental.duration_ms}ms.`);
+        console.log(`Camada incremental: ${incremental.detail_requests} detalhe(s), ${incremental.snapshots} snapshot(s), ${incremental.dimensions} dimensão(ões), ${incremental.quality_issues} inconsistência(s), ${incremental.errors} erro(s), duração ${incremental.duration_ms}ms.`);
     } catch (error) {
         console.warn(`Camada incremental indisponível; a sincronização atual foi preservada: ${error.message}`);
     }

@@ -90,7 +90,8 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
         id: runId, started_at: started.toISOString(), finished_at: finished.toISOString(), duration_ms: finished - started,
         listed: tickets.length, new_tickets: candidates.filter(item => item.isNew).length,
         changed_tickets: candidates.filter(item => item.changed).length, detail_requests: counters.details,
-        snapshots: counters.snapshots, errors: counters.errors, quality_issues: quality.total_issues, success: counters.errors === 0
+        snapshots: counters.snapshots, dimensions: dimensionsWritten.size, errors: counters.errors,
+        quality_issues: quality.total_issues, success: counters.errors === 0
     };
     await store.saveQualityReport(runId, quality);
     await store.saveRun(run);

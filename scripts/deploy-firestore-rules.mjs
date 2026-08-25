@@ -3,6 +3,7 @@ import { pathToFileURL } from 'node:url';
 import { getAccessToken } from './private-firestore.mjs';
 
 const API_ROOT = 'https://firebaserules.googleapis.com/v1';
+const RULES_SCOPE = 'https://www.googleapis.com/auth/firebase';
 
 async function request(url, token, options = {}, fetchImpl = fetch) {
     const response = await fetchImpl(url, {
@@ -18,7 +19,7 @@ export async function deployFirestoreRules({ serviceAccountValue, rulesContent, 
     const serviceAccount = JSON.parse(serviceAccountValue);
     const projectId = serviceAccount.project_id;
     if (!projectId) throw new Error('Credencial Firebase sem project_id.');
-    const token = await fetchToken(serviceAccount);
+    const token = await fetchToken(serviceAccount, RULES_SCOPE);
     const projectName = `projects/${projectId}`;
     const ruleset = await request(`${API_ROOT}/${projectName}/rulesets`, token, {
         method: 'POST', body: JSON.stringify({ source: { files: [{ name: 'firestore.rules', content: rulesContent }] } })

@@ -28,11 +28,11 @@ export function chunkPrivateTickets(tickets, chunkSize = CHUNK_SIZE) {
     return Array.from({ length: Math.ceil(normalized.length / chunkSize) }, (_, index) => normalized.slice(index * chunkSize, (index + 1) * chunkSize));
 }
 
-export function createServiceAccountAssertion(serviceAccount, now = Math.floor(Date.now() / 1000)) {
+export function createServiceAccountAssertion(serviceAccount, now = Math.floor(Date.now() / 1000), scope = FIRESTORE_SCOPE) {
     const header = base64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
     const payload = base64url(JSON.stringify({
         iss: serviceAccount.client_email,
-        scope: FIRESTORE_SCOPE,
+        scope,
         aud: serviceAccount.token_uri || 'https://oauth2.googleapis.com/token',
         iat: now,
         exp: now + 3600
@@ -44,8 +44,8 @@ export function createServiceAccountAssertion(serviceAccount, now = Math.floor(D
     return `${unsigned}.${signer.sign(serviceAccount.private_key, 'base64url')}`;
 }
 
-export async function getAccessToken(serviceAccount) {
-    const assertion = createServiceAccountAssertion(serviceAccount);
+export async function getAccessToken(serviceAccount, scope = FIRESTORE_SCOPE) {
+    const assertion = createServiceAccountAssertion(serviceAccount, undefined, scope);
     const response = await fetch(serviceAccount.token_uri || 'https://oauth2.googleapis.com/token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

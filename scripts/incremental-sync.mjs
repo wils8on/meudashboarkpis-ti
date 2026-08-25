@@ -2,6 +2,8 @@ import { createHash } from 'node:crypto';
 import { createIncrementalStore } from './incremental-firestore.mjs';
 import { normalizeTicketDetail } from './ticket-normalizer.mjs';
 import { buildSnapshot, diffRelevantState } from './ticket-diff.mjs';
+import { extractDimensions } from './ticket-dimensions.mjs';
+import { inspectDetailQuality, inspectListingQuality } from './ticket-quality.mjs';
 
 const DETAIL_LIMIT = 20;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -49,16 +51,26 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     const state = await store.loadState();
     const candidates = selectDetailCandidates(tickets, state, detailLimit);
     const counters = { snapshots: 0, errors: 0, details: 0 };
+    const quality = inspectListingQuality(tickets, started.toISOString());
+    const dimensionsWritten = new Set();
 
     for (const candidate of candidates) {
         try {
             const detail = await fetchDetail(candidate.ticket.id, token);
             const normalized = normalizeTicketDetail(detail);
+            inspectDetailQuality(normalized, quality);
             const previous = await store.loadTicket(normalized.id);
             const diff = diffRelevantState(previous, normalized);
             await store.saveTicket(normalized);
             const snapshot = buildSnapshot(normalized, diff, normalized.collected_at);
             if (snapshot) { await store.saveSnapshot(snapshot); counters.snapshots++; }
+            const dimensions = extractDimensions(normalized).filter(item => {
+                const key = `${item.type}/${item.id}`;
+                if (dimensionsWritten.has(key)) return false;
+                dimensionsWritten.add(key);
+                return true;
+            });
+            await Promise.all(dimensions.map(item => store.saveDimension(item, normalized.collected_at)));
             state[normalized.id] = { list_hash: candidate.fingerprint, detail_hash: diff.hash, enriched_at: normalized.collected_at };
             counters.details++;
         } catch (error) {
@@ -78,8 +90,9 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
         id: runId, started_at: started.toISOString(), finished_at: finished.toISOString(), duration_ms: finished - started,
         listed: tickets.length, new_tickets: candidates.filter(item => item.isNew).length,
         changed_tickets: candidates.filter(item => item.changed).length, detail_requests: counters.details,
-        snapshots: counters.snapshots, errors: counters.errors, success: counters.errors === 0
+        snapshots: counters.snapshots, errors: counters.errors, quality_issues: quality.total_issues, success: counters.errors === 0
     };
+    await store.saveQualityReport(runId, quality);
     await store.saveRun(run);
     return run;
 }

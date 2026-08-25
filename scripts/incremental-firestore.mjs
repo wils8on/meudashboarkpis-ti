@@ -87,7 +87,23 @@ export async function createIncrementalStore(secretValue) {
                 detail_requests: integerField(run.detail_requests),
                 snapshots: integerField(run.snapshots),
                 errors: integerField(run.errors),
-                success: booleanField(run.success)
+                success: booleanField(run.success),
+                quality_issues: integerField(run.quality_issues)
+            });
+        },
+        saveDimension(dimension, updatedAt) {
+            return put(`tomticket_dim_${dimension.type}`, dimension.id, {
+                payload: stringField(JSON.stringify(dimension)),
+                name: stringField(dimension.name),
+                updated_at: timestampField(updatedAt)
+            });
+        },
+        saveQualityReport(runId, report) {
+            return put('tomticket_quality_reports', runId, {
+                payload: stringField(JSON.stringify(report)),
+                generated_at: timestampField(report.generated_at),
+                records: integerField(report.records),
+                total_issues: integerField(report.total_issues)
             });
         }
     };

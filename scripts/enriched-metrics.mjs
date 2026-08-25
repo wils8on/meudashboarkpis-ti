@@ -4,7 +4,7 @@ const average = values => values.length ? values.reduce((sum, value) => sum + va
 const median = values => { if (!values.length) return null; const sorted = [...values].sort((a, b) => a - b); const middle = Math.floor(sorted.length / 2); return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2; };
 
 export function buildMetricFact(ticket = {}) {
-    return { id: ticket.id, protocol: ticket.protocol, subject: ticket.subject, priority: ticket.priority, creation_date: ticket.creation_date, end_date: ticket.end_date, first_reply_date: ticket.first_reply_date, last_movement_date: ticket.situation?.apply_date, status: ticket.situation?.description, work_time_seconds: ticket.work_time_seconds, reopened: ticket.reopened === true, sla_initialization: ticket.sla?.initialization?.accomplished ?? null, sla_deadline: ticket.sla?.deadline?.accomplished ?? null, evaluation_grade: ticket.evaluation?.grade ?? null, department: ticket.department, category: ticket.category, responsible_agent: ticket.responsible_agent };
+    return { schema_version: 2, id: ticket.id, protocol: ticket.protocol, subject: ticket.subject, priority: ticket.priority, creation_date: ticket.creation_date, end_date: ticket.end_date, first_reply_date: ticket.first_reply_date, last_movement_date: ticket.situation?.apply_date, status: ticket.situation?.description, interaction_count: Number.isInteger(ticket.interaction_count) && ticket.interaction_count >= 0 ? ticket.interaction_count : null, work_time_seconds: ticket.work_time_seconds, reopened: ticket.reopened === true, sla_initialization: ticket.sla?.initialization?.accomplished ?? null, sla_deadline: ticket.sla?.deadline?.accomplished ?? null, evaluation_grade: ticket.evaluation?.grade ?? null, evaluation_problem_solved: ticket.evaluation?.problem_solved ?? null, department: ticket.department, category: ticket.category, responsible_agent: ticket.responsible_agent };
 }
 
 function stalenessMetrics(facts, generatedAt) {
@@ -43,7 +43,7 @@ function groupMetrics(facts, field) {
     facts.forEach(item => {
         const entity = item[field]; if (!entity?.id && !entity?.name) return;
         const key = entity.id || entity.name;
-        const group = groups.get(key) || { id: entity.id || null, name: entity.name || 'Não informado', volume: 0, concluded: 0, backlog: 0, reopened: 0, sla: [], initialization: [], resolution: [], response: [], work: [] };
+        const group = groups.get(key) || { id: entity.id || null, name: entity.name || 'Não informado', volume: 0, concluded: 0, backlog: 0, reopened: 0, sla: [], initialization: [], resolution: [], response: [], work: [], interactions: [], grades: [] };
         group.volume++;
         if (item.end_date) group.concluded++; else group.backlog++;
         if (item.reopened) group.reopened++;
@@ -53,6 +53,8 @@ function groupMetrics(facts, field) {
         if (created && ended && ended >= created) group.resolution.push((ended - created) / 3600000);
         if (created && replied && replied >= created) group.response.push((replied - created) / 3600000);
         const worked = Number(item.work_time_seconds); if (Number.isFinite(worked) && worked >= 0) group.work.push(worked / 3600);
+        if (Number.isInteger(item.interaction_count) && item.interaction_count >= 0) group.interactions.push(item.interaction_count);
+        const grade = Number(item.evaluation_grade); if (Number.isFinite(grade) && grade >= 1 && grade <= 5) group.grades.push(grade);
         groups.set(key, group);
     });
     return [...groups.values()].map(group => ({
@@ -64,7 +66,9 @@ function groupMetrics(facts, field) {
         mean_resolution_hours: group.resolution.length ? round(average(group.resolution)) : null,
         mean_first_response_hours: group.response.length ? round(average(group.response)) : null,
         total_work_hours: round(group.work.reduce((sum, value) => sum + value, 0)),
-        mean_work_hours: group.work.length ? round(average(group.work)) : null
+        mean_work_hours: group.work.length ? round(average(group.work)) : null,
+        mean_interactions: group.interactions.length ? round(average(group.interactions)) : null,
+        evaluation_count: group.grades.length, mean_evaluation: group.grades.length ? round(average(group.grades)) : null
     })).sort((a, b) => b.volume - a.volume);
 }
 
@@ -73,13 +77,18 @@ export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, gene
     const responseHours = facts.map(item => { const created = validDate(item.creation_date); const replied = validDate(item.first_reply_date); return created && replied && replied >= created ? (replied - created) / 3600000 : null; }).filter(value => value != null);
     const workHours = facts.map(item => Number(item.work_time_seconds)).filter(value => Number.isFinite(value) && value >= 0).map(value => value / 3600);
     const grades = facts.map(item => Number(item.evaluation_grade)).filter(value => Number.isFinite(value) && value >= 1 && value <= 5);
+    const interactionCounts = facts.map(item => item.interaction_count).filter(value => Number.isInteger(value) && value >= 0);
+    const concluded = facts.filter(item => item.end_date);
+    const evaluatedConcluded = concluded.filter(item => { const grade = Number(item.evaluation_grade); return Number.isFinite(grade) && grade >= 1 && grade <= 5; });
+    const solved = facts.filter(item => typeof item.evaluation_problem_solved === 'boolean');
     const metrics = {
         generated_at: generatedAt,
         coverage: { enriched: facts.length, total: totalListed, rate: totalListed ? round(facts.length / totalListed * 100) : 0 },
         sla: { initialization: slaMetric(facts, 'sla_initialization'), deadline: slaMetric(facts, 'sla_deadline') },
         first_response: { count: responseHours.length, mean_hours: responseHours.length ? round(average(responseHours)) : null, median_hours: responseHours.length ? round(median(responseHours)) : null },
         work_time: { count: workHours.length, total_hours: round(workHours.reduce((sum, value) => sum + value, 0)), mean_hours: workHours.length ? round(average(workHours)) : null },
-        evaluation: { count: grades.length, mean_grade: grades.length ? round(average(grades)) : null },
+        interactions: { count: interactionCounts.length, total: interactionCounts.reduce((sum, value) => sum + value, 0), mean: interactionCounts.length ? round(average(interactionCounts)) : null, high_touch: interactionCounts.filter(value => value > 10).length },
+        evaluation: { count: grades.length, mean_grade: grades.length ? round(average(grades)) : null, response_rate: concluded.length ? round(evaluatedConcluded.length / concluded.length * 100) : null, eligible_concluded: concluded.length, problem_solved_count: solved.length, problem_solved_rate: solved.length ? round(solved.filter(item => item.evaluation_problem_solved).length / solved.length * 100) : null },
         staleness: stalenessMetrics(facts, generatedAt),
         breakdowns: { departments: groupMetrics(facts, 'department'), categories: groupMetrics(facts, 'category'), operators: groupMetrics(facts, 'responsible_agent') }
     };

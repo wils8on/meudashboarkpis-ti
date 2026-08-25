@@ -21,7 +21,12 @@ test('prioriza alterados, depois novos e limita detalhes', () => {
 test('não consulta detalhe de chamado estável e já enriquecido', () => {
     const current = ticket('estavel');
     const state = { estavel: { list_hash: listingFingerprint(current), detail_hash: 'hash' } };
-    assert.equal(selectDetailCandidates([current], state, 20, { estavel: { id: 'estavel' } }).length, 0);
+    assert.equal(selectDetailCandidates([current], state, 20, { estavel: { schema_version: 2, id: 'estavel' } }).length, 0);
+});
+
+test('reprocessa fato métrico de versão anterior', () => {
+    const current = ticket('versao-antiga'); const state = { 'versao-antiga': { list_hash: listingFingerprint(current), detail_hash: 'hash' } };
+    assert.equal(selectDetailCandidates([current], state, 20, { 'versao-antiga': { id: 'versao-antiga' } }).length, 1);
 });
 
 test('reprocessa detalhe antigo que ainda não possui fato métrico', () => {

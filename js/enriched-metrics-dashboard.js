@@ -23,6 +23,10 @@ function render(metrics) {
     set('enrichedWorkContext', `${format(metrics?.work_time?.total_hours)}h registradas em ${format(metrics?.work_time?.count)} chamados`);
     set('enrichedEvaluation', metrics?.evaluation?.mean_grade == null ? '—' : `${format(metrics.evaluation.mean_grade)}/5`);
     set('enrichedEvaluationContext', `${format(metrics?.evaluation?.count)} avaliação(ões)`);
+    set('enrichedInteractions', metrics?.interactions?.mean == null ? '—' : format(metrics.interactions.mean));
+    set('enrichedInteractionsContext', `${format(metrics?.interactions?.total || 0)} interações · ${format(metrics?.interactions?.high_touch || 0)} chamados acima de 10`);
+    set('enrichedCsatResponse', metrics?.evaluation?.response_rate == null ? '—' : `${format(metrics.evaluation.response_rate)}%`);
+    set('enrichedCsatContext', `${format(metrics?.evaluation?.count || 0)} de ${format(metrics?.evaluation?.eligible_concluded || 0)} concluídos · resolvido ${metrics?.evaluation?.problem_solved_rate == null ? '—' : `${format(metrics.evaluation.problem_solved_rate)}%`}`);
     renderAlerts(metrics?.alerts, coverage);
     renderDimension(currentDimension);
     renderStaleness(metrics?.staleness);
@@ -61,7 +65,7 @@ function renderDimension(dimension) {
     set('operationalDimensionHeading', labels[dimension]);
     document.querySelectorAll('[data-operational-dimension]').forEach(button => button.classList.toggle('is-active', button.dataset.operationalDimension === dimension));
     const body = document.getElementById('operationalAnalysisBody');
-    if (body) body.innerHTML = records.length ? records.map(item => `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${format(item.volume)}</td><td>${format(item.concluded)} (${format(item.completion_rate)}%)</td><td>${format(item.backlog)}</td><td>${item.sla_deadline_rate == null ? '—' : `${format(item.sla_deadline_rate)}%`}</td><td>${item.mean_first_response_hours == null ? '—' : `${format(item.mean_first_response_hours)}h`}</td><td>${format(item.total_work_hours)}h</td></tr>`).join('') : '<tr><td colspan="7" class="table-empty-state">Ainda não há dados enriquecidos para esta dimensão.</td></tr>';
+    if (body) body.innerHTML = records.length ? records.map(item => `<tr><td><strong>${escapeHtml(item.name)}</strong></td><td>${format(item.volume)}</td><td>${format(item.concluded)} (${format(item.completion_rate)}%)</td><td>${format(item.backlog)}</td><td>${item.sla_deadline_rate == null ? '—' : `${format(item.sla_deadline_rate)}%`}</td><td>${item.mean_first_response_hours == null ? '—' : `${format(item.mean_first_response_hours)}h`}</td><td>${format(item.total_work_hours)}h</td><td>${item.mean_interactions == null ? '—' : format(item.mean_interactions)}</td><td>${item.mean_evaluation == null ? '—' : `${format(item.mean_evaluation)}/5 (${format(item.evaluation_count)})`}</td></tr>`).join('') : '<tr><td colspan="9" class="table-empty-state">Ainda não há dados enriquecidos para esta dimensão.</td></tr>';
     const canvas = document.getElementById('enrichedDimensionChart');
     if (!canvas || typeof Chart === 'undefined') return;
     if (dimensionChart) dimensionChart.destroy();

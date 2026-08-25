@@ -421,10 +421,10 @@
                         <div class="operational-analysis-header">
                             <div><span class="section-kicker">Distribuição de capacidade</span><h3 id="operationalAnalysisTitle">Análise operacional por dimensão</h3><p>Compare carga, conclusão e SLA sem transformar a leitura em competição individual.</p></div>
                             <div class="operational-analysis-tabs" role="tablist" aria-label="Dimensão da análise">
-                                <button type="button" class="is-active" data-operational-dimension="operators">Atendentes</button>
-                                <button type="button" data-operational-dimension="categories">Categorias</button>
-                                <button type="button" data-operational-dimension="departments">Departamentos</button>
-                                <button type="button" data-operational-dimension="priorities">Prioridades</button>
+                                <button type="button" role="tab" aria-selected="true" class="is-active" data-operational-dimension="operators">Atendentes</button>
+                                <button type="button" role="tab" aria-selected="false" data-operational-dimension="categories">Categorias</button>
+                                <button type="button" role="tab" aria-selected="false" data-operational-dimension="departments">Departamentos</button>
+                                <button type="button" role="tab" aria-selected="false" data-operational-dimension="priorities">Prioridades</button>
                             </div>
                         </div>
                         <div class="operational-analysis-layout">
@@ -534,7 +534,7 @@
                             <article><span>Acima de 4h</span><strong id="stale4h">—</strong></article><article><span>Acima de 8h</span><strong id="stale8h">—</strong></article><article><span>Acima de 24h</span><strong id="stale24h">—</strong></article><article><span>Acima de 3 dias</span><strong id="stale72h">—</strong></article>
                         </div>
                         <div class="staleness-filters" aria-label="Filtros de chamados sem movimentação">
-                            <select id="stalePriorityFilter"><option value="">Todas as prioridades</option></select><select id="staleOperatorFilter"><option value="">Todos os atendentes</option></select><select id="staleCategoryFilter"><option value="">Todas as categorias</option></select><select id="staleDepartmentFilter"><option value="">Todos os departamentos</option></select>
+                            <select id="stalePriorityFilter" aria-label="Filtrar por prioridade"><option value="">Todas as prioridades</option></select><select id="staleOperatorFilter" aria-label="Filtrar por atendente"><option value="">Todos os atendentes</option></select><select id="staleCategoryFilter" aria-label="Filtrar por categoria"><option value="">Todas as categorias</option></select><select id="staleDepartmentFilter" aria-label="Filtrar por departamento"><option value="">Todos os departamentos</option></select>
                         </div>
                         <div class="table-scroll-container aging-table-scroll"><table class="data-table aging-detail-table staleness-table"><thead><tr><th>Protocolo</th><th>Título</th><th>Status</th><th>Prioridade</th><th>Atendente</th><th>Categoria</th><th>Departamento</th><th>Sem movimentação</th></tr></thead><tbody id="stalenessTableBody"><tr><td colspan="8" class="table-empty-state">Aguardando dados enriquecidos.</td></tr></tbody></table></div>
                     </section>

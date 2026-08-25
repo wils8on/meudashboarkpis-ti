@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { inspectDetailQuality, inspectListingQuality } from '../scripts/ticket-quality.mjs';
+import { inspectDetailQuality, inspectListingQuality, summarizeQuality } from '../scripts/ticket-quality.mjs';
 import { extractDimensions } from '../scripts/ticket-dimensions.mjs';
 
 test('qualidade registra inconsistências sem lançar erro', () => {
@@ -31,4 +31,9 @@ test('extrai dimensões consistentes e tags', () => {
     });
     assert.deepEqual(dimensions.map(item => item.type), ['departments', 'categories', 'operators', 'customers', 'organizations', 'tags']);
     assert.equal(dimensions.find(item => item.type === 'categories').department_id, 'd1');
+});
+
+test('resume qualidade sem expor amostras ou detalhes dos chamados', () => {
+    const summary = summarizeQuality({ generated_at: '2026-08-25T12:00:00Z', records: 10, counts: { duplicate_protocol: 1, missing_department: 2 }, samples: [{ protocol: 123 }] });
+    assert.equal(summary.status, 'critical'); assert.equal(summary.critical, 1); assert.equal(summary.warnings, 2); assert.equal(summary.issues[0].label, 'Protocolo duplicado'); assert.equal('samples' in summary, false);
 });

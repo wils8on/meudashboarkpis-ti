@@ -34,9 +34,18 @@ function render(metrics) {
     set('smartBacklogDailyDelta', backlogTrend?.delta == null ? '—' : `${backlogTrend.delta > 0 ? '+' : ''}${format(backlogTrend.delta)}`);
     set('smartBacklogDailyContext', historyDays < 2 ? `${historyDays} dia consolidado · aguardando comparação` : `${historyDays} dias consolidados · versus o dia anterior`);
     renderSyncSummary(metrics?.sync);
+    renderDataQuality(metrics?.data_quality);
     renderAlerts(metrics?.alerts, coverage);
     renderDimension(currentDimension);
     renderStaleness(metrics?.staleness);
+}
+
+function renderDataQuality(quality = {}) {
+    const statusLabels = { healthy: 'Base consistente', attention: 'Requer atenção', critical: 'Inconsistência crítica' };
+    set('dataQualityStatus', statusLabels[quality.status] || 'Aguardando verificação'); set('dataQualityRecords', format(quality.records || 0)); set('dataQualityCritical', format(quality.critical || 0)); set('dataQualityWarnings', format(quality.warnings || 0));
+    const status = document.getElementById('dataQualityStatus'); if (status) status.dataset.state = quality.status || 'pending';
+    const list = document.getElementById('dataQualityIssues'); if (!list) return; const issues = quality.issues || [];
+    list.innerHTML = issues.length ? issues.slice(0, 8).map(item => `<span class="is-${item.severity}"><i class="fa-solid ${item.severity === 'critical' ? 'fa-circle-xmark' : 'fa-circle-exclamation'}"></i>${escapeHtml(item.label)} <strong>${format(item.count)}</strong></span>`).join('') : '<span class="is-healthy"><i class="fa-solid fa-circle-check"></i>Nenhuma inconsistência encontrada na última verificação.</span>';
 }
 
 function renderSyncSummary(sync = {}) {

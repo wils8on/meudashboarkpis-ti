@@ -36,3 +36,12 @@ export function inspectDetailQuality(ticket, report) {
     report.total_issues = Object.values(report.counts).reduce((sum, count) => sum + count, 0);
     return report;
 }
+
+export function summarizeQuality(report = {}) {
+    const criticalCodes = new Set(['missing_ticket_id', 'missing_protocol', 'duplicate_protocol', 'invalid_creation_date', 'invalid_end_date', 'missing_status', 'closed_without_end_date', 'unknown_priority']);
+    const labels = { missing_ticket_id: 'Chamado sem identificador', missing_protocol: 'Protocolo ausente', duplicate_protocol: 'Protocolo duplicado', invalid_creation_date: 'Data de criação inválida', invalid_end_date: 'Data de conclusão inválida', missing_status: 'Status ausente', closed_without_end_date: 'Finalizado sem data de conclusão', unknown_priority: 'Prioridade desconhecida', missing_sla_deadline: 'SLA de deadline ausente', missing_department: 'Departamento ausente', missing_category: 'Categoria ausente', missing_responsible_agent: 'Atendente ausente', missing_customer: 'Cliente ausente', missing_sla_initialization: 'SLA de inicialização ausente' };
+    const issues = Object.entries(report.counts || {}).filter(([, count]) => Number(count) > 0).map(([code, count]) => ({ code, label: labels[code] || code, count: Number(count), severity: criticalCodes.has(code) ? 'critical' : 'warning' })).sort((a, b) => (a.severity === b.severity ? b.count - a.count : a.severity === 'critical' ? -1 : 1));
+    const critical = issues.filter(item => item.severity === 'critical').reduce((sum, item) => sum + item.count, 0);
+    const warnings = issues.filter(item => item.severity === 'warning').reduce((sum, item) => sum + item.count, 0);
+    return { generated_at: report.generated_at || null, records: report.records || 0, total_issues: critical + warnings, critical, warnings, status: critical ? 'critical' : warnings ? 'attention' : 'healthy', issues };
+}

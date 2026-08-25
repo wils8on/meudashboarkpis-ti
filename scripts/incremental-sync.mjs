@@ -4,7 +4,7 @@ import { createIncrementalStore } from './incremental-firestore.mjs';
 import { normalizeTicketDetail } from './ticket-normalizer.mjs';
 import { buildSnapshot, diffRelevantState } from './ticket-diff.mjs';
 import { extractDimensions } from './ticket-dimensions.mjs';
-import { inspectDetailQuality, inspectListingQuality } from './ticket-quality.mjs';
+import { inspectDetailQuality, inspectListingQuality, summarizeQuality } from './ticket-quality.mjs';
 import { buildMetricFact, calculateEnrichedMetrics } from './enriched-metrics.mjs';
 import { appendTrendAlerts, calculateMetricTrends, updateMetricHistory } from './metric-history.mjs';
 
@@ -137,6 +137,7 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
         quality_issues: quality.total_issues, success: counters.errors === 0
     };
     metrics.sync = run;
+    metrics.data_quality = summarizeQuality(quality);
     await store.saveMetrics(metrics);
     await store.saveQualityReport(runId, quality);
     await store.saveRun(run);

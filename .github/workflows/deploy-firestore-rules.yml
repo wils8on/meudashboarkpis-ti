@@ -26,11 +26,7 @@ jobs:
           node-version: 24
           package-manager-cache: false
 
-      - name: Autenticar no Google Cloud
-        uses: google-github-actions/auth@v3
-        with:
-          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-
       - name: Validar e publicar regras
-        run: npx --yes firebase-tools deploy --only firestore:rules --project dasboard-kpis --non-interactive
-
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node scripts/deploy-firestore-rules.mjs

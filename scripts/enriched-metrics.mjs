@@ -4,7 +4,18 @@ const average = values => values.length ? values.reduce((sum, value) => sum + va
 const median = values => { if (!values.length) return null; const sorted = [...values].sort((a, b) => a - b); const middle = Math.floor(sorted.length / 2); return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2; };
 
 export function buildMetricFact(ticket = {}) {
-    return { id: ticket.id, priority: ticket.priority, creation_date: ticket.creation_date, end_date: ticket.end_date, first_reply_date: ticket.first_reply_date, work_time_seconds: ticket.work_time_seconds, reopened: ticket.reopened === true, sla_initialization: ticket.sla?.initialization?.accomplished ?? null, sla_deadline: ticket.sla?.deadline?.accomplished ?? null, evaluation_grade: ticket.evaluation?.grade ?? null, department: ticket.department, category: ticket.category, responsible_agent: ticket.responsible_agent };
+    return { id: ticket.id, protocol: ticket.protocol, subject: ticket.subject, priority: ticket.priority, creation_date: ticket.creation_date, end_date: ticket.end_date, first_reply_date: ticket.first_reply_date, last_movement_date: ticket.situation?.apply_date, status: ticket.situation?.description, work_time_seconds: ticket.work_time_seconds, reopened: ticket.reopened === true, sla_initialization: ticket.sla?.initialization?.accomplished ?? null, sla_deadline: ticket.sla?.deadline?.accomplished ?? null, evaluation_grade: ticket.evaluation?.grade ?? null, department: ticket.department, category: ticket.category, responsible_agent: ticket.responsible_agent };
+}
+
+function stalenessMetrics(facts, generatedAt) {
+    const now = validDate(generatedAt) || new Date();
+    const records = facts.filter(item => !item.end_date).map(item => {
+        const movement = validDate(item.last_movement_date);
+        if (!movement || movement > now) return null;
+        return { id: item.id, protocol: item.protocol ?? null, subject: item.subject || 'Sem título', priority: item.priority ?? null, status: item.status || 'Não informado', last_movement_date: movement.toISOString(), idle_hours: round((now - movement) / 3600000, 1), responsible_agent: item.responsible_agent?.name || 'Não informado', category: item.category?.name || 'Não informado', department: item.department?.name || 'Não informado' };
+    }).filter(Boolean).sort((a, b) => b.idle_hours - a.idle_hours);
+    const countOver = hours => records.filter(item => item.idle_hours > hours).length;
+    return { eligible: records.length, thresholds: { over_4h: countOver(4), over_8h: countOver(8), over_24h: countOver(24), over_72h: countOver(72) }, records };
 }
 
 function slaMetric(facts, field) {
@@ -55,6 +66,7 @@ export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, gene
         first_response: { count: responseHours.length, mean_hours: responseHours.length ? round(average(responseHours)) : null, median_hours: responseHours.length ? round(median(responseHours)) : null },
         work_time: { count: workHours.length, total_hours: round(workHours.reduce((sum, value) => sum + value, 0)), mean_hours: workHours.length ? round(average(workHours)) : null },
         evaluation: { count: grades.length, mean_grade: grades.length ? round(average(grades)) : null },
+        staleness: stalenessMetrics(facts, generatedAt),
         breakdowns: { departments: groupMetrics(facts, 'department'), categories: groupMetrics(facts, 'category'), operators: groupMetrics(facts, 'responsible_agent') }
     };
 }

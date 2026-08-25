@@ -17,3 +17,16 @@ test('não inventa valores sem amostra elegível', () => {
     const metrics = calculateEnrichedMetrics({ a: { id: 'a' } }, 10);
     assert.equal(metrics.sla.initialization.rate, null); assert.equal(metrics.first_response.mean_hours, null); assert.equal(metrics.evaluation.mean_grade, null);
 });
+
+test('calcula chamados sem movimentação somente quando há data real', () => {
+    const metrics = calculateEnrichedMetrics({
+        a: buildMetricFact({ id: 'a', protocol: 10, subject: 'Parado', situation: { description: 'Em análise', apply_date: '2026-08-24T08:00:00Z' }, department: { name: 'TI' } }),
+        b: buildMetricFact({ id: 'b', situation: { apply_date: '2026-08-25T10:00:00Z' } }),
+        c: buildMetricFact({ id: 'c', end_date: '2026-08-25T11:00:00Z', situation: { apply_date: '2026-08-20T10:00:00Z' } }),
+        d: buildMetricFact({ id: 'd' })
+    }, 4, '2026-08-25T12:00:00Z');
+    assert.equal(metrics.staleness.eligible, 2);
+    assert.deepEqual(metrics.staleness.thresholds, { over_4h: 1, over_8h: 1, over_24h: 1, over_72h: 0 });
+    assert.equal(metrics.staleness.records[0].subject, 'Parado');
+    assert.equal(metrics.staleness.records[0].idle_hours, 28);
+});

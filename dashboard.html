@@ -510,6 +510,16 @@
                         <div class="chart-heading"><div><span class="section-kicker">Distribuição de risco</span><h4>Chamados abertos por faixa de aging</h4></div><span class="chart-caption">Do volume recente ao estoque crítico</span></div>
                         <canvas id="graficoAging"></canvas>
                     </div>
+                    <section class="staleness-panel" aria-labelledby="stalenessTitle">
+                        <div class="section-heading"><div><span class="section-kicker">Última movimentação</span><h3 id="stalenessTitle">Chamados sem movimentação</h3></div><p id="stalenessCoverage">Aguardando enriquecimento incremental</p></div>
+                        <div class="staleness-kpis">
+                            <article><span>Acima de 4h</span><strong id="stale4h">—</strong></article><article><span>Acima de 8h</span><strong id="stale8h">—</strong></article><article><span>Acima de 24h</span><strong id="stale24h">—</strong></article><article><span>Acima de 3 dias</span><strong id="stale72h">—</strong></article>
+                        </div>
+                        <div class="staleness-filters" aria-label="Filtros de chamados sem movimentação">
+                            <select id="stalePriorityFilter"><option value="">Todas as prioridades</option></select><select id="staleOperatorFilter"><option value="">Todos os atendentes</option></select><select id="staleCategoryFilter"><option value="">Todas as categorias</option></select><select id="staleDepartmentFilter"><option value="">Todos os departamentos</option></select>
+                        </div>
+                        <div class="table-scroll-container aging-table-scroll"><table class="data-table aging-detail-table staleness-table"><thead><tr><th>Protocolo</th><th>Título</th><th>Status</th><th>Prioridade</th><th>Atendente</th><th>Categoria</th><th>Departamento</th><th>Sem movimentação</th></tr></thead><tbody id="stalenessTableBody"><tr><td colspan="8" class="table-empty-state">Aguardando dados enriquecidos.</td></tr></tbody></table></div>
+                    </section>
                     <div class="table-wrapper-box aging-detail-box">
                         <div class="table-header-title"><div><span class="section-kicker">Detalhamento operacional</span><strong>Chamados atualmente em aberto</strong></div><span class="table-count" id="agingTableCount">— chamados</span></div>
                         <div class="table-scroll-container aging-table-scroll">

@@ -7,6 +7,7 @@ const local = ['localhost', '127.0.0.1'].includes(location.hostname);
 const format = value => value == null ? '—' : Number(value).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
 const set = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value; };
 const escapeHtml = value => String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+const priorityLabel = value => ({ 1: 'Baixa', 2: 'Normal', 3: 'Alta', 4: 'Urgente' })[Number(value)] || (value == null ? '—' : `Prioridade ${value}`);
 let currentMetrics = null;
 let dimensionChart = null;
 let currentDimension = 'operators';
@@ -46,27 +47,27 @@ function renderAlerts(alerts = {}, coverage = {}) {
 }
 
 const idleLabel = hours => hours >= 24 ? `${format(hours / 24)} dia(s)` : `${format(hours)}h`;
-function populateFilter(id, records, field, label) {
+function populateFilter(id, records, field, label, display = value => value) {
     const element = document.getElementById(id); if (!element) return;
     const selected = element.value; const values = [...new Set(records.map(item => String(item[field] ?? '')).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
-    element.innerHTML = `<option value="">${label}</option>${values.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join('')}`;
+    element.innerHTML = `<option value="">${label}</option>${values.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(display(value))}</option>`).join('')}`;
     if (values.includes(selected)) element.value = selected;
 }
 function renderStaleness(staleness = {}) {
     const records = staleness.records || []; const thresholds = staleness.thresholds || {};
     set('stalenessCoverage', `${format(staleness.eligible || 0)} chamados abertos com movimentação conhecida`);
     set('stale4h', format(thresholds.over_4h || 0)); set('stale8h', format(thresholds.over_8h || 0)); set('stale24h', format(thresholds.over_24h || 0)); set('stale72h', format(thresholds.over_72h || 0));
-    populateFilter('stalePriorityFilter', records, 'priority', 'Todas as prioridades'); populateFilter('staleOperatorFilter', records, 'responsible_agent', 'Todos os atendentes'); populateFilter('staleCategoryFilter', records, 'category', 'Todas as categorias'); populateFilter('staleDepartmentFilter', records, 'department', 'Todos os departamentos');
+    populateFilter('stalePriorityFilter', records, 'priority', 'Todas as prioridades', priorityLabel); populateFilter('staleOperatorFilter', records, 'responsible_agent', 'Todos os atendentes'); populateFilter('staleCategoryFilter', records, 'category', 'Todas as categorias'); populateFilter('staleDepartmentFilter', records, 'department', 'Todos os departamentos');
     const filters = { priority: document.getElementById('stalePriorityFilter')?.value, responsible_agent: document.getElementById('staleOperatorFilter')?.value, category: document.getElementById('staleCategoryFilter')?.value, department: document.getElementById('staleDepartmentFilter')?.value };
     const visible = records.filter(item => Object.entries(filters).every(([field, value]) => !value || String(item[field]) === value));
     const body = document.getElementById('stalenessTableBody'); if (!body) return;
-    body.innerHTML = visible.length ? visible.map(item => `<tr><td>${escapeHtml(item.protocol || '—')}</td><td class="aging-subject">${escapeHtml(item.subject)}</td><td>${escapeHtml(item.status)}</td><td>${escapeHtml(item.priority ?? '—')}</td><td>${escapeHtml(item.responsible_agent)}</td><td>${escapeHtml(item.category)}</td><td>${escapeHtml(item.department)}</td><td class="aging-days">${idleLabel(item.idle_hours)}</td></tr>`).join('') : '<tr><td colspan="8" class="table-empty-state">Nenhum chamado corresponde aos filtros selecionados.</td></tr>';
+    body.innerHTML = visible.length ? visible.map(item => `<tr><td>${escapeHtml(item.protocol || '—')}</td><td class="aging-subject">${escapeHtml(item.subject)}</td><td>${escapeHtml(item.status)}</td><td>${escapeHtml(priorityLabel(item.priority))}</td><td>${escapeHtml(item.responsible_agent)}</td><td>${escapeHtml(item.category)}</td><td>${escapeHtml(item.department)}</td><td class="aging-days">${idleLabel(item.idle_hours)}</td></tr>`).join('') : '<tr><td colspan="8" class="table-empty-state">Nenhum chamado corresponde aos filtros selecionados.</td></tr>';
 }
 
 function renderDimension(dimension) {
     currentDimension = dimension;
     const records = currentMetrics?.breakdowns?.[dimension] || [];
-    const labels = { operators: 'Atendente', categories: 'Categoria', departments: 'Departamento' };
+    const labels = { operators: 'Atendente', categories: 'Categoria', departments: 'Departamento', priorities: 'Prioridade' };
     set('operationalDimensionHeading', labels[dimension]);
     document.querySelectorAll('[data-operational-dimension]').forEach(button => button.classList.toggle('is-active', button.dataset.operationalDimension === dimension));
     const body = document.getElementById('operationalAnalysisBody');

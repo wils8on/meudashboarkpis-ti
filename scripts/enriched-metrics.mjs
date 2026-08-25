@@ -73,6 +73,12 @@ function groupMetrics(facts, field) {
     })).sort((a, b) => b.volume - a.volume);
 }
 
+function priorityMetrics(facts) {
+    const labels = { 1: 'Baixa', 2: 'Normal', 3: 'Alta', 4: 'Urgente' };
+    const withDimension = facts.filter(item => item.priority != null).map(item => ({ ...item, priority_dimension: { id: String(item.priority), name: labels[Number(item.priority)] || `Prioridade ${item.priority}` } }));
+    return groupMetrics(withDimension, 'priority_dimension');
+}
+
 export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, generatedAt = new Date().toISOString(), alertConfig = {}) {
     const facts = Object.values(metricState).filter(item => item?.id);
     const responseHours = facts.map(item => { const created = validDate(item.creation_date); const replied = validDate(item.first_reply_date); return created && replied && replied >= created ? (replied - created) / 3600000 : null; }).filter(value => value != null);
@@ -92,7 +98,7 @@ export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, gene
         interactions: { count: interactionCounts.length, total: interactionCounts.reduce((sum, value) => sum + value, 0), mean: interactionCounts.length ? round(average(interactionCounts)) : null, high_touch: interactionCounts.filter(value => value > 10).length },
         evaluation: { count: grades.length, mean_grade: grades.length ? round(average(grades)) : null, response_rate: concluded.length ? round(evaluatedConcluded.length / concluded.length * 100) : null, eligible_concluded: concluded.length, problem_solved_count: solved.length, problem_solved_rate: solved.length ? round(solved.filter(item => item.evaluation_problem_solved).length / solved.length * 100) : null },
         staleness: stalenessMetrics(facts, generatedAt),
-        breakdowns: { departments: groupMetrics(facts, 'department'), categories: groupMetrics(facts, 'category'), operators: groupMetrics(facts, 'responsible_agent') }
+        breakdowns: { departments: groupMetrics(facts, 'department'), categories: groupMetrics(facts, 'category'), operators: groupMetrics(facts, 'responsible_agent'), priorities: priorityMetrics(facts) }
     };
     metrics.alerts = operationalAlerts(facts, metrics, alertConfig);
     return metrics;

@@ -716,6 +716,8 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     .quiet-periods-grid { grid-template-columns: 1fr; }
     .backlog-intelligence-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .access-management-layout { grid-template-columns: 1fr; }
+    .sync-panel { align-items: flex-start; flex-direction: column; }
+    .sync-meta { width: 100%; justify-content: space-between; }
 }
 
 @media (max-width: 760px) {
@@ -765,8 +767,6 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     .period-fields label { flex: 1; }
     .period-fields input { width: 100%; }
     .content-body { padding: 20px 18px 28px; }
-    .sync-panel { align-items: flex-start; flex-direction: column; }
-    .sync-meta { width: 100%; justify-content: space-between; }
     .overview-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
     .brief-signals { grid-template-columns: 1fr; }
     .section-heading { align-items: flex-start; flex-direction: column; gap: 4px; }

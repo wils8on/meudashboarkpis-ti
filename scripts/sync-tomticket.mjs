@@ -2,6 +2,7 @@ import { writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { buildSanitizedPayload } from './sanitize-tomticket.mjs';
 import { publishPrivateTickets } from './private-firestore.mjs';
+import { syncIncrementalTickets } from './incremental-sync.mjs';
 
 const MAX_PAGES = 150;
 const MAX_SOURCE_AGE_DAYS = 7;
@@ -88,6 +89,13 @@ async function sync() {
 
     const privateResult = await publishPrivateTickets(allTickets, process.env.FIREBASE_SERVICE_ACCOUNT);
     console.log(`Camada privada publicada em ${privateResult.chunks} bloco(s), com ${privateResult.totalRecords} registros.`);
+
+    try {
+        const incremental = await syncIncrementalTickets(allTickets, { token, firebaseSecret: process.env.FIREBASE_SERVICE_ACCOUNT });
+        console.log(`Camada incremental: ${incremental.detail_requests} detalhe(s), ${incremental.snapshots} snapshot(s), ${incremental.errors} erro(s), duração ${incremental.duration_ms}ms.`);
+    } catch (error) {
+        console.warn(`Camada incremental indisponível; a sincronização atual foi preservada: ${error.message}`);
+    }
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

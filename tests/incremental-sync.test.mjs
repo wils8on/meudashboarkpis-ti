@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { listingFingerprint, selectDetailCandidates } from '../scripts/incremental-sync.mjs';
+
+const ticket = (id, status = 'Aberto') => ({ id, priority: 2, reopened: false, end_date: null, status: { description: status }, sla: { deadline: { accomplished: true } } });
+
+test('fingerprint muda quando o estado operacional muda', () => {
+    assert.notEqual(listingFingerprint(ticket('1')), listingFingerprint(ticket('1', 'Finalizado')));
+});
+
+test('prioriza alterados, depois novos e limita detalhes', () => {
+    const tickets = [ticket('novo'), ticket('alterado', 'Finalizado'), ticket('pendente')];
+    const state = {
+        alterado: { list_hash: listingFingerprint(ticket('alterado', 'Aberto')), detail_hash: 'anterior' },
+        pendente: { list_hash: listingFingerprint(ticket('pendente')) }
+    };
+    const selected = selectDetailCandidates(tickets, state, 2);
+    assert.deepEqual(selected.map(item => item.ticket.id), ['alterado', 'novo']);
+});
+
+test('não consulta detalhe de chamado estável e já enriquecido', () => {
+    const current = ticket('estavel');
+    const state = { estavel: { list_hash: listingFingerprint(current), detail_hash: 'hash' } };
+    assert.equal(selectDetailCandidates([current], state, 20).length, 0);
+});

@@ -24,7 +24,7 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Validar sanitização
         run: node --test tests/*.test.mjs
@@ -41,4 +41,12 @@ jobs:
           git config --local user.name "GitHub Action"
           git add dados.json
           git diff-index --quiet HEAD || git commit -m "data: sincroniza indicadores sanitizados do TomTicket"
-          git push
+          for tentativa in 1 2 3; do
+            git pull --rebase -X theirs origin main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((tentativa * 2))
+          done
+          echo "Falha ao publicar dados após 3 tentativas." >&2
+          exit 1

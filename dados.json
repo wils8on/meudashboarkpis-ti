@@ -1,21 +1,21 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-27T03:20:30.542Z",
-    "total_records": 1443,
+    "updated_at": "2026-08-27T14:20:31.821Z",
+    "total_records": 1444,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-08-26T18:37:38.000Z"
+    "newest_creation_date": "2026-08-27T12:00:43.000Z"
   },
   "data": [
     {
       "customer": {
         "organization": {
-          "name": "Coordenação Logistica"
+          "name": "Gerência Fin / Fis"
         }
       },
       "priority": 2,
-      "creation_date": "2026-08-26 15:37:38-03:00",
+      "creation_date": "2026-08-27 09:00:43-03:00",
       "end_date": null,
       "sla": {
         "deadline": {
@@ -24,7 +24,26 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido, aguardando resposta do cliente"
+        "description": "Sem atendente vinculado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-26 15:37:38-03:00",
+      "end_date": "2026-08-27 08:03:16-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
       }
     },
     {
@@ -244,7 +263,7 @@
       },
       "priority": 3,
       "creation_date": "2026-08-24 10:54:17-03:00",
-      "end_date": null,
+      "end_date": "2026-08-27 08:16:15-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -252,7 +271,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Finalizado"
       }
     },
     {
@@ -1240,7 +1259,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em Analise Técnica"
+        "description": "Respondido, aguardando resposta do cliente"
       }
     },
     {
@@ -2638,7 +2657,7 @@
       },
       "priority": 2,
       "creation_date": "2026-06-12 14:46:14-03:00",
-      "end_date": null,
+      "end_date": "2026-08-27 08:26:02-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -2646,7 +2665,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando cliente"
+        "description": "Finalizado"
       }
     },
     {
@@ -2657,7 +2676,7 @@
       },
       "priority": 2,
       "creation_date": "2026-06-12 14:43:48-03:00",
-      "end_date": null,
+      "end_date": "2026-08-27 08:38:16-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -2665,7 +2684,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em Analise Técnica"
+        "description": "Finalizado"
       }
     },
     {

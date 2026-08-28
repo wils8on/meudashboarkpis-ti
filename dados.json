@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-28T07:48:58.535Z",
+    "updated_at": "2026-08-28T18:33:51.904Z",
     "total_records": 1444,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
@@ -24,7 +24,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Sem atendente vinculado"
+        "description": "Aguardando cliente"
       }
     },
     {
@@ -92,7 +92,7 @@
       },
       "priority": 2,
       "creation_date": "2026-08-26 14:45:45-03:00",
-      "end_date": null,
+      "end_date": "2026-08-28 08:58:07-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -100,7 +100,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido, aguardando resposta do cliente"
+        "description": "Finalizado"
       }
     },
     {
@@ -204,7 +204,7 @@
           "name": "Coordenação Logistica"
         }
       },
-      "priority": 3,
+      "priority": 2,
       "creation_date": "2026-08-24 13:02:13-03:00",
       "end_date": null,
       "sla": {
@@ -214,7 +214,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Em Analise Técnica"
       }
     },
     {
@@ -404,7 +404,7 @@
       },
       "reopened": true,
       "status": {
-        "description": "Em Analise Técnica"
+        "description": "Aguardando cliente"
       }
     },
     {
@@ -551,7 +551,7 @@
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": true
+          "accomplished": false
         }
       },
       "reopened": false,

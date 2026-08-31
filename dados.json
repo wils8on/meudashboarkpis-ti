@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-31T22:22:14.505Z",
+    "updated_at": "2026-08-31T22:42:09.970Z",
     "total_records": 1454,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
@@ -299,7 +299,7 @@
           "name": "Coordenação Logistica"
         }
       },
-      "priority": 4,
+      "priority": 3,
       "creation_date": "2026-08-26 09:07:06-03:00",
       "end_date": "2026-08-26 11:36:29-03:00",
       "sla": {
@@ -603,7 +603,7 @@
           "name": "Coordenação Logistica"
         }
       },
-      "priority": 4,
+      "priority": 3,
       "creation_date": "2026-08-19 15:17:24-03:00",
       "end_date": "2026-08-19 15:23:26-03:00",
       "sla": {
@@ -945,7 +945,7 @@
           "name": "Coordenação Logistica"
         }
       },
-      "priority": 4,
+      "priority": 3,
       "creation_date": "2026-08-06 10:38:50-03:00",
       "end_date": "2026-08-06 16:54:07-03:00",
       "sla": {

@@ -1,13 +1,127 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-08-31T11:49:42.414Z",
-    "total_records": 1447,
+    "updated_at": "2026-08-31T18:24:50.513Z",
+    "total_records": 1453,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-08-31T11:24:33.000Z"
+    "newest_creation_date": "2026-08-31T17:43:13.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-31 14:43:13-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": null
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Sem atendente vinculado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 4,
+      "creation_date": "2026-08-31 13:55:26-03:00",
+      "end_date": "2026-08-31 13:55:42-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-08-31 13:35:25-03:00",
+      "end_date": "2026-08-31 13:46:51-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-31 11:21:51-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-31 10:53:25-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-08-31 10:38:49-03:00",
+      "end_date": "2026-08-31 11:31:06-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -54,7 +168,7 @@
       },
       "priority": 3,
       "creation_date": "2026-08-28 15:40:32-03:00",
-      "end_date": null,
+      "end_date": "2026-08-31 10:58:53-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -62,7 +176,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Finalizado"
       }
     },
     {
@@ -461,7 +575,7 @@
       },
       "reopened": true,
       "status": {
-        "description": "Aguardando cliente"
+        "description": "Respondido pelo cliente, aguardando resposta"
       }
     },
     {
@@ -3930,7 +4044,7 @@
       },
       "priority": 2,
       "creation_date": "2026-05-08 11:51:37-03:00",
-      "end_date": null,
+      "end_date": "2026-08-31 10:58:40-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -3938,7 +4052,7 @@
       },
       "reopened": true,
       "status": {
-        "description": "Em Analise Técnica"
+        "description": "Finalizado"
       }
     },
     {

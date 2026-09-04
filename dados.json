@@ -1,11 +1,11 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-04T11:53:10.676Z",
-    "total_records": 1470,
+    "updated_at": "2026-09-04T15:24:20.455Z",
+    "total_records": 1471,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-03T18:57:49.000Z"
+    "newest_creation_date": "2026-09-04T12:26:42.000Z"
   },
   "data": [
     {
@@ -14,17 +14,36 @@
           "name": "Diálise"
         }
       },
-      "priority": 4,
-      "creation_date": "2026-09-03 15:57:49-03:00",
+      "priority": 2,
+      "creation_date": "2026-09-04 09:26:42-03:00",
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": null
+          "accomplished": true
         }
       },
       "reopened": false,
       "status": {
-        "description": "Sem atendente vinculado"
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-09-03 15:57:49-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
       }
     },
     {
@@ -111,7 +130,7 @@
       },
       "priority": 2,
       "creation_date": "2026-09-02 14:51:24-03:00",
-      "end_date": null,
+      "end_date": "2026-09-04 10:03:02-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -119,7 +138,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido, aguardando resposta do cliente"
+        "description": "Finalizado"
       }
     },
     {
@@ -149,7 +168,7 @@
       },
       "priority": 1,
       "creation_date": "2026-09-02 08:12:42-03:00",
-      "end_date": null,
+      "end_date": "2026-09-04 10:30:15-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -157,7 +176,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando atendente"
+        "description": "Finalizado"
       }
     },
     {
@@ -415,7 +434,7 @@
       },
       "priority": 2,
       "creation_date": "2026-08-31 10:53:25-03:00",
-      "end_date": null,
+      "end_date": "2026-09-04 11:29:09-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -423,7 +442,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em Analise Técnica"
+        "description": "Finalizado"
       }
     },
     {

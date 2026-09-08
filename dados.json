@@ -1,21 +1,21 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-08T13:59:27.355Z",
-    "total_records": 1475,
+    "updated_at": "2026-09-08T17:46:23.522Z",
+    "total_records": 1476,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-08T13:50:13.000Z"
+    "newest_creation_date": "2026-09-08T16:48:10.000Z"
   },
   "data": [
     {
       "customer": {
         "organization": {
-          "name": "Diálise"
+          "name": "Gerência Fin / Fis"
         }
       },
       "priority": 2,
-      "creation_date": "2026-09-08 10:50:13-03:00",
+      "creation_date": "2026-09-08 13:48:10-03:00",
       "end_date": null,
       "sla": {
         "deadline": {
@@ -34,16 +34,35 @@
         }
       },
       "priority": 2,
-      "creation_date": "2026-09-08 10:18:31-03:00",
-      "end_date": null,
+      "creation_date": "2026-09-08 10:50:13-03:00",
+      "end_date": "2026-09-08 11:05:38-03:00",
       "sla": {
         "deadline": {
-          "accomplished": null
+          "accomplished": true
         }
       },
       "reopened": false,
       "status": {
-        "description": "Sem atendente vinculado"
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-08 10:18:31-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido, aguardando resposta do cliente"
       }
     },
     {
@@ -2128,7 +2147,7 @@
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": true
+          "accomplished": false
         }
       },
       "reopened": false,

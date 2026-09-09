@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-09T17:58:36.001Z",
-    "total_records": 1481,
+    "updated_at": "2026-09-09T20:20:54.214Z",
+    "total_records": 1483,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-09T15:14:09.000Z"
+    "newest_creation_date": "2026-09-09T18:56:22.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-09 15:56:22-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido, aguardando resposta do cliente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-09-09 15:31:06-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido pelo cliente, aguardando resposta"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -35,7 +73,7 @@
       },
       "priority": 2,
       "creation_date": "2026-09-09 10:58:09-03:00",
-      "end_date": null,
+      "end_date": "2026-09-09 16:45:08-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -43,7 +81,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Finalizado"
       }
     },
     {
@@ -3930,7 +3968,7 @@
       },
       "priority": 2,
       "creation_date": "2026-06-01 10:50:04-03:00",
-      "end_date": null,
+      "end_date": "2026-09-09 16:05:19-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -3938,7 +3976,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando Retorno do Setor Responsável"
+        "description": "Finalizado"
       }
     },
     {

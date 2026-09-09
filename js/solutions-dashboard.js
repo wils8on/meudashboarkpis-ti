@@ -1,3 +1,5 @@
+import { exportSolutionsPdf } from './solutions-pdf.js';
+
 const expectedHeaders = {
     nome: 'Nome da Solução Criada', motivo: 'Motivo pelo qual houve necessidade dessa solução', objetivo: 'Qual o objetivo dessa solução?',
     setor: 'Setor para qual a solução foi criada', responsavelNome: 'Nome', responsavelId: 'Usuário responsável pelo desenvolvimento da solução',
@@ -123,7 +125,26 @@ function applyFilters() {
     const sector = document.getElementById('solutionsSectorFilter')?.value || '';
     const temporal = temporalSolutions();
     filteredSolutions = temporal.filter(item => (!search || [item.nome,item.setor,item.responsavelNome,item.objetivo].some(value => normalizeText(value).includes(search))) && (!status || item.status === status) && (!type || item.tipo === type) && (!sector || item.setor === sector));
+    const exportButton = document.getElementById('solutionsExportPdf');
+    if (exportButton) exportButton.disabled = filteredSolutions.length === 0;
     renderTable();
+}
+
+function exportFilteredCatalog() {
+    const sector = document.getElementById('solutionsSectorFilter')?.value || '';
+    const start = document.getElementById('solutionsStartDate')?.value || '';
+    const end = document.getElementById('solutionsEndDate')?.value || '';
+    const period = start || end ? `${start ? formatDate(start) : 'Início'} a ${end ? formatDate(end) : 'Hoje'}` : 'Todo o período';
+    try {
+        exportSolutionsPdf(filteredSolutions, {
+            sector: sector || 'Todos os setores', period,
+            status: document.getElementById('solutionsStatusFilter')?.value || '',
+            type: document.getElementById('solutionsTypeFilter')?.value || '',
+            search: document.getElementById('solutionsSearch')?.value.trim() || ''
+        }, window.jspdf?.jsPDF);
+    } catch (error) {
+        window.alert(error.message || 'Não foi possível gerar o PDF do catálogo.');
+    }
 }
 
 function renderTypeDirectory() {
@@ -239,6 +260,7 @@ function setup() {
     ['solutionsStartDate','solutionsEndDate'].forEach(id => document.getElementById(id)?.addEventListener('change', () => { document.querySelectorAll('[data-solutions-period]').forEach(button => button.classList.remove('is-active')); refreshTemporalView(); }));
     document.querySelectorAll('[data-solutions-period]').forEach(button => button.addEventListener('click', () => setPeriodPreset(button.dataset.solutionsPeriod)));
     document.getElementById('solutionsTableBody')?.addEventListener('click', event => { const button = event.target.closest('[data-solution-id]'); if (button) openEditor(button.dataset.solutionId); });
+    document.getElementById('solutionsExportPdf')?.addEventListener('click', exportFilteredCatalog);
     document.getElementById('solutionDialogClose')?.addEventListener('click', () => document.getElementById('solutionDialog').close());
     document.getElementById('solutionEditForm')?.addEventListener('submit', async event => {
         event.preventDefault(); const form = event.currentTarget;

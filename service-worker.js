@@ -1,4 +1,4 @@
-const CACHE_NAME = 'painel-kpi-v24';
+const CACHE_NAME = 'painel-kpi-v25';
 const APP_SHELL = [
     './',
     './index.html',
@@ -13,6 +13,7 @@ const APP_SHELL = [
     './js/private-ticket-store.js',
     './js/enriched-metrics-dashboard.js',
     './js/solutions-store.js',
+    './js/solutions-pdf.js',
     './js/solutions-dashboard.js',
     './js/access-admin.js',
     './js/goals-admin.js',

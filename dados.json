@@ -1,21 +1,21 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-10T13:56:59.891Z",
-    "total_records": 1486,
+    "updated_at": "2026-09-10T17:25:26.910Z",
+    "total_records": 1489,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-10T13:04:40.000Z"
+    "newest_creation_date": "2026-09-10T16:24:44.000Z"
   },
   "data": [
     {
       "customer": {
         "organization": {
-          "name": "Coordenação Logistica"
+          "name": "Diálise"
         }
       },
       "priority": 2,
-      "creation_date": "2026-09-10 10:04:40-03:00",
+      "creation_date": "2026-09-10 13:24:44-03:00",
       "end_date": null,
       "sla": {
         "deadline": {
@@ -25,6 +25,63 @@
       "reopened": false,
       "status": {
         "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-10 13:22:19-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": null
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Sem atendente vinculado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 4,
+      "creation_date": "2026-09-10 12:14:06-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-10 10:04:40-03:00",
+      "end_date": "2026-09-10 11:41:45-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
       }
     },
     {
@@ -43,7 +100,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Analise para Desenvolvimento"
       }
     },
     {
@@ -54,7 +111,7 @@
       },
       "priority": 2,
       "creation_date": "2026-09-10 09:33:33-03:00",
-      "end_date": null,
+      "end_date": "2026-09-10 12:01:11-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -62,7 +119,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Finalizado"
       }
     },
     {
@@ -328,7 +385,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Aguardando terceiro"
       }
     },
     {
@@ -1840,7 +1897,7 @@
       },
       "priority": 2,
       "creation_date": "2026-07-31 14:47:58-03:00",
-      "end_date": null,
+      "end_date": "2026-09-10 11:45:50-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -1848,7 +1905,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando terceiro"
+        "description": "Finalizado"
       }
     },
     {

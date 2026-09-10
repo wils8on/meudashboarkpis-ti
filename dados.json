@@ -1,32 +1,13 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-10T17:25:26.910Z",
-    "total_records": 1489,
+    "updated_at": "2026-09-10T20:00:45.324Z",
+    "total_records": 1492,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-10T16:24:44.000Z"
+    "newest_creation_date": "2026-09-10T19:46:34.000Z"
   },
   "data": [
-    {
-      "customer": {
-        "organization": {
-          "name": "Diálise"
-        }
-      },
-      "priority": 2,
-      "creation_date": "2026-09-10 13:24:44-03:00",
-      "end_date": null,
-      "sla": {
-        "deadline": {
-          "accomplished": true
-        }
-      },
-      "reopened": false,
-      "status": {
-        "description": "Aguardando interação do atendente"
-      }
-    },
     {
       "customer": {
         "organization": {
@@ -34,7 +15,7 @@
         }
       },
       "priority": 2,
-      "creation_date": "2026-09-10 13:22:19-03:00",
+      "creation_date": "2026-09-10 16:46:34-03:00",
       "end_date": null,
       "sla": {
         "deadline": {
@@ -52,8 +33,8 @@
           "name": "Coordenação Logistica"
         }
       },
-      "priority": 4,
-      "creation_date": "2026-09-10 12:14:06-03:00",
+      "priority": 2,
+      "creation_date": "2026-09-10 16:07:13-03:00",
       "end_date": null,
       "sla": {
         "deadline": {
@@ -63,6 +44,82 @@
       "reopened": false,
       "status": {
         "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-10 14:45:58-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Em Analise Técnica"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-10 13:24:44-03:00",
+      "end_date": "2026-09-10 15:09:28-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-10 13:22:19-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-09-10 12:14:06-03:00",
+      "end_date": "2026-09-10 15:50:11-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
       }
     },
     {
@@ -138,7 +195,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido, aguardando resposta do cliente"
+        "description": "Aguardando cliente"
       }
     },
     {
@@ -149,7 +206,7 @@
       },
       "priority": 3,
       "creation_date": "2026-09-09 15:31:06-03:00",
-      "end_date": null,
+      "end_date": "2026-09-10 15:11:55-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -157,7 +214,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido pelo cliente, aguardando resposta"
+        "description": "Finalizado"
       }
     },
     {
@@ -765,7 +822,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido, aguardando resposta do cliente"
+        "description": "Aguardando terceiro"
       }
     },
     {

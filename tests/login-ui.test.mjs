@@ -22,6 +22,6 @@ test('login mantém ação principal identificável', () => {
 });
 
 test('nova experiência é propagada pelo cache do PWA', () => {
-    assert.match(serviceWorker, /CACHE_NAME = 'painel-kpi-v25'/);
+    assert.match(serviceWorker, /CACHE_NAME = 'painel-kpi-v26'/);
     assert.match(serviceWorker, /\.\/index\.html/);
 });

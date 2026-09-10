@@ -37,3 +37,10 @@ test('abas dimensionais e filtros de inatividade possuem nomes acessíveis', () 
     assert.equal(dimensionButtons.length, 4); dimensionButtons.forEach(button => { assert.match(button, /role="tab"/); assert.match(button, /aria-selected="(?:true|false)"/); });
     ['stalePriorityFilter', 'staleOperatorFilter', 'staleCategoryFilter', 'staleDepartmentFilter'].forEach(id => assert.match(html, new RegExp(`<select[^>]+id="${id}"[^>]+aria-label="[^"]+"`)));
 });
+
+test('painel enriquecido acompanha o filtro temporal global', () => {
+    assert.match(enrichedJs, /filtroDataInicio/);
+    assert.match(enrichedJs, /filtroDataFim/);
+    assert.match(enrichedJs, /dashboard:period-changed/);
+    assert.match(enrichedJs, /metric_fact_chunk_/);
+});

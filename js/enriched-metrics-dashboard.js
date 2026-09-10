@@ -1,7 +1,8 @@
 import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-import { doc, getDoc, getFirestore } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { collection, doc, getDoc, getDocs, getFirestore } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js';
+import { calculateEnrichedMetrics } from '../scripts/enriched-metrics.mjs';
 
 const local = ['localhost', '127.0.0.1'].includes(location.hostname);
 const format = value => value == null ? '—' : Number(value).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
@@ -9,6 +10,9 @@ const set = (id, value) => { const element = document.getElementById(id); if (el
 const escapeHtml = value => String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 const priorityLabel = value => ({ 1: 'Baixa', 2: 'Normal', 3: 'Alta', 4: 'Urgente' })[Number(value)] || (value == null ? '—' : `Prioridade ${value}`);
 let currentMetrics = null;
+let baseMetrics = null;
+let metricFacts = [];
+let listedTickets = [];
 let dimensionChart = null;
 let currentDimension = 'operators';
 function waitForUser(auth) { return new Promise((resolve, reject) => { const unsubscribe = onAuthStateChanged(auth, user => { unsubscribe(); user ? resolve(user) : reject(new Error('Sessão necessária.')); }, reject); }); }
@@ -103,14 +107,55 @@ function renderDimension(dimension) {
         options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { datalabels: { display: false } }, scales: { x: { beginAtZero: true, stacked: true, ticks: { precision: 0 } }, y: { stacked: true } } }
     });
 }
+function selectedPeriod() {
+    const startValue = document.getElementById('filtroDataInicio')?.value;
+    const endValue = document.getElementById('filtroDataFim')?.value;
+    if (!startValue || !endValue) return null;
+    const start = new Date(`${startValue}T00:00:00`);
+    const end = new Date(`${endValue}T23:59:59.999`);
+    return Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start > end ? null : { start, end };
+}
+function applyPeriod() {
+    if (!baseMetrics || !metricFacts.length) return;
+    const period = selectedPeriod();
+    if (!period) { render(baseMetrics); return; }
+    const filtered = metricFacts.filter(item => {
+        const created = new Date(item.creation_date);
+        return !Number.isNaN(created.getTime()) && created >= period.start && created <= period.end;
+    });
+    const listedInPeriod = listedTickets.filter(item => {
+        const created = new Date(item.creation_date);
+        return !Number.isNaN(created.getTime()) && created >= period.start && created <= period.end;
+    }).length;
+    const calculated = calculateEnrichedMetrics(Object.fromEntries(filtered.map(item => [item.id, item])), listedInPeriod || filtered.length, period.end.toISOString());
+    calculated.sync = baseMetrics.sync;
+    calculated.data_quality = baseMetrics.data_quality;
+    calculated.trends = baseMetrics.trends;
+    calculated.alerts = baseMetrics.alerts;
+    render(calculated);
+}
 async function load() {
     if (local) { render({ coverage: { enriched: 0, total: 3, rate: 0 } }); return; }
     const app = getApps()[0] || initializeApp(firebaseConfig); const auth = getAuth(app); await waitForUser(auth);
-    const snapshot = await getDoc(doc(getFirestore(app), 'tomticket_private', 'metrics')); if (!snapshot.exists()) return;
-    render(JSON.parse(snapshot.data().payload || '{}'));
+    const db = getFirestore(app);
+    const snapshot = await getDoc(doc(db, 'tomticket_private', 'metrics')); if (!snapshot.exists()) return;
+    baseMetrics = JSON.parse(snapshot.data().payload || '{}');
+    const factsSnapshot = await getDocs(collection(db, 'tomticket_private'));
+    metricFacts = factsSnapshot.docs
+        .filter(item => item.id.startsWith('metric_fact_chunk_'))
+        .sort((a, b) => Number(a.data().index) - Number(b.data().index))
+        .flatMap(item => { try { return JSON.parse(item.data().payload || '[]'); } catch { return []; } });
+    try { listedTickets = window.privateTicketStoreReady ? await window.privateTicketStoreReady : []; } catch { listedTickets = []; }
+    metricFacts.length ? applyPeriod() : render(baseMetrics);
 }
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-operational-dimension]').forEach(button => button.addEventListener('click', () => renderDimension(button.dataset.operationalDimension)));
     ['stalePriorityFilter', 'staleOperatorFilter', 'staleCategoryFilter', 'staleDepartmentFilter'].forEach(id => document.getElementById(id)?.addEventListener('change', () => renderStaleness(currentMetrics?.staleness)));
+    ['filtroDataInicio', 'filtroDataFim'].forEach(id => {
+        const input = document.getElementById(id);
+        input?.addEventListener('change', applyPeriod);
+        input?.addEventListener('blur', () => setTimeout(applyPeriod));
+    });
+    window.addEventListener('dashboard:period-changed', applyPeriod);
     load().catch(error => console.warn('Métricas enriquecidas indisponíveis.', error));
 });

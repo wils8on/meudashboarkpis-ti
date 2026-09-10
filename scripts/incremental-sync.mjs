@@ -130,6 +130,7 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
     const finished = new Date();
     await store.saveState(state, finished.toISOString());
     await store.saveMetricState(metricState, finished.toISOString());
+    await store.saveMetricFacts(metricState, finished.toISOString());
     const alertConfig = resolveAlertConfig(await loadDefaultAlertConfig(), await store.loadOperationalAlertConfig());
     const metrics = calculateEnrichedMetrics(metricState, tickets.length, finished.toISOString(), alertConfig);
     const history = updateMetricHistory(await store.loadMetricHistory(), metrics, tickets, finished.toISOString());

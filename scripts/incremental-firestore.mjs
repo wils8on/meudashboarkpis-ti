@@ -6,6 +6,7 @@ function stringField(value) { return { stringValue: String(value ?? '') }; }
 function integerField(value) { return { integerValue: String(Number(value) || 0) }; }
 function booleanField(value) { return { booleanValue: value === true }; }
 function timestampField(value) { return value ? { timestampValue: new Date(value).toISOString() } : { nullValue: null }; }
+const METRIC_FACT_CHUNK_SIZE = 100;
 function decodeFirestoreValue(value = {}) {
     if ('nullValue' in value) return null;
     if ('booleanValue' in value) return value.booleanValue;
@@ -62,6 +63,22 @@ export async function createIncrementalStore(secretValue) {
         },
         saveMetricState(state, updatedAt) {
             return put('tomticket_sync_state', 'metrics', { payload: stringField(JSON.stringify(state)), enriched_records: integerField(Object.keys(state).length), updated_at: timestampField(updatedAt) });
+        },
+        async saveMetricFacts(state, updatedAt) {
+            const facts = Object.values(state).filter(item => item?.id);
+            const chunks = Array.from({ length: Math.ceil(facts.length / METRIC_FACT_CHUNK_SIZE) }, (_, index) => facts.slice(index * METRIC_FACT_CHUNK_SIZE, (index + 1) * METRIC_FACT_CHUNK_SIZE));
+            const meta = await get('tomticket_private', 'metric_facts_meta');
+            const previousChunks = Number(meta?.fields?.chunks?.integerValue || 0);
+            await Promise.all(chunks.map((chunk, index) => put('tomticket_private', `metric_fact_chunk_${String(index).padStart(3, '0')}`, {
+                index: integerField(index), count: integerField(chunk.length), updated_at: timestampField(updatedAt), payload: stringField(JSON.stringify(chunk))
+            })));
+            await put('tomticket_private', 'metric_facts_meta', { chunks: integerField(chunks.length), total_records: integerField(facts.length), updated_at: timestampField(updatedAt) });
+            await Promise.all(Array.from({ length: Math.max(0, previousChunks - chunks.length) }, (_, offset) => {
+                const id = `metric_fact_chunk_${String(chunks.length + offset).padStart(3, '0')}`;
+                return fetch(documentUrl('tomticket_private', id), { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }).then(response => {
+                    if (!response.ok && response.status !== 404) throw new Error(`Falha ao remover ${id}: HTTP ${response.status}`);
+                });
+            }));
         },
         async loadMetricHistory() {
             const document = await get('tomticket_sync_state', 'metric_history');

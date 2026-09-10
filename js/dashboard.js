@@ -1147,6 +1147,7 @@ function processarIndicadoresEstrategicos() {
             }
         }
 
+        window.dispatchEvent(new CustomEvent('dashboard:period-changed', { detail: { start: valInicio, end: valFim } }));
         const filtroInicio = new Date(valInicio + "T00:00:00");
         const filtroFim = new Date(valFim + "T23:59:59");
 

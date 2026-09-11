@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-11T17:10:31.610Z",
-    "total_records": 1497,
+    "updated_at": "2026-09-11T19:44:57.919Z",
+    "total_records": 1498,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-11T14:45:43.000Z"
+    "newest_creation_date": "2026-09-11T18:01:09.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-11 15:01:09-03:00",
+      "end_date": "2026-09-11 15:10:04-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-11 14:55:04-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -25,25 +63,6 @@
       "reopened": false,
       "status": {
         "description": "Analise para Desenvolvimento"
-      }
-    },
-    {
-      "customer": {
-        "organization": {
-          "name": "Sem organização"
-        }
-      },
-      "priority": 2,
-      "creation_date": "2026-09-11 11:17:45-03:00",
-      "end_date": null,
-      "sla": {
-        "deadline": {
-          "accomplished": true
-        }
-      },
-      "reopened": false,
-      "status": {
-        "description": "Aguardando interação do atendente"
       }
     },
     {
@@ -111,7 +130,7 @@
       },
       "priority": 2,
       "creation_date": "2026-09-10 16:46:34-03:00",
-      "end_date": null,
+      "end_date": "2026-09-11 15:30:55-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -119,7 +138,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Finalizado"
       }
     },
     {
@@ -128,7 +147,7 @@
           "name": "Coordenação Logistica"
         }
       },
-      "priority": 2,
+      "priority": 1,
       "creation_date": "2026-09-10 16:07:13-03:00",
       "end_date": null,
       "sla": {

@@ -1,13 +1,32 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-14T13:39:31.204Z",
-    "total_records": 1498,
+    "updated_at": "2026-09-14T18:52:08.538Z",
+    "total_records": 1499,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-11T18:01:09.000Z"
+    "newest_creation_date": "2026-09-14T18:34:26.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-09-14 15:34:26-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido pelo cliente, aguardando resposta"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -43,7 +62,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido, aguardando resposta do cliente"
+        "description": "Aguardando terceiro"
       }
     },
     {
@@ -73,7 +92,7 @@
       },
       "priority": 3,
       "creation_date": "2026-09-11 10:50:37-03:00",
-      "end_date": null,
+      "end_date": "2026-09-14 14:51:39-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -81,7 +100,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando cliente"
+        "description": "Finalizado"
       }
     },
     {
@@ -92,7 +111,7 @@
       },
       "priority": 3,
       "creation_date": "2026-09-11 10:49:22-03:00",
-      "end_date": null,
+      "end_date": "2026-09-14 14:06:34-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -100,7 +119,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando cliente"
+        "description": "Finalizado"
       }
     },
     {
@@ -206,7 +225,7 @@
       },
       "priority": 2,
       "creation_date": "2026-09-10 13:22:19-03:00",
-      "end_date": null,
+      "end_date": "2026-09-14 11:58:18-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -214,7 +233,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando cliente"
+        "description": "Finalizado"
       }
     },
     {
@@ -3681,17 +3700,17 @@
           "name": "Diálise"
         }
       },
-      "priority": 2,
+      "priority": 1,
       "creation_date": "2026-06-12 14:46:14-03:00",
-      "end_date": "2026-08-27 08:26:02-03:00",
+      "end_date": null,
       "sla": {
         "deadline": {
           "accomplished": true
         }
       },
-      "reopened": false,
+      "reopened": true,
       "status": {
-        "description": "Finalizado"
+        "description": "Respondido, aguardando resposta do cliente"
       }
     },
     {

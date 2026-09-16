@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-16T09:58:57.722Z",
-    "total_records": 1505,
+    "updated_at": "2026-09-16T14:35:26.664Z",
+    "total_records": 1507,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-15T18:57:25.000Z"
+    "newest_creation_date": "2026-09-16T12:26:45.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-16 09:26:45-03:00",
+      "end_date": "2026-09-16 09:26:49-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-09-16 07:44:46-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -35,7 +73,7 @@
       },
       "priority": 2,
       "creation_date": "2026-09-15 15:13:24-03:00",
-      "end_date": null,
+      "end_date": "2026-09-16 09:47:31-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -43,7 +81,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Finalizado"
       }
     },
     {
@@ -646,7 +684,7 @@
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": true
+          "accomplished": false
         }
       },
       "reopened": false,
@@ -8661,7 +8699,7 @@
       },
       "priority": 2,
       "creation_date": "2026-02-05 10:53:26-03:00",
-      "end_date": null,
+      "end_date": "2026-09-16 08:49:06-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -8669,7 +8707,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em pausa"
+        "description": "Finalizado"
       }
     },
     {

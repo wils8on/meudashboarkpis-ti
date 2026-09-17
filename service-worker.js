@@ -1,4 +1,4 @@
-const CACHE_NAME = 'painel-kpi-v27';
+const CACHE_NAME = 'painel-kpi-v28';
 const APP_SHELL = [
     './',
     './index.html',

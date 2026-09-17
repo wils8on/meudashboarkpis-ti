@@ -50,4 +50,5 @@ test('aging relaciona atendentes aos chamados críticos', () => {
     const dashboardJs = readFileSync(new URL('../js/dashboard.js', import.meta.url), 'utf8');
     assert.match(dashboardJs, /item\.dias > 30/);
     assert.match(dashboardJs, /renderizarTabelaAging\(detalhesAgingAtuais, atendente, true\)/);
+    assert.match(dashboardJs, /backgroundColor: '#7dd3fc'.*barPercentage: 0\.5/);
 });

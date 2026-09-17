@@ -524,13 +524,12 @@ function inicializarGraficoAgingAtendentes(detalhes = []) {
     }, {});
     const ranking = Object.entries(porAtendente).sort((a, b) => b[1] - a[1]);
     const corTexto = obterCorTextoPorTema();
-    const corGrid = obterCorGridPorTema();
     chartAgingAtendentes = new Chart(ctx.getContext('2d'), {
         type: 'bar',
         plugins: [ChartDataLabels],
-        data: { labels: ranking.map(([nome]) => nome), datasets: [{ label: 'Chamados acima de 30 dias', data: ranking.map(([, total]) => total), backgroundColor: '#fb7185', hoverBackgroundColor: '#f43f5e', borderRadius: 5 }] },
+        data: { labels: ranking.map(([nome]) => nome), datasets: [{ label: 'Chamados acima de 30 dias', data: ranking.map(([, total]) => total), backgroundColor: '#7dd3fc', hoverBackgroundColor: '#38bdf8', borderRadius: 2, barPercentage: 0.5 }] },
         options: {
-            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            responsive: true, maintainAspectRatio: false,
             onClick: (event, elements, chart) => {
                 const point = elements[0];
                 if (!point) return;
@@ -540,8 +539,8 @@ function inicializarGraficoAgingAtendentes(detalhes = []) {
                 document.getElementById('agingTableBody')?.closest('.aging-detail-box')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             },
             onHover: (event, elements) => { event.native.target.style.cursor = elements.length ? 'pointer' : 'default'; },
-            scales: { x: { beginAtZero: true, ticks: { color: corTexto, precision: 0 }, grid: { color: corGrid } }, y: { ticks: { color: corTexto }, grid: { display: false } } },
-            plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'right', color: corTexto, font: { weight: 'bold', size: 10 }, formatter: value => value } }
+            scales: { y: { beginAtZero: true, grace: '15%', ticks: { color: corTexto, precision: 0 } }, x: { ticks: { color: corTexto, maxRotation: 0, minRotation: 0 } } },
+            plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'top', color: corTexto, font: { weight: 'bold', size: 11 }, formatter: value => value > 0 ? value : '0' } }
         }
     });
 }

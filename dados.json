@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-17T02:20:35.185Z",
+    "updated_at": "2026-09-17T03:34:14.840Z",
     "total_records": 1509,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
@@ -717,12 +717,12 @@
           "name": "Coordenação Logistica"
         }
       },
-      "priority": 2,
+      "priority": 1,
       "creation_date": "2026-09-04 13:04:13-03:00",
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": false
+          "accomplished": true
         }
       },
       "reopened": false,

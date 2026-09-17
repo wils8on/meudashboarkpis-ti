@@ -188,6 +188,9 @@ let chartSlaMensal = null;
 let chartBacklogEvolucao = null;
 let chartBacklogDistribuicao = null;
 let chartAging = null;
+let chartAgingAtendentes = null;
+let detalhesAgingAtuais = [];
+let filtroAtendenteAging = null;
 let chartReabertosMes = null;
 let chartReabertosCliente = null;
 let chartDiaHora = null; // Nova instância global para o gráfico multidimensional
@@ -211,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         graficoBacklogEvolucao: 'Gráfico da evolução de conclusão do backlog',
         graficoBacklogDistribuicao: 'Gráfico da distribuição do backlog atual',
         graficoAging: 'Gráfico de chamados abertos por faixa de aging',
+        graficoAgingAtendentes: 'Gráfico de chamados com mais de 30 dias por atendente',
         graficoDemandasSetor: 'Gráfico da quantidade de chamados abertos por setor'
         ,graficoEntradaSaida: 'Gráfico comparativo de entrada e saída de chamados por dia'
         ,graficoVariacaoBacklog: 'Gráfico da variação acumulada do backlog'
@@ -225,6 +229,13 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.setAttribute('role', 'img');
         canvas.setAttribute('aria-label', descricao);
         canvas.tabIndex = 0;
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('resetAgingOperator')?.addEventListener('click', () => {
+        filtroAtendenteAging = null;
+        renderizarTabelaAging(detalhesAgingAtuais);
     });
 });
 
@@ -502,6 +513,39 @@ function inicializarGraficoAging(valoresBuckets = []) {
     });
 }
 
+function inicializarGraficoAgingAtendentes(detalhes = []) {
+    const ctx = document.getElementById('graficoAgingAtendentes');
+    if (!ctx) return;
+    if (chartAgingAtendentes) chartAgingAtendentes.destroy();
+    const porAtendente = detalhes.filter(item => item.dias > 30).reduce((acc, item) => {
+        const nome = item.atendente || 'Não atribuído';
+        acc[nome] = (acc[nome] || 0) + 1;
+        return acc;
+    }, {});
+    const ranking = Object.entries(porAtendente).sort((a, b) => b[1] - a[1]);
+    const corTexto = obterCorTextoPorTema();
+    const corGrid = obterCorGridPorTema();
+    chartAgingAtendentes = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: { labels: ranking.map(([nome]) => nome), datasets: [{ label: 'Chamados acima de 30 dias', data: ranking.map(([, total]) => total), backgroundColor: '#fb7185', hoverBackgroundColor: '#f43f5e', borderRadius: 5 }] },
+        options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            onClick: (event, elements, chart) => {
+                const point = elements[0];
+                if (!point) return;
+                const atendente = chart.data.labels[point.index];
+                filtroAtendenteAging = atendente;
+                renderizarTabelaAging(detalhesAgingAtuais, atendente, true);
+                document.getElementById('agingTableBody')?.closest('.aging-detail-box')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            },
+            onHover: (event, elements) => { event.native.target.style.cursor = elements.length ? 'pointer' : 'default'; },
+            scales: { x: { beginAtZero: true, ticks: { color: corTexto, precision: 0 }, grid: { color: corGrid } }, y: { ticks: { color: corTexto }, grid: { display: false } } },
+            plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'right', color: corTexto, font: { weight: 'bold', size: 10 }, formatter: value => value } }
+        }
+    });
+}
+
 function inicializarGraficoReabertosMes(labels = [], dadosReabertos = []) {
     const ctx = document.getElementById('graficoReabertosMes');
     if (!ctx) return;
@@ -770,19 +814,24 @@ function inicializarGraficoDemandasSetor(labels = [], valores = []) {
     });
 }
 
-function renderizarTabelaAging(detalhes = []) {
+function renderizarTabelaAging(detalhes = [], atendente = null, somenteCriticos = false) {
     const body = document.getElementById('agingTableBody');
     const count = document.getElementById('agingTableCount');
+    const title = document.getElementById('agingTableTitle');
+    const reset = document.getElementById('resetAgingOperator');
     if (!body) return;
-    const ordenados = [...detalhes].sort((a, b) => b.dias - a.dias);
+    const filtrados = detalhes.filter(item => (!atendente || item.atendente === atendente) && (!somenteCriticos || item.dias > 30));
+    const ordenados = [...filtrados].sort((a, b) => b.dias - a.dias);
     if (count) count.textContent = `${ordenados.length.toLocaleString('pt-BR')} chamados`;
+    if (title) title.textContent = atendente ? `Chamados acima de 30 dias · ${atendente}` : 'Chamados atualmente em aberto';
+    if (reset) reset.hidden = !atendente;
     if (!ordenados.length) {
-        body.innerHTML = '<tr><td colspan="4" class="table-empty-state">Nenhum chamado aberto encontrado no período.</td></tr>';
+        body.innerHTML = '<tr><td colspan="5" class="table-empty-state">Nenhum chamado aberto encontrado no período.</td></tr>';
         return;
     }
     const possuiDetalhesPrivados = ordenados.some(item => item.protocolo || item.assunto);
     if (!possuiDetalhesPrivados) {
-        body.innerHTML = '<tr><td colspan="4" class="table-empty-state">Aguardando a primeira sincronização da camada privada para exibir protocolo, título e solicitante.</td></tr>';
+        body.innerHTML = '<tr><td colspan="5" class="table-empty-state">Aguardando a primeira sincronização da camada privada para exibir protocolo, título, solicitante e atendente.</td></tr>';
         return;
     }
     body.innerHTML = ordenados.map(item => `
@@ -790,6 +839,7 @@ function renderizarTabelaAging(detalhes = []) {
             <td><span class="table-badge">${escaparHTML(item.protocolo || '—')}</span></td>
             <td class="aging-subject">${escaparHTML(item.assunto || 'Sem título')}</td>
             <td>${escaparHTML(item.solicitante || 'Não identificado')}</td>
+            <td>${escaparHTML(item.atendente || 'Não atribuído')}</td>
             <td class="aging-days">${item.dias.toLocaleString('pt-BR')} dia(s)</td>
         </tr>
     `).join('');
@@ -997,6 +1047,7 @@ async function carregarDadosAutomatizados() {
                 'ClienteEmail': emailCliente,
                 'Organização': organizacaoCliente,
                 'DadosPrivados': usandoCamadaPrivada,
+                'Atendente': chamado.responsible_agent?.name || chamado.operator?.name || 'Não atribuído',
                 'Prioridade': termoPrioridade,
                 'Data de Criação': chamado.creation_date || "",
                 'Data de Finalização': chamado.end_date || "",
@@ -1274,6 +1325,7 @@ function processarIndicadoresEstrategicos() {
                     protocolo: chamado['Protocolo'],
                     assunto: chamado['Assunto'],
                     solicitante: clienteNome,
+                    atendente: chamado['Atendente'] || 'Não atribuído',
                     dias: idadeDias
                 });
             }
@@ -1502,6 +1554,9 @@ function processarIndicadoresEstrategicos() {
         }
 
         inicializarGraficoAging(bucketsAging);
+        detalhesAgingAtuais = detalhesAging;
+        filtroAtendenteAging = null;
+        inicializarGraficoAgingAtendentes(detalhesAging);
         renderizarTabelaAging(detalhesAging);
 
         const dadosReabertosMes = labelsOrdenadas.map(lbl => reabertosPorMesAgrupado[lbl] || 0);

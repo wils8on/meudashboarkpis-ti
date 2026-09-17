@@ -638,6 +638,9 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .aging-detail-table { min-width: 760px; }
 .aging-subject { max-width: 520px; color: var(--ink) !important; font-weight: 500; }
 .aging-days { color: var(--rust) !important; font: 700 10px var(--font-mono); white-space: nowrap; }
+.aging-operators-chart { height: 390px; margin-top: 20px; }
+.aging-chart-actions { display: flex; align-items: center; gap: 12px; }
+.aging-chart-actions .table-edit-btn { white-space: nowrap; }
 .staleness-panel { margin: 20px 0; padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-sm); }
 .staleness-kpis { display: grid; grid-template-columns: repeat(4, minmax(130px, 1fr)); gap: 10px; margin: 16px 0; }
 .staleness-kpis article { padding: 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-strong); }
@@ -843,6 +846,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     .module-kpi-grid, .backlog-kpi-grid, .aging-kpi-grid, .support-kpi-grid, .requester-kpi-grid { grid-template-columns: 1fr !important; }
     .support-empty-state { align-items: flex-start; flex-direction: column; }
     .backlog-intelligence-grid { grid-template-columns: 1fr; }
+    .aging-chart-actions { align-items: flex-end; flex-direction: column; }
 }
 
 @media (prefers-reduced-motion: reduce) {

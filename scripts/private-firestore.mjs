@@ -19,7 +19,11 @@ export function buildPrivateTicket(ticket = {}) {
         end_date: ticket.end_date || null,
         sla: { deadline: { accomplished: ticket.sla?.deadline?.accomplished ?? null } },
         reopened: ticket.reopened === true,
-        status: { description: ticket.status?.description || ticket.situation?.description || null }
+        status: { description: ticket.status?.description || ticket.situation?.description || null },
+        responsible_agent: {
+            id: ticket.responsible_agent?.id || ticket.operator?.id || null,
+            name: String(ticket.responsible_agent?.name || ticket.operator?.name || '').trim() || 'Não atribuído'
+        }
     };
 }
 

@@ -44,3 +44,10 @@ test('painel enriquecido acompanha o filtro temporal global', () => {
     assert.match(enrichedJs, /dashboard:period-changed/);
     assert.match(enrichedJs, /metric_fact_chunk_/);
 });
+
+test('aging relaciona atendentes aos chamados críticos', () => {
+    ['graficoAgingAtendentes', 'resetAgingOperator', 'agingTableTitle', 'agingTableBody'].forEach(id => assert.ok(idSet.has(id), `Elemento de aging ausente: ${id}`));
+    const dashboardJs = readFileSync(new URL('../js/dashboard.js', import.meta.url), 'utf8');
+    assert.match(dashboardJs, /item\.dias > 30/);
+    assert.match(dashboardJs, /renderizarTabelaAging\(detalhesAgingAtuais, atendente, true\)/);
+});

@@ -534,6 +534,10 @@
                         <div class="chart-heading"><div><span class="section-kicker">Distribuição de risco</span><h4>Chamados abertos por faixa de aging</h4></div><span class="chart-caption">Do volume recente ao estoque crítico</span></div>
                         <canvas id="graficoAging"></canvas>
                     </div>
+                    <div class="chart-container chart-featured aging-operators-chart">
+                        <div class="chart-heading"><div><span class="section-kicker">Responsabilidade operacional</span><h4>Chamados acima de 30 dias por atendente</h4></div><div class="aging-chart-actions"><span class="chart-caption">Clique em uma barra para consultar os chamados</span><button type="button" id="resetAgingOperator" class="table-edit-btn" hidden><i class="fa-solid fa-rotate-left"></i> Mostrar todos</button></div></div>
+                        <canvas id="graficoAgingAtendentes" role="img" aria-label="Chamados com mais de 30 dias por atendente"></canvas>
+                    </div>
                     <section class="staleness-panel" aria-labelledby="stalenessTitle">
                         <div class="section-heading"><div><span class="section-kicker">Última movimentação</span><h3 id="stalenessTitle">Chamados sem movimentação</h3></div><p id="stalenessCoverage">Aguardando enriquecimento incremental</p></div>
                         <div class="staleness-kpis">
@@ -545,11 +549,11 @@
                         <div class="table-scroll-container aging-table-scroll"><table class="data-table aging-detail-table staleness-table"><thead><tr><th>Protocolo</th><th>Título</th><th>Status</th><th>Prioridade</th><th>Atendente</th><th>Categoria</th><th>Departamento</th><th>Sem movimentação</th></tr></thead><tbody id="stalenessTableBody"><tr><td colspan="8" class="table-empty-state">Aguardando dados enriquecidos.</td></tr></tbody></table></div>
                     </section>
                     <div class="table-wrapper-box aging-detail-box">
-                        <div class="table-header-title"><div><span class="section-kicker">Detalhamento operacional</span><strong>Chamados atualmente em aberto</strong></div><span class="table-count" id="agingTableCount">— chamados</span></div>
+                        <div class="table-header-title"><div><span class="section-kicker">Detalhamento operacional</span><strong id="agingTableTitle">Chamados atualmente em aberto</strong></div><span class="table-count" id="agingTableCount">— chamados</span></div>
                         <div class="table-scroll-container aging-table-scroll">
                             <table class="data-table aging-detail-table">
-                                <thead><tr><th>Protocolo</th><th>Título</th><th>Solicitante</th><th>Tempo em aberto</th></tr></thead>
-                                <tbody id="agingTableBody"><tr><td colspan="4" class="table-empty-state">Aguardando a camada privada de chamados.</td></tr></tbody>
+                                <thead><tr><th>Protocolo</th><th>Título</th><th>Solicitante</th><th>Atendente</th><th>Tempo em aberto</th></tr></thead>
+                                <tbody id="agingTableBody"><tr><td colspan="5" class="table-empty-state">Aguardando a camada privada de chamados.</td></tr></tbody>
                             </table>
                         </div>
                     </div>

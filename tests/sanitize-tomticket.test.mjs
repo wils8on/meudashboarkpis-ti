@@ -59,6 +59,7 @@ test('preserva detalhes necessários somente na representação privada', () => 
         protocol: 12345,
         subject: 'Falha no equipamento',
         customer: { name: 'Maria Silva', email: 'MARIA@EXAMPLE.COM', organization: { name: 'Unidade A' } },
+        responsible_agent: { id: 'agent-1', name: 'Tiago Silva' },
         creation_date: '2026-08-10 10:00:00-03:00'
     };
     const privateTicket = buildPrivateTicket(source);
@@ -66,6 +67,7 @@ test('preserva detalhes necessários somente na representação privada', () => 
     assert.equal(privateTicket.customer.name, 'Maria Silva');
     assert.equal(privateTicket.customer.email, 'maria@example.com');
     assert.equal(privateTicket.subject, 'Falha no equipamento');
+    assert.deepEqual(privateTicket.responsible_agent, { id: 'agent-1', name: 'Tiago Silva' });
 });
 
 test('divide a camada privada em blocos pequenos', () => {

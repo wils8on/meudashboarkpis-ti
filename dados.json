@@ -1,13 +1,32 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-17T07:48:28.588Z",
-    "total_records": 1509,
+    "updated_at": "2026-09-17T12:52:52.872Z",
+    "total_records": 1510,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-16T19:38:01.000Z"
+    "newest_creation_date": "2026-09-17T12:42:55.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-17 09:42:55-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Analise para Desenvolvimento"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -43,7 +62,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Respondido pelo cliente, aguardando resposta"
       }
     },
     {

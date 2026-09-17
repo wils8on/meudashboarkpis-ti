@@ -7,6 +7,7 @@ function integerField(value) { return { integerValue: String(Number(value) || 0)
 function booleanField(value) { return { booleanValue: value === true }; }
 function timestampField(value) { return value ? { timestampValue: new Date(value).toISOString() } : { nullValue: null }; }
 const METRIC_FACT_CHUNK_SIZE = 100;
+const METRIC_STATE_CHUNK_SIZE = 100;
 function decodeFirestoreValue(value = {}) {
     if ('nullValue' in value) return null;
     if ('booleanValue' in value) return value.booleanValue;
@@ -40,7 +41,15 @@ export async function createIncrementalStore(secretValue) {
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ fields })
         });
-        if (!response.ok) throw new Error(`Falha ao gravar ${collection}/${id}: HTTP ${response.status}`);
+        if (!response.ok) {
+            const detail = (await response.text()).slice(0, 300);
+            throw new Error(`Falha ao gravar ${collection}/${id}: HTTP ${response.status}${detail ? ` · ${detail}` : ''}`);
+        }
+    }
+
+    async function remove(collection, id) {
+        const response = await fetch(documentUrl(collection, id), { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+        if (!response.ok && response.status !== 404) throw new Error(`Falha ao remover ${collection}/${id}: HTTP ${response.status}`);
     }
 
     return {
@@ -57,12 +66,30 @@ export async function createIncrementalStore(secretValue) {
             });
         },
         async loadMetricState() {
+            const meta = await get('tomticket_sync_state', 'metric_state_meta');
+            const chunks = Number(meta?.fields?.chunks?.integerValue || 0);
+            if (chunks > 0) {
+                const documents = await Promise.all(Array.from({ length: chunks }, (_, index) => get('tomticket_sync_state', `metric_state_chunk_${String(index).padStart(3, '0')}`)));
+                const facts = documents.flatMap(document => {
+                    try { return JSON.parse(document?.fields?.payload?.stringValue || '[]'); }
+                    catch { return []; }
+                });
+                return Object.fromEntries(facts.filter(item => item?.id).map(item => [item.id, item]));
+            }
             const document = await get('tomticket_sync_state', 'metrics');
             try { return JSON.parse(document?.fields?.payload?.stringValue || '{}'); }
             catch { return {}; }
         },
-        saveMetricState(state, updatedAt) {
-            return put('tomticket_sync_state', 'metrics', { payload: stringField(JSON.stringify(state)), enriched_records: integerField(Object.keys(state).length), updated_at: timestampField(updatedAt) });
+        async saveMetricState(state, updatedAt) {
+            const facts = Object.values(state).filter(item => item?.id);
+            const chunks = Array.from({ length: Math.ceil(facts.length / METRIC_STATE_CHUNK_SIZE) }, (_, index) => facts.slice(index * METRIC_STATE_CHUNK_SIZE, (index + 1) * METRIC_STATE_CHUNK_SIZE));
+            const previousMeta = await get('tomticket_sync_state', 'metric_state_meta');
+            const previousChunks = Number(previousMeta?.fields?.chunks?.integerValue || 0);
+            await Promise.all(chunks.map((chunk, index) => put('tomticket_sync_state', `metric_state_chunk_${String(index).padStart(3, '0')}`, {
+                index: integerField(index), count: integerField(chunk.length), updated_at: timestampField(updatedAt), payload: stringField(JSON.stringify(chunk))
+            })));
+            await put('tomticket_sync_state', 'metric_state_meta', { chunks: integerField(chunks.length), enriched_records: integerField(facts.length), updated_at: timestampField(updatedAt) });
+            await Promise.all(Array.from({ length: Math.max(0, previousChunks - chunks.length) }, (_, offset) => remove('tomticket_sync_state', `metric_state_chunk_${String(chunks.length + offset).padStart(3, '0')}`)));
         },
         async saveMetricFacts(state, updatedAt) {
             const facts = Object.values(state).filter(item => item?.id);
@@ -75,9 +102,7 @@ export async function createIncrementalStore(secretValue) {
             await put('tomticket_private', 'metric_facts_meta', { chunks: integerField(chunks.length), total_records: integerField(facts.length), updated_at: timestampField(updatedAt) });
             await Promise.all(Array.from({ length: Math.max(0, previousChunks - chunks.length) }, (_, offset) => {
                 const id = `metric_fact_chunk_${String(chunks.length + offset).padStart(3, '0')}`;
-                return fetch(documentUrl('tomticket_private', id), { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }).then(response => {
-                    if (!response.ok && response.status !== 404) throw new Error(`Falha ao remover ${id}: HTTP ${response.status}`);
-                });
+                return remove('tomticket_private', id);
             }));
         },
         async loadMetricHistory() {

@@ -52,3 +52,11 @@ test('aging relaciona atendentes aos chamados críticos', () => {
     assert.match(dashboardJs, /renderizarTabelaAging\(detalhesAgingAtuais, atendente, true\)/);
     assert.match(dashboardJs, /backgroundColor: '#7dd3fc'.*barPercentage: 0\.5/);
 });
+
+test('performance por atendente possui os dez indicadores e obedece ao período global', () => {
+    const required = ['operatorPerformanceSelect', 'operatorReceived', 'operatorConcluded', 'operatorBacklog', 'operatorSla', 'operatorReopen', 'operatorResolution', 'operatorFirstResponse', 'operatorThroughput', 'operatorTopCategory', 'operatorTopPriority', 'operatorCategoryChart', 'operatorPriorityChart'];
+    required.forEach(id => assert.ok(idSet.has(id), `Indicador por atendente ausente: ${id}`));
+    assert.match(enrichedJs, /filteredMetricFacts = filtered/);
+    assert.match(enrichedJs, /responsible_agent/);
+    assert.match(html, /Volumes diferentes não representam, isoladamente, melhor ou pior desempenho/);
+});

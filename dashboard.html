@@ -180,6 +180,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#" class="nav-item" data-target="aba-performance-atendente">
+                        <i class="fa-solid fa-user-clock"></i> <span>Por Atendente</span>
+                    </a>
+                </li>
+                <li>
                     <a href="#" class="nav-item" data-target="aba-backlog">
                         <i class="fa-solid fa-boxes-stacked"></i> <span>Backlog Mensal</span>
                     </a>
@@ -453,6 +458,34 @@
                             <div class="chart-heading"><div><span class="section-kicker">Conformidade</span><h4>Cumprimento de SLA por mês</h4></div><span class="chart-caption">Chamados dentro do deadline</span></div>
                             <canvas id="graficoSlaMensal"></canvas>
                         </div>
+                    </div>
+                </section>
+
+                <section id="aba-performance-atendente" class="tab-content" aria-labelledby="operatorPerformanceTitle">
+                    <div class="module-header" data-accent="teal">
+                        <span class="module-icon"><i class="fa-solid fa-user-clock"></i></span>
+                        <div><span class="section-kicker">Capacidade individual</span><h3 id="operatorPerformanceTitle">Performance por atendente</h3><p>Analise carga, qualidade e velocidade para apoiar a distribuição operacional, sem criar uma competição entre pessoas.</p></div>
+                    </div>
+                    <div class="operator-performance-toolbar">
+                        <div><label for="operatorPerformanceSelect">Visão analisada</label><select id="operatorPerformanceSelect" aria-label="Selecionar atendente"><option value="">Equipe consolidada</option></select></div>
+                        <p id="operatorPerformanceCoverage">Aguardando dados enriquecidos do período.</p>
+                    </div>
+                    <div class="info-alert-box compact-info operator-performance-note"><i class="fa-solid fa-circle-info"></i><p>Interprete os indicadores em conjunto com categoria, prioridade e distribuição de carga. Volumes diferentes não representam, isoladamente, melhor ou pior desempenho.</p></div>
+                    <div class="kpi-grid operator-performance-kpis">
+                        <div class="kpi-card azul"><div class="kpi-info"><p>Chamados recebidos</p><h3 id="operatorReceived">—</h3><span class="kpi-context">Criados no período selecionado</span></div><i class="fa-solid fa-inbox icon"></i></div>
+                        <div class="kpi-card verde"><div class="kpi-info"><p>Chamados concluídos</p><h3 id="operatorConcluded">—</h3><span class="kpi-context">Demandas com conclusão registrada</span></div><i class="fa-solid fa-circle-check icon"></i></div>
+                        <div class="kpi-card laranja"><div class="kpi-info"><p>Backlog</p><h3 id="operatorBacklog">—</h3><span class="kpi-context">Chamados ainda em aberto</span></div><i class="fa-solid fa-box-open icon"></i></div>
+                        <div class="kpi-card verde"><div class="kpi-info"><p>Cumprimento de SLA</p><h3 id="operatorSla">—</h3><span class="kpi-context" id="operatorSlaContext">Sem amostra elegível</span></div><i class="fa-solid fa-clock icon"></i></div>
+                        <div class="kpi-card rosa"><div class="kpi-info"><p>Taxa de reabertura</p><h3 id="operatorReopen">—</h3><span class="kpi-context">Reincidências dentro da carga</span></div><i class="fa-solid fa-rotate-left icon"></i></div>
+                        <div class="kpi-card roxo"><div class="kpi-info"><p>Tempo médio de resolução</p><h3 id="operatorResolution">—</h3><span class="kpi-context">Da criação até a conclusão</span></div><i class="fa-solid fa-stopwatch icon"></i></div>
+                        <div class="kpi-card azul"><div class="kpi-info"><p>Primeira resposta</p><h3 id="operatorFirstResponse">—</h3><span class="kpi-context">Tempo médio até o primeiro retorno</span></div><i class="fa-solid fa-reply icon"></i></div>
+                        <div class="kpi-card cyan"><div class="kpi-info"><p>Throughput</p><h3 id="operatorThroughput">—</h3><span class="kpi-context">Conclusões por dia do período</span></div><i class="fa-solid fa-arrow-trend-up icon"></i></div>
+                        <div class="kpi-card comparativo"><div class="kpi-info"><p>Categoria principal</p><h3 id="operatorTopCategory">—</h3><span class="kpi-context" id="operatorTopCategoryContext">Composição do volume recebido</span></div><i class="fa-solid fa-tags icon"></i></div>
+                        <div class="kpi-card laranja"><div class="kpi-info"><p>Prioridade predominante</p><h3 id="operatorTopPriority">—</h3><span class="kpi-context" id="operatorTopPriorityContext">Composição do volume recebido</span></div><i class="fa-solid fa-triangle-exclamation icon"></i></div>
+                    </div>
+                    <div class="charts-split-grid operator-performance-charts">
+                        <div class="chart-container"><div class="chart-heading"><div><span class="section-kicker">Composição da carga</span><h4>Volume por categoria</h4></div><span class="chart-caption">Chamados recebidos no período</span></div><canvas id="operatorCategoryChart" role="img" aria-label="Volume de chamados por categoria do atendente selecionado"></canvas></div>
+                        <div class="chart-container"><div class="chart-heading"><div><span class="section-kicker">Criticidade da carga</span><h4>Volume por prioridade</h4></div><span class="chart-caption">Distribuição do período selecionado</span></div><canvas id="operatorPriorityChart" role="img" aria-label="Volume de chamados por prioridade do atendente selecionado"></canvas></div>
                     </div>
                 </section>
 

@@ -12,8 +12,11 @@ const priorityLabel = value => ({ 1: 'Baixa', 2: 'Normal', 3: 'Alta', 4: 'Urgent
 let currentMetrics = null;
 let baseMetrics = null;
 let metricFacts = [];
+let filteredMetricFacts = [];
 let listedTickets = [];
 let dimensionChart = null;
+let operatorCategoryChart = null;
+let operatorPriorityChart = null;
 let currentDimension = 'operators';
 function waitForUser(auth) { return new Promise((resolve, reject) => { const unsubscribe = onAuthStateChanged(auth, user => { unsubscribe(); user ? resolve(user) : reject(new Error('Sessão necessária.')); }, reject); }); }
 function render(metrics) {
@@ -42,6 +45,7 @@ function render(metrics) {
     renderAlerts(metrics?.alerts, coverage);
     renderDimension(currentDimension);
     renderStaleness(metrics?.staleness);
+    renderOperatorPerformance();
 }
 
 function renderDataQuality(quality = {}) {
@@ -107,6 +111,62 @@ function renderDimension(dimension) {
         options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { datalabels: { display: false } }, scales: { x: { beginAtZero: true, stacked: true, ticks: { precision: 0 } }, y: { stacked: true } } }
     });
 }
+function operatorKey(entity = {}) { return String(entity.id || entity.name || ''); }
+function mean(values) { return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null; }
+function countBy(records, getter) {
+    const counts = new Map();
+    records.forEach(item => { const label = getter(item); if (label) counts.set(label, (counts.get(label) || 0) + 1); });
+    return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'pt-BR'));
+}
+function renderOperatorChart(canvasId, currentChart, entries, color) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || typeof Chart === 'undefined') return currentChart;
+    if (currentChart) currentChart.destroy();
+    return new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: { labels: entries.map(([label]) => label), datasets: [{ data: entries.map(([, value]) => value), backgroundColor: color, borderRadius: 4, barPercentage: .62 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'top', color: '#9a96b8', font: { weight: 'bold', size: 10 }, formatter: value => value } }, scales: { y: { beginAtZero: true, grace: '15%', ticks: { precision: 0 } }, x: { ticks: { maxRotation: 25, minRotation: 0 } } } }
+    });
+}
+function renderOperatorPerformance() {
+    const select = document.getElementById('operatorPerformanceSelect');
+    if (!select) return;
+    const previous = select.value;
+    const operators = new Map();
+    filteredMetricFacts.forEach(item => {
+        const key = operatorKey(item.responsible_agent);
+        if (key) operators.set(key, item.responsible_agent?.name || 'Não informado');
+    });
+    const options = [...operators.entries()].sort((a, b) => a[1].localeCompare(b[1], 'pt-BR'));
+    select.innerHTML = `<option value="">Equipe consolidada</option>${options.map(([key, name]) => `<option value="${escapeHtml(key)}">${escapeHtml(name)}</option>`).join('')}`;
+    if (operators.has(previous)) select.value = previous;
+    const selectedKey = select.value;
+    const facts = selectedKey ? filteredMetricFacts.filter(item => operatorKey(item.responsible_agent) === selectedKey) : filteredMetricFacts;
+    const concluded = facts.filter(item => item.end_date);
+    const backlog = facts.length - concluded.length;
+    const slaEligible = facts.filter(item => typeof item.sla_deadline === 'boolean');
+    const slaCompliant = slaEligible.filter(item => item.sla_deadline).length;
+    const responseHours = facts.map(item => { const start = new Date(item.creation_date); const reply = new Date(item.first_reply_date); return !Number.isNaN(start.getTime()) && !Number.isNaN(reply.getTime()) && reply >= start ? (reply - start) / 3600000 : null; }).filter(value => value != null);
+    const resolutionHours = concluded.map(item => { const start = new Date(item.creation_date); const end = new Date(item.end_date); return !Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime()) && end >= start ? (end - start) / 3600000 : null; }).filter(value => value != null);
+    const categories = countBy(facts, item => item.category?.name || 'Não informado');
+    const priorities = countBy(facts, item => priorityLabel(item.priority));
+    const period = selectedPeriod();
+    const days = period ? Math.max(1, Math.ceil((period.end - period.start + 1) / 86400000)) : 1;
+    const reopenRate = facts.length ? facts.filter(item => item.reopened).length / facts.length * 100 : null;
+    const slaRate = slaEligible.length ? slaCompliant / slaEligible.length * 100 : null;
+    set('operatorReceived', format(facts.length)); set('operatorConcluded', format(concluded.length)); set('operatorBacklog', format(backlog));
+    set('operatorSla', slaRate == null ? '—' : `${format(slaRate)}%`); set('operatorSlaContext', `${format(slaCompliant)} de ${format(slaEligible.length)} elegíveis`);
+    set('operatorReopen', reopenRate == null ? '—' : `${format(reopenRate)}%`);
+    set('operatorResolution', resolutionHours.length ? `${format(mean(resolutionHours))}h` : '—');
+    set('operatorFirstResponse', responseHours.length ? `${format(mean(responseHours))}h` : '—');
+    set('operatorThroughput', `${format(concluded.length / days)}/dia`);
+    set('operatorTopCategory', categories[0]?.[0] || '—'); set('operatorTopCategoryContext', categories.length ? `${format(categories[0][1])} chamado(s) · ${format(categories[0][1] / facts.length * 100)}% do volume` : 'Sem chamados no período');
+    set('operatorTopPriority', priorities[0]?.[0] || '—'); set('operatorTopPriorityContext', priorities.length ? `${format(priorities[0][1])} chamado(s) · ${format(priorities[0][1] / facts.length * 100)}% do volume` : 'Sem chamados no período');
+    const selectedName = selectedKey ? operators.get(selectedKey) : 'Equipe consolidada';
+    set('operatorPerformanceCoverage', `${selectedName} · ${format(facts.length)} chamados enriquecidos no período selecionado`);
+    operatorCategoryChart = renderOperatorChart('operatorCategoryChart', operatorCategoryChart, categories.slice(0, 10), '#8b5cf6');
+    operatorPriorityChart = renderOperatorChart('operatorPriorityChart', operatorPriorityChart, priorities, '#f59e0b');
+}
 function selectedPeriod() {
     const startValue = document.getElementById('filtroDataInicio')?.value;
     const endValue = document.getElementById('filtroDataFim')?.value;
@@ -118,7 +178,7 @@ function selectedPeriod() {
 function applyPeriod() {
     if (!baseMetrics || !metricFacts.length) return;
     const period = selectedPeriod();
-    if (!period) { render(baseMetrics); return; }
+    if (!period) { filteredMetricFacts = metricFacts; render(baseMetrics); return; }
     const filtered = metricFacts.filter(item => {
         const created = new Date(item.creation_date);
         return !Number.isNaN(created.getTime()) && created >= period.start && created <= period.end;
@@ -127,6 +187,7 @@ function applyPeriod() {
         const created = new Date(item.creation_date);
         return !Number.isNaN(created.getTime()) && created >= period.start && created <= period.end;
     }).length;
+    filteredMetricFacts = filtered;
     const calculated = calculateEnrichedMetrics(Object.fromEntries(filtered.map(item => [item.id, item])), listedInPeriod || filtered.length, period.end.toISOString());
     calculated.sync = baseMetrics.sync;
     calculated.data_quality = baseMetrics.data_quality;
@@ -146,6 +207,7 @@ async function load() {
         .sort((a, b) => Number(a.data().index) - Number(b.data().index))
         .flatMap(item => { try { return JSON.parse(item.data().payload || '[]'); } catch { return []; } });
     try { listedTickets = window.privateTicketStoreReady ? await window.privateTicketStoreReady : []; } catch { listedTickets = []; }
+    filteredMetricFacts = metricFacts;
     metricFacts.length ? applyPeriod() : render(baseMetrics);
 }
 document.addEventListener('DOMContentLoaded', () => {
@@ -157,5 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
         input?.addEventListener('blur', () => setTimeout(applyPeriod));
     });
     window.addEventListener('dashboard:period-changed', applyPeriod);
+    document.getElementById('operatorPerformanceSelect')?.addEventListener('change', renderOperatorPerformance);
     load().catch(error => console.warn('Métricas enriquecidas indisponíveis.', error));
 });

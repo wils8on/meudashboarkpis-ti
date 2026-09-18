@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-18T14:38:58.137Z",
-    "total_records": 1517,
+    "updated_at": "2026-09-18T17:51:52.831Z",
+    "total_records": 1519,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-18T13:38:53.000Z"
+    "newest_creation_date": "2026-09-18T15:00:20.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-09-18 12:00:20-03:00",
+      "end_date": "2026-09-18 12:00:29-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 4,
+      "creation_date": "2026-09-18 11:51:22-03:00",
+      "end_date": "2026-09-18 12:05:15-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -114,7 +152,7 @@
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": true
+          "accomplished": false
         }
       },
       "reopened": false,

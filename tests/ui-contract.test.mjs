@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 
 const html = readFileSync(new URL('../dashboard.html', import.meta.url), 'utf8');
 const enrichedJs = readFileSync(new URL('../js/enriched-metrics-dashboard.js', import.meta.url), 'utf8');
+const dashboardJs = readFileSync(new URL('../js/dashboard.js', import.meta.url), 'utf8');
+const privateStoreJs = readFileSync(new URL('../js/private-ticket-store.js', import.meta.url), 'utf8');
 const goalsJs = readFileSync(new URL('../js/goals-admin.js', import.meta.url), 'utf8');
 const attributes = (name, source = html) => [...source.matchAll(new RegExp(`\\b${name}="([^"]+)"`, 'g'))].map(match => match[1]);
 const ids = attributes('id'); const idSet = new Set(ids);
@@ -59,4 +61,13 @@ test('performance por atendente possui os dez indicadores e obedece ao período 
     assert.match(enrichedJs, /filteredMetricFacts = filtered/);
     assert.match(enrichedJs, /responsible_agent/);
     assert.match(html, /Volumes diferentes não representam, isoladamente, melhor ou pior desempenho/);
+});
+
+test('carregamento prioriza Firestore antes de cache e base sanitizada', () => {
+    const firestore = dashboardJs.indexOf('window.privateTicketSnapshotReady');
+    const cache = dashboardJs.indexOf('recuperarUltimaBaseValida()', firestore);
+    const sanitized = dashboardJs.indexOf("fetch('dados.json", cache);
+    assert.ok(firestore >= 0 && cache > firestore && sanitized > cache);
+    assert.match(privateStoreJs, /window\.privateTicketSnapshotReady = loadPrivateSnapshot\(\)/);
+    assert.match(dashboardJs, /Base preservada no Firestore carregada com sucesso/);
 });

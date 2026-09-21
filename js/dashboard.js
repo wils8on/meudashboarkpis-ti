@@ -946,7 +946,7 @@ function recuperarUltimaBaseValida() {
     }
 }
 
-function atualizarPainelSincronizacao(meta = {}, total = 0, modoCache = false) {
+function atualizarPainelSincronizacao(meta = {}, total = 0, origem = 'servidor') {
     const count = document.getElementById('syncRecordCount');
     const data = document.getElementById('syncLastUpdate');
     const run = document.getElementById('syncLastRun');
@@ -958,17 +958,18 @@ function atualizarPainelSincronizacao(meta = {}, total = 0, modoCache = false) {
         run.textContent = dataSincronizacao && !Number.isNaN(dataSincronizacao.getTime())
             ? new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(dataSincronizacao)
             : 'Não informada';
-        run.title = modoCache ? 'Última base válida preservada neste dispositivo.' : 'Data e hora em que a sincronização foi concluída.';
+        const titulos = { firestore: 'Última base válida preservada no Firestore.', cache: 'Última base válida preservada neste dispositivo.', sanitizada: 'Última base sanitizada publicada com o painel.' };
+        run.title = titulos[origem] || 'Data e hora em que a sincronização foi concluída.';
     }
 }
 
-async function ativarBaseNormalizada(linhas, meta, modoCache = false) {
+async function ativarBaseNormalizada(linhas, meta, origem = 'servidor') {
     dadosPlanilhaGlobal = linhas;
-    if (modoCache) dadosBrutosAPI = linhas;
+    if (origem === 'cache') dadosBrutosAPI = linhas;
     await verificarECadastrarClientesNovos(dadosPlanilhaGlobal.filter(chamado => chamado.DadosPrivados));
     processarIndicadoresEstrategicos();
     await renderizarTabelaUsuarios();
-    atualizarPainelSincronizacao(meta, linhas.length, modoCache);
+    atualizarPainelSincronizacao(meta, linhas.length, origem);
 }
 
 async function carregarDadosAutomatizados() {
@@ -978,38 +979,38 @@ async function carregarDadosAutomatizados() {
     }
 
     try {
-        const response = await fetch('dados.json?t=' + new Date().getTime());
-        if (!response.ok) {
-            throw new Error("O arquivo de dados integrados ainda não está disponível no servidor.");
-        }
-        
-        const jsonResponse = await response.json();
-        
-        if (jsonResponse.message && jsonResponse.message.includes("Not Found")) {
-            throw new Error("Erro na API do TomTicket: Verifique se o ID ou Token estão corretos.");
-        }
-
         let listaChamados = [];
-        if (Array.isArray(jsonResponse)) {
-            listaChamados = jsonResponse;
-        } else if (jsonResponse.data && Array.isArray(jsonResponse.data)) {
-            listaChamados = jsonResponse.data;
-        } else if (jsonResponse.chamados && Array.isArray(jsonResponse.chamados)) {
-            listaChamados = jsonResponse.chamados;
-        } else {
-            console.error("Formato inesperado do JSON:", jsonResponse);
-            throw new Error("Formato de dados desconhecido. Abra o console do navegador para inspecionar.");
-        }
-
         let usandoCamadaPrivada = false;
+        let metaOrigem = {};
+        let origem = 'firestore';
         try {
-            const chamadosPrivados = window.privateTicketStoreReady ? await window.privateTicketStoreReady : [];
-            if (Array.isArray(chamadosPrivados) && chamadosPrivados.length > 0) {
-                listaChamados = chamadosPrivados;
+            const snapshotPrivado = window.privateTicketSnapshotReady ? await window.privateTicketSnapshotReady : null;
+            if (Array.isArray(snapshotPrivado?.tickets) && snapshotPrivado.tickets.length > 0) {
+                listaChamados = snapshotPrivado.tickets;
+                metaOrigem = snapshotPrivado.meta || {};
                 usandoCamadaPrivada = true;
             }
         } catch (privateError) {
-            console.warn('Camada privada indisponível; usando somente indicadores sanitizados.', privateError);
+            console.warn('Camada privada do Firestore indisponível; procurando contingência local.', privateError);
+        }
+
+        if (!listaChamados.length) {
+            const cache = recuperarUltimaBaseValida();
+            if (cache) {
+                await ativarBaseNormalizada(cache.linhas, cache.meta, 'cache');
+                if (uploadStatus) uploadStatus.innerHTML = '<span class="sync-warning"><i class="fa-solid fa-database"></i> Firestore indisponível · exibindo a última base válida deste dispositivo</span>';
+                return;
+            }
+
+            origem = 'sanitizada';
+            const response = await fetch('dados.json?t=' + new Date().getTime());
+            if (!response.ok) throw new Error('Nenhuma base persistida está disponível no momento.');
+            const jsonResponse = await response.json();
+            metaOrigem = jsonResponse.meta || {};
+            if (Array.isArray(jsonResponse)) listaChamados = jsonResponse;
+            else if (Array.isArray(jsonResponse.data)) listaChamados = jsonResponse.data;
+            else if (Array.isArray(jsonResponse.chamados)) listaChamados = jsonResponse.chamados;
+            else throw new Error('Formato da base sanitizada não reconhecido.');
         }
 
         dadosBrutosAPI = listaChamados;
@@ -1056,12 +1057,14 @@ async function carregarDadosAutomatizados() {
         });
 
         if (dadosPlanilhaGlobal.length > 0) {
-            const metaCache = { ...(jsonResponse.meta || {}), updated_at: jsonResponse.meta?.updated_at || new Date().toISOString() };
+            const metaCache = { ...metaOrigem, updated_at: metaOrigem.updated_at || new Date().toISOString() };
             salvarUltimaBaseValida(dadosPlanilhaGlobal, metaCache);
-            await ativarBaseNormalizada(dadosPlanilhaGlobal, metaCache);
+            await ativarBaseNormalizada(dadosPlanilhaGlobal, metaCache, origem);
             
             if (uploadStatus) {
-                uploadStatus.innerHTML = `<span class="sync-success"><i class="fa-solid fa-circle-check"></i> Base sincronizada com sucesso</span>`;
+                uploadStatus.innerHTML = origem === 'firestore'
+                    ? '<span class="sync-success"><i class="fa-solid fa-cloud"></i> Base preservada no Firestore carregada com sucesso</span>'
+                    : '<span class="sync-warning"><i class="fa-solid fa-database"></i> Firestore e cache indisponíveis · exibindo base sanitizada publicada</span>';
             }
         } else {
             throw new Error("A lista de chamados retornou vazia.");
@@ -1070,7 +1073,7 @@ async function carregarDadosAutomatizados() {
         console.error("Erro na leitura automática de dados:", erro);
         const cache = recuperarUltimaBaseValida();
         if (cache) {
-            await ativarBaseNormalizada(cache.linhas, cache.meta, true);
+            await ativarBaseNormalizada(cache.linhas, cache.meta, 'cache');
             if (uploadStatus) uploadStatus.innerHTML = '<span class="sync-warning"><i class="fa-solid fa-database"></i> API indisponível · exibindo a última base válida preservada</span>';
         } else if (uploadStatus) uploadStatus.innerHTML = `<span class="sync-error"><i class="fa-solid fa-triangle-exclamation"></i> Erro de sincronização: ${erro.message}</span>`;
     }

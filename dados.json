@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-21T10:46:20.487Z",
-    "total_records": 1520,
+    "updated_at": "2026-09-21T15:33:29.096Z",
+    "total_records": 1522,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-18T18:48:41.000Z"
+    "newest_creation_date": "2026-09-21T13:16:49.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-21 10:16:49-03:00",
+      "end_date": "2026-09-21 10:38:02-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-21 08:37:54-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido, aguardando resposta do cliente"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -130,7 +168,7 @@
       },
       "priority": 2,
       "creation_date": "2026-09-17 16:34:28-03:00",
-      "end_date": null,
+      "end_date": "2026-09-21 09:48:01-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -138,7 +176,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Finalizado"
       }
     },
     {
@@ -168,7 +206,7 @@
       },
       "priority": 4,
       "creation_date": "2026-09-17 15:30:03-03:00",
-      "end_date": null,
+      "end_date": "2026-09-21 09:49:22-03:00",
       "sla": {
         "deadline": {
           "accomplished": false
@@ -176,7 +214,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Finalizado"
       }
     },
     {
@@ -252,7 +290,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando terceiro"
+        "description": "Aguardando cliente"
       }
     },
     {
@@ -285,7 +323,7 @@
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": true
+          "accomplished": false
         }
       },
       "reopened": false,
@@ -4109,7 +4147,7 @@
       },
       "reopened": true,
       "status": {
-        "description": "Respondido, aguardando resposta do cliente"
+        "description": "Aguardando cliente"
       }
     },
     {

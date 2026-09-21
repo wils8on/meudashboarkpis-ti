@@ -7,6 +7,9 @@ const enrichedJs = readFileSync(new URL('../js/enriched-metrics-dashboard.js', i
 const dashboardJs = readFileSync(new URL('../js/dashboard.js', import.meta.url), 'utf8');
 const privateStoreJs = readFileSync(new URL('../js/private-ticket-store.js', import.meta.url), 'utf8');
 const goalsJs = readFileSync(new URL('../js/goals-admin.js', import.meta.url), 'utf8');
+const authGuardJs = readFileSync(new URL('../js/auth-guard.js', import.meta.url), 'utf8');
+const accessAdminJs = readFileSync(new URL('../js/access-admin.js', import.meta.url), 'utf8');
+const firestoreRules = readFileSync(new URL('../firestore.rules', import.meta.url), 'utf8');
 const attributes = (name, source = html) => [...source.matchAll(new RegExp(`\\b${name}="([^"]+)"`, 'g'))].map(match => match[1]);
 const ids = attributes('id'); const idSet = new Set(ids);
 
@@ -70,4 +73,16 @@ test('carregamento prioriza Firestore antes de cache e base sanitizada', () => {
     assert.ok(firestore >= 0 && cache > firestore && sanitized > cache);
     assert.match(privateStoreJs, /window\.privateTicketSnapshotReady = loadPrivateSnapshot\(\)/);
     assert.match(dashboardJs, /Base preservada no Firestore carregada com sucesso/);
+});
+
+test('controle de sessões permite logout remoto por dispositivo', () => {
+    ['accessSessionsBody', 'activeSessionsCount', 'sessionsRefreshButton', 'revokeOtherSessionsButton', 'sessionManagementStatus']
+        .forEach(id => assert.ok(idSet.has(id), `Elemento de sessão ausente: ${id}`));
+    assert.match(authGuardJs, /collection.*user_sessions|doc\(db, 'user_sessions'/s);
+    assert.match(authGuardJs, /onSnapshot\(sessionRef/);
+    assert.match(authGuardJs, /HEARTBEAT_INTERVAL/);
+    assert.match(accessAdminJs, /revokeOtherSessions/);
+    assert.match(accessAdminJs, /status: 'revoked'/);
+    assert.match(firestoreRules, /match \/user_sessions\/\{sessionId\}/);
+    assert.match(firestoreRules, /resource\.data\.status == 'active'/);
 });

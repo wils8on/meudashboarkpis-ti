@@ -783,6 +783,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="table-wrapper-box access-sessions-box">
+                        <div class="table-header-title">
+                            <div><span class="section-kicker">Segurança da conta</span><strong>Minhas sessões</strong><small><span id="activeSessionsCount">0</span> dispositivo(s) conectado(s)</small></div>
+                            <div class="access-session-actions"><button id="sessionsRefreshButton" class="table-edit-btn" type="button"><i class="fa-solid fa-rotate"></i> Atualizar</button><button id="revokeOtherSessionsButton" class="table-edit-btn session-revoke-all" type="button" disabled><i class="fa-solid fa-shield-halved"></i> Sair de outros dispositivos</button></div>
+                        </div>
+                        <div class="table-scroll-container access-sessions-scroll">
+                            <table class="data-table access-sessions-table">
+                                <thead><tr><th>Dispositivo</th><th>Navegador</th><th>Última atividade</th><th>Status</th><th style="text-align:center">Ação</th></tr></thead>
+                                <tbody id="accessSessionsBody"><tr><td colspan="5" class="table-empty-state">Carregando sessões...</td></tr></tbody>
+                            </table>
+                        </div>
+                        <div id="sessionManagementStatus" class="access-form-status session-management-status" role="status" aria-live="polite"></div>
+                    </div>
                 </section>
 
                 <section id="aba-metas" class="tab-content" aria-labelledby="goalsManagementTitle">

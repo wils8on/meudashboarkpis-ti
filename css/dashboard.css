@@ -687,6 +687,14 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
 .access-action.delete { width: 30px; padding: 0; color: var(--ink-faint); }
 .access-action:disabled { cursor: not-allowed; opacity: .4; }
 .access-table-scroll { max-height: 520px; }
+.access-sessions-box { margin-top: 20px; }
+.access-sessions-box .table-header-title small { display: block; margin-top: 4px; color: var(--ink-faint); font-size: 9px; font-weight: 500; }
+.access-session-actions { display: flex; align-items: center; gap: 8px; }
+.session-revoke-all { color: var(--rust); }
+.session-action-cell { text-align: center; }
+.session-management-status { min-height: 28px; margin: 0; padding: 8px 16px; border-top: 1px solid var(--border); }
+.access-sessions-scroll { max-height: 360px; }
+.access-sessions-table { min-width: 760px; }
 
 /* Metas e alertas administrativos */
 .goals-notice { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; padding: 14px 16px; color: var(--ink-muted); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); font-size: 10px; line-height: 1.55; }
@@ -843,6 +851,8 @@ h1, h2, h3, h4, h5 { font-family: var(--font-display); }
     .quiet-hours-panel { padding: 15px; }
     .access-summary-grid { grid-template-columns: 1fr; }
     .access-table { min-width: 680px; }
+    .access-sessions-box .table-header-title { align-items: flex-start; flex-direction: column; gap: 10px; }
+    .access-session-actions { width: 100%; overflow-x: auto; }
 }
 
 @media (max-width: 440px) {

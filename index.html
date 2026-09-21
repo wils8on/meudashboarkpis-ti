@@ -312,10 +312,19 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
+        const logoutNotice = sessionStorage.getItem('dashboard_logout_notice');
+        if (logoutNotice) {
+            const errorDiv = document.getElementById('msgErroLogin');
+            errorDiv.textContent = logoutNotice;
+            errorDiv.style.display = 'block';
+            sessionStorage.removeItem('dashboard_logout_notice');
+        }
 
         document.getElementById('btnGoogleLogin').addEventListener('click', () => {
             const errorDiv = document.getElementById('msgErroLogin');
             errorDiv.style.display = 'none';
+            // Um login explícito sempre cria uma nova sessão para este navegador.
+            localStorage.removeItem('dashboard_session_id_v1');
 
             // Usamos Janela Pop-up para evitar bloqueios de cookies do GitHub Pages
             signInWithPopup(auth, provider)

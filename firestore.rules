@@ -40,6 +40,28 @@ service cloud.firestore {
       allow delete: if isAdmin() && email != currentEmail();
     }
 
+    match /user_sessions/{sessionId} {
+      allow get: if isAdmin() || (isAuthorized() && resource.data.uid == request.auth.uid);
+      allow list: if isAdmin() || (isAuthorized() && resource.data.uid == request.auth.uid);
+      allow create: if isAuthorized()
+                    && request.resource.data.sessionId == sessionId
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.email == currentEmail()
+                    && request.resource.data.status == 'active';
+      allow update: if request.resource.data.sessionId == resource.data.sessionId
+                    && request.resource.data.uid == resource.data.uid
+                    && request.resource.data.email == resource.data.email
+                    && resource.data.status == 'active'
+                    && ((isAuthorized()
+                         && resource.data.uid == request.auth.uid
+                         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastSeenAt', 'status', 'revokedAt', 'revokedBy'])
+                         && request.resource.data.status in ['active', 'revoked'])
+                        || (isAdmin()
+                            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'revokedAt', 'revokedBy'])
+                            && request.resource.data.status == 'revoked'));
+      allow delete: if isAdmin();
+    }
+
     match /clientes/{clientId} {
       allow read, delete: if request.auth != null
                           && resource.data.ownerUid == request.auth.uid;

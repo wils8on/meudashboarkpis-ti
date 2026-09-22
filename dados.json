@@ -1,13 +1,32 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-22T17:26:40.333Z",
-    "total_records": 1528,
+    "updated_at": "2026-09-22T20:27:49.997Z",
+    "total_records": 1529,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-22T15:04:29.000Z"
+    "newest_creation_date": "2026-09-22T19:58:11.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-22 16:58:11-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": null
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Sem atendente vinculado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -1786,7 +1805,7 @@
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": true
+          "accomplished": false
         }
       },
       "reopened": false,

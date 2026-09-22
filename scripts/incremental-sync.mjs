@@ -8,7 +8,7 @@ import { inspectDetailQuality, inspectListingQuality, summarizeQuality } from '.
 import { buildMetricFact, calculateEnrichedMetrics } from './enriched-metrics.mjs';
 import { appendTrendAlerts, calculateMetricTrends, updateMetricHistory } from './metric-history.mjs';
 
-const DETAIL_LIMIT = 20;
+const DETAIL_LIMIT = 80;
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function loadDefaultAlertConfig() { try { return JSON.parse(await readFile(new URL('../config/operational-alerts.json', import.meta.url), 'utf8')); } catch { return {}; } }
 
@@ -20,12 +20,18 @@ export function resolveAlertConfig(defaultConfig = {}, remoteConfig = null) {
 }
 
 export function listingFingerprint(ticket = {}) {
+    const responsible = ticket.responsible_agent || ticket.operator || {};
+    const department = ticket.department || {};
+    const category = ticket.category || {};
     const relevant = {
         priority: ticket.priority ?? null,
         reopened: ticket.reopened === true,
         end_date: ticket.end_date || null,
         status: ticket.status?.description || ticket.situation?.description || null,
-        sla_deadline: ticket.sla?.deadline?.accomplished ?? null
+        sla_deadline: ticket.sla?.deadline?.accomplished ?? null,
+        responsible_agent: { id: responsible.id || null, name: responsible.name || null },
+        department: { id: department.id || null, name: department.name || null },
+        category: { id: category.id || null, name: category.name || null }
     };
     return createHash('sha256').update(JSON.stringify(relevant)).digest('hex');
 }
@@ -38,8 +44,18 @@ export function selectDetailCandidates(tickets, state = {}, limit = DETAIL_LIMIT
     });
     return classified
         .filter(item => item.isNew || item.changed || item.unenriched)
-        .sort((a, b) => Number(b.changed) - Number(a.changed) || Number(b.isNew) - Number(a.isNew))
+        .sort((a, b) => Number(b.changed) - Number(a.changed)
+            || Number(!b.ticket.end_date) - Number(!a.ticket.end_date)
+            || Number(b.isNew) - Number(a.isNew))
         .slice(0, Math.max(0, limit));
+}
+
+export function markListingSeen(tickets, state = {}, seenAt = new Date().toISOString()) {
+    tickets.filter(ticket => ticket?.id).forEach(ticket => {
+        const current = state[ticket.id] || {};
+        state[ticket.id] = { ...current, seen_at: seenAt };
+    });
+    return state;
 }
 
 export function summarizeListingChanges(tickets, state = {}) {
@@ -123,10 +139,10 @@ export async function syncIncrementalTickets(tickets, { token, firebaseSecret, d
         await delay(300);
     }
 
-    tickets.filter(ticket => ticket?.id).forEach(ticket => {
-        const current = state[ticket.id] || {};
-        state[ticket.id] = { ...current, list_hash: listingFingerprint(ticket), seen_at: new Date().toISOString() };
-    });
+    // O list_hash só é promovido dentro do bloco de sucesso, depois que o detalhe
+    // correspondente foi realmente coletado. Assim, alterações além do limite da
+    // rodada ou com erro continuam candidatas na próxima sincronização.
+    markListingSeen(tickets, state);
     const finished = new Date();
     await store.saveState(state, finished.toISOString());
     await store.saveMetricState(metricState, finished.toISOString());

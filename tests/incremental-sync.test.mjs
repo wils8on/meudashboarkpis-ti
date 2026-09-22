@@ -1,11 +1,31 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchDetailWithRetry, listingFingerprint, resolveAlertConfig, selectDetailCandidates, summarizeListingChanges } from '../scripts/incremental-sync.mjs';
+import { fetchDetailWithRetry, listingFingerprint, markListingSeen, resolveAlertConfig, selectDetailCandidates, summarizeListingChanges } from '../scripts/incremental-sync.mjs';
 
-const ticket = (id, status = 'Aberto') => ({ id, priority: 2, reopened: false, end_date: null, status: { description: status }, sla: { deadline: { accomplished: true } } });
+const ticket = (id, status = 'Aberto', operator = 'Ana') => ({ id, priority: 2, reopened: false, end_date: null, status: { description: status }, responsible_agent: { id: operator.toLowerCase(), name: operator }, sla: { deadline: { accomplished: true } } });
 
 test('fingerprint muda quando o estado operacional muda', () => {
     assert.notEqual(listingFingerprint(ticket('1')), listingFingerprint(ticket('1', 'Finalizado')));
+    assert.notEqual(listingFingerprint(ticket('1')), listingFingerprint(ticket('1', 'Aberto', 'Bruno')));
+});
+
+test('alteração não processada continua pendente para a próxima sincronização', () => {
+    const previous = ticket('1', 'Aberto', 'Ana');
+    const changed = ticket('1', 'Aberto', 'Bruno');
+    const state = { 1: { list_hash: listingFingerprint(previous), detail_hash: 'detalhe-anterior' } };
+    markListingSeen([changed], state, '2026-09-22T10:00:00.000Z');
+    assert.equal(state['1'].list_hash, listingFingerprint(previous));
+    assert.equal(selectDetailCandidates([changed], state, 80, { 1: { schema_version: 2, id: '1' } })[0].changed, true);
+});
+
+test('chamados abertos têm prioridade quando alterações excedem o limite', () => {
+    const closed = ticket('fechado', 'Finalizado'); closed.end_date = '2026-09-20T10:00:00Z';
+    const open = ticket('aberto', 'Aberto');
+    const state = {
+        fechado: { list_hash: listingFingerprint(ticket('fechado', 'Aberto')), detail_hash: 'x' },
+        aberto: { list_hash: listingFingerprint(ticket('aberto', 'Aberto', 'Bruno')), detail_hash: 'x' }
+    };
+    assert.equal(selectDetailCandidates([closed, open], state, 1, { fechado: { schema_version: 2 }, aberto: { schema_version: 2 } })[0].ticket.id, 'aberto');
 });
 
 test('prioriza alterados, depois novos e limita detalhes', () => {

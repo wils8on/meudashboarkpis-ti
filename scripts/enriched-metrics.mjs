@@ -7,9 +7,9 @@ export function buildMetricFact(ticket = {}) {
     return { schema_version: 2, id: ticket.id, protocol: ticket.protocol, subject: ticket.subject, priority: ticket.priority, creation_date: ticket.creation_date, end_date: ticket.end_date, first_reply_date: ticket.first_reply_date, last_movement_date: ticket.situation?.apply_date, status: ticket.situation?.description, interaction_count: Number.isInteger(ticket.interaction_count) && ticket.interaction_count >= 0 ? ticket.interaction_count : null, work_time_seconds: ticket.work_time_seconds, reopened: ticket.reopened === true, sla_initialization: ticket.sla?.initialization?.accomplished ?? null, sla_deadline: ticket.sla?.deadline?.accomplished ?? null, evaluation_grade: ticket.evaluation?.grade ?? null, evaluation_problem_solved: ticket.evaluation?.problem_solved ?? null, department: ticket.department, category: ticket.category, responsible_agent: ticket.responsible_agent };
 }
 
-function stalenessMetrics(facts, generatedAt) {
+function stalenessMetrics(facts, generatedAt, activeTicketIds = null) {
     const now = validDate(generatedAt) || new Date();
-    const records = facts.filter(item => !item.end_date).map(item => {
+    const records = facts.filter(item => !item.end_date && (!activeTicketIds || activeTicketIds.has(String(item.id)))).map(item => {
         const movement = validDate(item.last_movement_date);
         if (!movement || movement > now) return null;
         return { id: item.id, protocol: item.protocol ?? null, subject: item.subject || 'Sem título', priority: item.priority ?? null, status: item.status || 'Não informado', last_movement_date: movement.toISOString(), idle_hours: round((now - movement) / 3600000, 1), responsible_agent: item.responsible_agent?.name || 'Não informado', category: item.category?.name || 'Não informado', department: item.department?.name || 'Não informado' };
@@ -86,8 +86,11 @@ function priorityMetrics(facts, generatedAt) {
     return groupMetrics(withDimension, 'priority_dimension', generatedAt);
 }
 
-export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, generatedAt = new Date().toISOString(), alertConfig = {}) {
+export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, generatedAt = new Date().toISOString(), alertConfig = {}, currentTickets = null) {
     const facts = Object.values(metricState).filter(item => item?.id);
+    const activeTicketIds = Array.isArray(currentTickets)
+        ? new Set(currentTickets.filter(item => item?.id && !item.end_date).map(item => String(item.id)))
+        : null;
     const responseHours = facts.map(item => { const created = validDate(item.creation_date); const replied = validDate(item.first_reply_date); return created && replied && replied >= created ? (replied - created) / 3600000 : null; }).filter(value => value != null);
     const workHours = facts.map(item => Number(item.work_time_seconds)).filter(value => Number.isFinite(value) && value >= 0).map(value => value / 3600);
     const workElapsed = facts.map(item => { const created = validDate(item.creation_date); const ended = validDate(item.end_date); const worked = Number(item.work_time_seconds); return created && ended && ended > created && Number.isFinite(worked) && worked >= 0 ? { worked: worked / 3600, elapsed: (ended - created) / 3600000 } : null; }).filter(Boolean);
@@ -104,7 +107,7 @@ export function calculateEnrichedMetrics(metricState = {}, totalListed = 0, gene
         work_time: { count: workHours.length, total_hours: round(workHours.reduce((sum, value) => sum + value, 0)), mean_hours: workHours.length ? round(average(workHours)) : null, elapsed_sample: workElapsed.length, elapsed_hours: round(workElapsed.reduce((sum, item) => sum + item.elapsed, 0)), effective_ratio: workElapsed.length ? round(workElapsed.reduce((sum, item) => sum + item.worked, 0) / workElapsed.reduce((sum, item) => sum + item.elapsed, 0) * 100) : null, cost_estimation_ready: workHours.length > 0 },
         interactions: { count: interactionCounts.length, total: interactionCounts.reduce((sum, value) => sum + value, 0), mean: interactionCounts.length ? round(average(interactionCounts)) : null, high_touch: interactionCounts.filter(value => value > 10).length },
         evaluation: { count: grades.length, mean_grade: grades.length ? round(average(grades)) : null, response_rate: concluded.length ? round(evaluatedConcluded.length / concluded.length * 100) : null, eligible_concluded: concluded.length, problem_solved_count: solved.length, problem_solved_rate: solved.length ? round(solved.filter(item => item.evaluation_problem_solved).length / solved.length * 100) : null },
-        staleness: stalenessMetrics(facts, generatedAt),
+        staleness: stalenessMetrics(facts, generatedAt, activeTicketIds),
         breakdowns: { departments: groupMetrics(facts, 'department', generatedAt), categories: groupMetrics(facts, 'category', generatedAt), operators: groupMetrics(facts, 'responsible_agent', generatedAt), priorities: priorityMetrics(facts, generatedAt) }
     };
     metrics.alerts = operationalAlerts(facts, metrics, alertConfig);

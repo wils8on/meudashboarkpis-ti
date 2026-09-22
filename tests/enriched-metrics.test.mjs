@@ -33,6 +33,20 @@ test('calcula chamados sem movimentação somente quando há data real', () => {
     assert.equal(metrics.staleness.records[0].idle_hours, 28);
 });
 
+test('chamados sem movimentação respeitam o backlog atual da listagem', () => {
+    const facts = {
+        aberto: buildMetricFact({ id: 'aberto', situation: { apply_date: '2026-08-20T10:00:00Z' } }),
+        encerradoDesatualizado: buildMetricFact({ id: 'encerrado', situation: { apply_date: '2026-08-19T10:00:00Z' } })
+    };
+    const listing = [
+        { id: 'aberto', end_date: null },
+        { id: 'encerrado', end_date: '2026-08-24T10:00:00Z' }
+    ];
+    const metrics = calculateEnrichedMetrics(facts, 2, '2026-08-25T12:00:00Z', {}, listing);
+    assert.equal(metrics.staleness.eligible, 1);
+    assert.equal(metrics.staleness.records[0].id, 'aberto');
+});
+
 test('gera alertas somente quando amostra e limites configurados permitem', () => {
     const facts = {}; for (let index = 0; index < 10; index++) facts[index] = buildMetricFact({ id: String(index), reopened: index < 2, situation: { apply_date: '2026-08-20T10:00:00Z' }, sla: { deadline: { accomplished: index < 8 } } });
     const config = { version: 1, rules: { sla_deadline: { enabled: true, minimum_rate: 90, minimum_sample: 10 }, reopen_rate: { enabled: true, maximum_rate: 10, minimum_sample: 10 }, critical_staleness: { enabled: true, hours: 72, maximum_count: 0 } } };

@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-24T17:31:33.186Z",
-    "total_records": 1538,
+    "updated_at": "2026-09-24T20:44:32.867Z",
+    "total_records": 1540,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-24T15:20:00.000Z"
+    "newest_creation_date": "2026-09-24T20:09:47.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-24 17:09:47-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": null
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Sem atendente vinculado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-09-24 15:10:47-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": null
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Sem atendente vinculado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -111,7 +149,7 @@
       },
       "priority": 2,
       "creation_date": "2026-09-23 12:55:08-03:00",
-      "end_date": null,
+      "end_date": "2026-09-24 15:34:35-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -119,7 +157,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando interação do atendente"
+        "description": "Finalizado"
       }
     },
     {

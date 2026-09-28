@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-09-28T06:06:23.063Z",
-    "total_records": 1540,
+    "updated_at": "2026-09-28T13:59:00.765Z",
+    "total_records": 1542,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-09-24T20:09:47.000Z"
+    "newest_creation_date": "2026-09-28T12:57:02.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-09-28 09:57:02-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-09-28 09:08:54-03:00",
+      "end_date": "2026-09-28 09:14:21-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -187,7 +225,7 @@
       },
       "priority": 2,
       "creation_date": "2026-09-23 09:55:35-03:00",
-      "end_date": null,
+      "end_date": "2026-09-28 08:54:55-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -195,7 +233,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em Desenvolvimento"
+        "description": "Finalizado"
       }
     },
     {
@@ -594,7 +632,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Analise para Desenvolvimento"
+        "description": "Aguardando cliente"
       }
     },
     {

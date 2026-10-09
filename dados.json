@@ -1,13 +1,32 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-10-09T16:31:37.838Z",
-    "total_records": 1561,
+    "updated_at": "2026-10-09T21:12:45.019Z",
+    "total_records": 1562,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-10-08T14:54:53.000Z"
+    "newest_creation_date": "2026-10-09T16:38:55.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-10-09 13:38:55-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido, aguardando resposta do cliente"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -54,7 +73,7 @@
       },
       "priority": 2,
       "creation_date": "2026-10-07 16:49:59-03:00",
-      "end_date": null,
+      "end_date": "2026-10-09 15:26:43-03:00",
       "sla": {
         "deadline": {
           "accomplished": null
@@ -62,7 +81,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Sem atendente vinculado"
+        "description": "Finalizado"
       }
     },
     {
@@ -1088,7 +1107,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em Desenvolvimento"
+        "description": "Aguardando cliente"
       }
     },
     {

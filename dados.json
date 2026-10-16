@@ -1,7 +1,7 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-10-16T14:24:41.041Z",
+    "updated_at": "2026-10-16T18:19:34.032Z",
     "total_records": 1572,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
@@ -206,7 +206,7 @@
       },
       "priority": 2,
       "creation_date": "2026-10-09 13:38:55-03:00",
-      "end_date": null,
+      "end_date": "2026-10-16 11:56:35-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -214,7 +214,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando cliente"
+        "description": "Finalizado"
       }
     },
     {

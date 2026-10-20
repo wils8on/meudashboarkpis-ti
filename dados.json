@@ -1,13 +1,70 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-10-20T07:54:49.069Z",
-    "total_records": 1573,
+    "updated_at": "2026-10-20T13:08:50.751Z",
+    "total_records": 1576,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-10-19T19:22:58.000Z"
+    "newest_creation_date": "2026-10-20T12:55:11.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Sem organização"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-10-20 09:55:11-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido pelo cliente, aguardando resposta"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Sem organização"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-10-20 09:46:04-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido pelo cliente, aguardando resposta"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-10-20 09:32:11-03:00",
+      "end_date": "2026-10-20 09:32:20-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -19,12 +76,12 @@
       "end_date": null,
       "sla": {
         "deadline": {
-          "accomplished": null
+          "accomplished": true
         }
       },
-      "reopened": false,
+      "reopened": true,
       "status": {
-        "description": "Sem atendente vinculado"
+        "description": "Respondido, aguardando resposta do cliente"
       }
     },
     {
@@ -2353,15 +2410,15 @@
       },
       "priority": 2,
       "creation_date": "2026-08-31 11:21:51-03:00",
-      "end_date": "2026-09-25 11:12:03-03:00",
+      "end_date": null,
       "sla": {
         "deadline": {
           "accomplished": true
         }
       },
-      "reopened": false,
+      "reopened": true,
       "status": {
-        "description": "Finalizado"
+        "description": "Respondido, aguardando resposta do cliente"
       }
     },
     {

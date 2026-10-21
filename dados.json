@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-10-21T09:45:08.911Z",
-    "total_records": 1576,
+    "updated_at": "2026-10-21T14:45:50.314Z",
+    "total_records": 1578,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-10-20T12:55:11.000Z"
+    "newest_creation_date": "2026-10-21T13:22:02.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-10-21 10:22:02-03:00",
+      "end_date": "2026-10-21 10:22:05-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-10-21 08:49:57-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido, aguardando resposta do cliente"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -225,15 +263,15 @@
       },
       "priority": 3,
       "creation_date": "2026-10-13 11:30:41-03:00",
-      "end_date": "2026-10-21 00:00:48-03:00",
+      "end_date": null,
       "sla": {
         "deadline": {
           "accomplished": true
         }
       },
-      "reopened": false,
+      "reopened": true,
       "status": {
-        "description": "Finalizado"
+        "description": "Em Analise Técnica"
       }
     },
     {

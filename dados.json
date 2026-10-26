@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-10-26T08:05:16.494Z",
-    "total_records": 1583,
+    "updated_at": "2026-10-26T15:13:28.021Z",
+    "total_records": 1585,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-10-23T19:37:11.000Z"
+    "newest_creation_date": "2026-10-26T13:55:06.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 1,
+      "creation_date": "2026-10-26 10:55:06-03:00",
+      "end_date": "2026-10-26 11:10:15-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 1,
+      "creation_date": "2026-10-26 08:33:20-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando terceiro"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -16,15 +54,15 @@
       },
       "priority": 2,
       "creation_date": "2026-10-23 16:37:11-03:00",
-      "end_date": null,
+      "end_date": "2026-10-26 11:11:30-03:00",
       "sla": {
         "deadline": {
-          "accomplished": null
+          "accomplished": true
         }
       },
       "reopened": false,
       "status": {
-        "description": "Sem atendente vinculado"
+        "description": "Finalizado"
       }
     },
     {

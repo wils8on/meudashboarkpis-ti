@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-10-28T10:08:31.492Z",
-    "total_records": 1585,
+    "updated_at": "2026-10-28T16:39:25.968Z",
+    "total_records": 1587,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-10-26T13:55:06.000Z"
+    "newest_creation_date": "2026-10-28T14:13:32.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-10-28 11:13:32-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido, aguardando resposta do cliente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-10-28 11:06:47-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Respondido pelo cliente, aguardando resposta"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -111,7 +149,7 @@
       },
       "priority": 4,
       "creation_date": "2026-10-21 15:37:25-03:00",
-      "end_date": null,
+      "end_date": "2026-10-28 08:35:39-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -119,7 +157,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido, aguardando resposta do cliente"
+        "description": "Finalizado"
       }
     },
     {
@@ -320,15 +358,15 @@
       },
       "priority": 3,
       "creation_date": "2026-10-13 14:19:35-03:00",
-      "end_date": "2026-10-28 00:00:52-03:00",
+      "end_date": null,
       "sla": {
         "deadline": {
           "accomplished": false
         }
       },
-      "reopened": false,
+      "reopened": true,
       "status": {
-        "description": "Finalizado"
+        "description": "Respondido, aguardando resposta do cliente"
       }
     },
     {

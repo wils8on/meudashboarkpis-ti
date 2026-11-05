@@ -1,13 +1,32 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-11-05T04:09:22.187Z",
-    "total_records": 1598,
+    "updated_at": "2026-11-05T12:24:09.649Z",
+    "total_records": 1599,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-11-04T17:49:03.000Z"
+    "newest_creation_date": "2026-11-05T11:20:14.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-11-05 08:20:14-03:00",
+      "end_date": "2026-11-05 08:54:59-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -244,7 +263,7 @@
       },
       "priority": 2,
       "creation_date": "2026-10-28 11:06:47-03:00",
-      "end_date": null,
+      "end_date": "2026-11-05 08:53:14-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -252,7 +271,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido pelo cliente, aguardando resposta"
+        "description": "Finalizado"
       }
     },
     {
@@ -760,7 +779,7 @@
       "end_date": "2026-10-09 15:26:43-03:00",
       "sla": {
         "deadline": {
-          "accomplished": null
+          "accomplished": true
         }
       },
       "reopened": false,

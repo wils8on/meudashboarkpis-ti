@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-11-06T15:22:20.976Z",
-    "total_records": 1601,
+    "updated_at": "2026-11-06T21:02:15.676Z",
+    "total_records": 1603,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-11-05T19:58:14.000Z"
+    "newest_creation_date": "2026-11-06T19:09:08.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-11-06 16:09:08-03:00",
+      "end_date": "2026-11-06 16:23:50-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-11-06 15:16:42-03:00",
+      "end_date": "2026-11-06 16:09:20-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -1555,7 +1593,7 @@
       },
       "priority": 3,
       "creation_date": "2026-09-18 15:48:41-03:00",
-      "end_date": null,
+      "end_date": "2026-11-06 15:37:38-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -1563,7 +1601,7 @@
       },
       "reopened": true,
       "status": {
-        "description": "Aguardando cliente"
+        "description": "Finalizado"
       }
     },
     {

@@ -7,6 +7,7 @@ const base64url = value => Buffer.from(value).toString('base64url');
 
 export function buildPrivateTicket(ticket = {}) {
     return {
+        id: ticket.id || null,
         protocol: ticket.protocol ?? null,
         subject: String(ticket.subject || '').trim() || 'Sem título',
         customer: {

@@ -9,7 +9,9 @@ const raw = {
     department: { id: 'd1', name: 'TI' }, category: { id: 'cat1', name: 'Acesso' }, operator: { id: 'op1', name: 'Atendente' },
     situation: { id: 1, description: 'Em análise', apply_date: '2026-08-25 09:00:00-03:00' },
     sla: { startup: { date: '2026-08-25 08:30:00-03:00', accomplished: true }, deadline: { date: '2026-08-26 08:00:00-03:00', accomplished: false } },
-    tags: null, stopwatch: null, staggered: null, replies: []
+    tags: null, stopwatch: null, staggered: null,
+    message: '<p>Mensagem de abertura</p>', mimetype: 'text/html',
+    replies: [{ id: 'r1', sender_type: 'A', sender: 'Atendente', message: 'Resposta', date: '2026-08-25 10:00:00-03:00', attachments: [{ name: 'log.txt', url: 'https://example.com/log.txt', size: 42 }] }]
 };
 
 test('normaliza detalhe real sem depender de arrays presentes', () => {
@@ -17,7 +19,9 @@ test('normaliza detalhe real sem depender de arrays presentes', () => {
     assert.equal(ticket.customer.email, 'pessoa@example.com');
     assert.equal(ticket.sla.initialization.accomplished, true);
     assert.deepEqual(ticket.tags, []);
-    assert.equal(ticket.interaction_count, 0);
+    assert.equal(ticket.interaction_count, 1);
+    assert.equal(ticket.opening_message.message, '<p>Mensagem de abertura</p>');
+    assert.deepEqual(ticket.replies[0], { id: 'r1', sender_type: 'A', sender: 'Atendente', message: 'Resposta', date: '2026-08-25 10:00:00-03:00', mimetype: null, attachments: [{ name: 'log.txt', url: 'https://example.com/log.txt', size: 42 }] });
 });
 
 test('hash ignora collected_at e conteúdo não gerencial', () => {

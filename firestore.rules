@@ -77,6 +77,11 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    match /tomticket_tickets/{ticketId} {
+      allow read: if isAuthorized();
+      allow write: if false;
+    }
+
     match /solicitantes/{requesterId} {
       allow read: if isAuthorized();
       allow create, update, delete: if isAdmin();

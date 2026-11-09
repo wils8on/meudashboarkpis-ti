@@ -205,6 +205,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#" class="nav-item" data-target="aba-historico-chamados">
+                        <i class="fa-solid fa-comments"></i> <span>Histórico</span>
+                    </a>
+                </li>
+                <li>
                     <a href="#" class="nav-item" data-target="aba-solucoes">
                         <i class="fa-solid fa-lightbulb"></i> <span>Soluções</span>
                     </a>
@@ -684,6 +689,40 @@
                     <div class="chart-container chart-featured"><div class="chart-heading"><div><span class="section-kicker">Tendência semanal</span><h4>Chamados por semana</h4></div><span class="chart-caption" id="weeklyTrendCaption">—</span></div><canvas id="graficoChamadosSemana"></canvas></div>
                 </section>
 
+                <section id="aba-historico-chamados" class="tab-content" aria-labelledby="ticketHistoryTitle">
+                    <div class="module-header" data-accent="blue">
+                        <span class="module-icon"><i class="fa-solid fa-comments"></i></span>
+                        <div><span class="section-kicker">Conversas dos chamados</span><h3 id="ticketHistoryTitle">Histórico de mensagens</h3><p>Localize um chamado e consulte, em ordem cronológica, a abertura e as respostas trocadas entre cliente e atendentes.</p></div>
+                    </div>
+
+                    <div class="ticket-history-layout">
+                        <aside class="table-wrapper-box ticket-history-browser" aria-label="Seleção de chamados">
+                            <div class="ticket-history-search">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input id="ticketHistorySearch" type="search" autocomplete="off" placeholder="Buscar protocolo, título ou solicitante…" aria-label="Buscar chamado">
+                            </div>
+                            <div class="ticket-history-browser-meta"><span id="ticketHistoryCount">Carregando chamados…</span><button id="ticketHistoryRefresh" class="table-edit-btn" type="button" aria-label="Atualizar lista de chamados"><i class="fa-solid fa-rotate"></i></button></div>
+                            <div id="ticketHistoryResults" class="ticket-history-results" role="listbox" aria-label="Chamados encontrados"></div>
+                        </aside>
+
+                        <section class="table-wrapper-box ticket-conversation-panel" aria-live="polite">
+                            <div id="ticketConversationEmpty" class="ticket-conversation-empty">
+                                <span><i class="fa-regular fa-comments"></i></span>
+                                <strong>Selecione um chamado</strong>
+                                <p>Use a busca ao lado para abrir o histórico completo da conversa.</p>
+                            </div>
+                            <div id="ticketConversationContent" class="ticket-conversation-content" hidden>
+                                <header class="ticket-conversation-header">
+                                    <div><span id="ticketConversationProtocol" class="table-badge">—</span><h4 id="ticketConversationSubject">—</h4><p id="ticketConversationMeta">—</p></div>
+                                    <span id="ticketConversationStatus" class="access-status allowed">—</span>
+                                </header>
+                                <div id="ticketConversationNotice" class="ticket-conversation-notice" role="status"></div>
+                                <div id="ticketConversationTimeline" class="ticket-conversation-timeline"></div>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+
                 <section id="aba-solucoes" class="tab-content" aria-labelledby="solutionsTitle">
                     <div class="module-header" data-accent="violet">
                         <span class="module-icon"><i class="fa-solid fa-lightbulb"></i></span>
@@ -903,6 +942,7 @@
     <script type="module" src="js/client-store.js"></script>
     <script type="module" src="js/private-ticket-store.js"></script>
     <script type="module" src="js/enriched-metrics-dashboard.js"></script>
+    <script type="module" src="js/ticket-history.js"></script>
     <script type="module" src="js/solutions-store.js"></script>
     <script type="module" src="js/solutions-dashboard.js"></script>
     <script type="module" src="js/access-admin.js"></script>

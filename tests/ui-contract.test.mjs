@@ -10,6 +10,7 @@ const goalsJs = readFileSync(new URL('../js/goals-admin.js', import.meta.url), '
 const authGuardJs = readFileSync(new URL('../js/auth-guard.js', import.meta.url), 'utf8');
 const accessAdminJs = readFileSync(new URL('../js/access-admin.js', import.meta.url), 'utf8');
 const firestoreRules = readFileSync(new URL('../firestore.rules', import.meta.url), 'utf8');
+const ticketHistoryJs = readFileSync(new URL('../js/ticket-history.js', import.meta.url), 'utf8');
 const attributes = (name, source = html) => [...source.matchAll(new RegExp(`\\b${name}="([^"]+)"`, 'g'))].map(match => match[1]);
 const ids = attributes('id'); const idSet = new Set(ids);
 
@@ -85,4 +86,13 @@ test('controle de sessões permite logout remoto por dispositivo', () => {
     assert.match(accessAdminJs, /status: 'revoked'/);
     assert.match(firestoreRules, /match \/user_sessions\/\{sessionId\}/);
     assert.match(firestoreRules, /resource\.data\.status == 'active'/);
+});
+
+test('histórico de mensagens possui seleção protegida e linha do tempo', () => {
+    ['ticketHistorySearch', 'ticketHistoryResults', 'ticketConversationContent', 'ticketConversationTimeline', 'ticketConversationNotice']
+        .forEach(id => assert.ok(idSet.has(id), `Elemento do histórico ausente: ${id}`));
+    assert.match(ticketHistoryJs, /tomticket_tickets/);
+    assert.match(ticketHistoryJs, /opening_message/);
+    assert.match(ticketHistoryJs, /sender_type/);
+    assert.match(firestoreRules, /match \/tomticket_tickets\/\{ticketId\}/);
 });

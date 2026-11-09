@@ -15,7 +15,7 @@ test('alteração não processada continua pendente para a próxima sincronizaç
     const state = { 1: { list_hash: listingFingerprint(previous), detail_hash: 'detalhe-anterior' } };
     markListingSeen([changed], state, '2026-09-22T10:00:00.000Z');
     assert.equal(state['1'].list_hash, listingFingerprint(previous));
-    assert.equal(selectDetailCandidates([changed], state, 80, { 1: { schema_version: 2, id: '1' } })[0].changed, true);
+    assert.equal(selectDetailCandidates([changed], state, 80, { 1: { schema_version: 3, id: '1' } })[0].changed, true);
 });
 
 test('chamados abertos têm prioridade quando alterações excedem o limite', () => {
@@ -25,7 +25,7 @@ test('chamados abertos têm prioridade quando alterações excedem o limite', ()
         fechado: { list_hash: listingFingerprint(ticket('fechado', 'Aberto')), detail_hash: 'x' },
         aberto: { list_hash: listingFingerprint(ticket('aberto', 'Aberto', 'Bruno')), detail_hash: 'x' }
     };
-    assert.equal(selectDetailCandidates([closed, open], state, 1, { fechado: { schema_version: 2 }, aberto: { schema_version: 2 } })[0].ticket.id, 'aberto');
+    assert.equal(selectDetailCandidates([closed, open], state, 1, { fechado: { schema_version: 3 }, aberto: { schema_version: 3 } })[0].ticket.id, 'aberto');
 });
 
 test('prioriza alterados, depois novos e limita detalhes', () => {
@@ -41,7 +41,7 @@ test('prioriza alterados, depois novos e limita detalhes', () => {
 test('não consulta detalhe de chamado estável e já enriquecido', () => {
     const current = ticket('estavel');
     const state = { estavel: { list_hash: listingFingerprint(current), detail_hash: 'hash' } };
-    assert.equal(selectDetailCandidates([current], state, 20, { estavel: { schema_version: 2, id: 'estavel' } }).length, 0);
+    assert.equal(selectDetailCandidates([current], state, 20, { estavel: { schema_version: 3, id: 'estavel' } }).length, 0);
 });
 
 test('reprocessa fato métrico de versão anterior', () => {

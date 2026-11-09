@@ -56,6 +56,7 @@ test('detecta a faixa temporal e rejeita uma origem defasada', () => {
 
 test('preserva detalhes necessários somente na representação privada', () => {
     const source = {
+        id: 'ticket-12345',
         protocol: 12345,
         subject: 'Falha no equipamento',
         customer: { name: 'Maria Silva', email: 'MARIA@EXAMPLE.COM', organization: { name: 'Unidade A' } },
@@ -64,6 +65,7 @@ test('preserva detalhes necessários somente na representação privada', () => 
     };
     const privateTicket = buildPrivateTicket(source);
     assert.equal(privateTicket.protocol, 12345);
+    assert.equal(privateTicket.id, 'ticket-12345');
     assert.equal(privateTicket.customer.name, 'Maria Silva');
     assert.equal(privateTicket.customer.email, 'maria@example.com');
     assert.equal(privateTicket.subject, 'Falha no equipamento');

@@ -28,6 +28,7 @@ export function listingFingerprint(ticket = {}) {
         reopened: ticket.reopened === true,
         end_date: ticket.end_date || null,
         status: ticket.status?.description || ticket.situation?.description || null,
+        status_applied_at: ticket.status?.apply_date || ticket.situation?.apply_date || null,
         sla_deadline: ticket.sla?.deadline?.accomplished ?? null,
         responsible_agent: { id: responsible.id || null, name: responsible.name || null },
         department: { id: department.id || null, name: department.name || null },
@@ -40,7 +41,7 @@ export function selectDetailCandidates(tickets, state = {}, limit = DETAIL_LIMIT
     const classified = tickets.filter(ticket => ticket?.id).map(ticket => {
         const previous = state[ticket.id];
         const fingerprint = listingFingerprint(ticket);
-        return { ticket, fingerprint, previous, isNew: !previous, changed: Boolean(previous && previous.list_hash !== fingerprint), unenriched: !previous?.detail_hash || metricState[ticket.id]?.schema_version !== 2 };
+        return { ticket, fingerprint, previous, isNew: !previous, changed: Boolean(previous && previous.list_hash !== fingerprint), unenriched: !previous?.detail_hash || metricState[ticket.id]?.schema_version !== 3 };
     });
     return classified
         .filter(item => item.isNew || item.changed || item.unenriched)

@@ -3,12 +3,22 @@ import { createHash } from 'node:crypto';
 const clean = value => typeof value === 'string' ? value.trim() || null : value ?? null;
 const entity = value => value && typeof value === 'object' ? { id: clean(value.id), name: clean(value.name) } : { id: null, name: null };
 const list = value => Array.isArray(value) ? value : [];
+const attachment = value => ({
+    name: clean(value?.name) || 'Anexo',
+    url: clean(value?.url),
+    size: Number.isFinite(Number(value?.size)) ? Number(value.size) : null
+});
 
 export function normalizeTicketDetail(detail = {}, collectedAt = new Date().toISOString()) {
     return {
         id: clean(detail.id),
         protocol: detail.protocol ?? null,
         subject: clean(detail.subject),
+        opening_message: {
+            message: clean(detail.message),
+            mimetype: clean(detail.mimetype),
+            attachments: list(detail.attachments).map(attachment)
+        },
         ticket_type: clean(detail.ticket_type),
         priority: detail.priority ?? null,
         creation_date: clean(detail.creation_date),
@@ -55,6 +65,15 @@ export function normalizeTicketDetail(detail = {}, collectedAt = new Date().toIS
             created_manually: item?.created_manually === true, operator: clean(item?.operator)
         })),
         staggered: list(detail.staggered).map(item => ({ id: clean(item?.id), protocol: item?.protocol ?? null, subject: clean(item?.subject) })),
+        replies: list(detail.replies).map(reply => ({
+            id: clean(reply?.id),
+            sender_type: clean(reply?.sender_type),
+            sender: clean(reply?.sender) || 'Não identificado',
+            message: clean(reply?.message),
+            date: clean(reply?.date),
+            mimetype: clean(reply?.mimetype),
+            attachments: list(reply?.attachments).map(attachment)
+        })),
         interaction_count: list(detail.replies).length,
         collected_at: collectedAt
     };

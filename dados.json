@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-11-09T08:51:13.979Z",
-    "total_records": 1603,
+    "updated_at": "2026-11-09T17:19:12.749Z",
+    "total_records": 1605,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-11-06T19:09:08.000Z"
+    "newest_creation_date": "2026-11-09T14:09:26.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 3,
+      "creation_date": "2026-11-09 11:09:26-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Diálise"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-11-09 08:57:19-03:00",
+      "end_date": "2026-11-09 11:14:17-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -149,7 +187,7 @@
       },
       "priority": 2,
       "creation_date": "2026-11-04 11:28:01-03:00",
-      "end_date": null,
+      "end_date": "2026-11-09 10:47:52-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -157,7 +195,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em Desenvolvimento"
+        "description": "Finalizado"
       }
     },
     {
@@ -396,13 +434,13 @@
       },
       "priority": 2,
       "creation_date": "2026-10-23 16:37:11-03:00",
-      "end_date": "2026-10-26 11:11:30-03:00",
+      "end_date": "2026-11-09 11:22:57-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
         }
       },
-      "reopened": false,
+      "reopened": true,
       "status": {
         "description": "Finalizado"
       }

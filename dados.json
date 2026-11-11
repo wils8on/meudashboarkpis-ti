@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-11-11T09:28:43.488Z",
-    "total_records": 1611,
+    "updated_at": "2026-11-11T17:25:14.267Z",
+    "total_records": 1613,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-11-10T18:20:20.000Z"
+    "newest_creation_date": "2026-11-11T16:09:37.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Coordenação Logistica"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-11-11 13:09:37-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": null
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Sem atendente vinculado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-11-11 10:36:35-03:00",
+      "end_date": "2026-11-11 10:46:25-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -206,7 +244,7 @@
       },
       "priority": 2,
       "creation_date": "2026-11-05 16:58:14-03:00",
-      "end_date": null,
+      "end_date": "2026-11-11 13:08:18-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -214,7 +252,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Respondido pelo cliente, aguardando resposta"
+        "description": "Finalizado"
       }
     },
     {
@@ -415,7 +453,7 @@
       },
       "priority": 2,
       "creation_date": "2026-10-30 08:41:52-03:00",
-      "end_date": null,
+      "end_date": "2026-11-11 08:21:07-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -423,7 +461,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando terceiro"
+        "description": "Finalizado"
       }
     },
     {
@@ -529,7 +567,7 @@
       },
       "priority": 1,
       "creation_date": "2026-10-26 08:33:20-03:00",
-      "end_date": null,
+      "end_date": "2026-11-11 13:08:30-03:00",
       "sla": {
         "deadline": {
           "accomplished": true
@@ -537,7 +575,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Aguardando terceiro"
+        "description": "Finalizado"
       }
     },
     {

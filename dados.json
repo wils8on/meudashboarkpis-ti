@@ -1,13 +1,51 @@
 {
   "meta": {
     "source": "TomTicket API v2.0",
-    "updated_at": "2026-11-27T08:47:10.488Z",
-    "total_records": 1633,
+    "updated_at": "2026-11-27T18:34:23.247Z",
+    "total_records": 1635,
     "privacy": "sanitized-v1",
     "oldest_creation_date": "2023-06-07T14:16:47.000Z",
-    "newest_creation_date": "2026-11-25T13:49:28.000Z"
+    "newest_creation_date": "2026-11-27T18:02:30.000Z"
   },
   "data": [
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-11-27 15:02:30-03:00",
+      "end_date": "2026-11-27 15:09:30-03:00",
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Finalizado"
+      }
+    },
+    {
+      "customer": {
+        "organization": {
+          "name": "Gerência Fin / Fis"
+        }
+      },
+      "priority": 2,
+      "creation_date": "2026-11-27 14:43:58-03:00",
+      "end_date": null,
+      "sla": {
+        "deadline": {
+          "accomplished": true
+        }
+      },
+      "reopened": false,
+      "status": {
+        "description": "Aguardando interação do atendente"
+      }
+    },
     {
       "customer": {
         "organization": {
@@ -62,7 +100,7 @@
       },
       "reopened": false,
       "status": {
-        "description": "Em Analise Técnica"
+        "description": "Aguardando terceiro"
       }
     },
     {
